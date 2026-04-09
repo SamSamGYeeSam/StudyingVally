@@ -1,17 +1,26 @@
-name: Add Date to Next Step Title
+name: Add Date to Discussion Title
 
 on:
   discussion:
     types: [created]
 
+# 1. 권한 설정 (이게 없어서 실패했을 확률 99%입니다)
+permissions:
+  discussions: write
+  contents: read
+
 jobs:
   update-title:
     runs-on: ubuntu-latest
-    if: startsWith(github.event.discussion.title, '[Next Step]')
+    # 제목이 [ 로 시작하고, 아직 날짜([202x-)가 붙지 않은 경우에만 실행
+    if: |
+      startsWith(github.event.discussion.title, '[') && 
+      !contains(github.event.discussion.title, '[20')
     steps:
       - name: Get Current Date
         id: date
-        run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        # 한국 시간(KST)으로 날짜 가져오기
+        run: echo "today=$(date -d "+9 hours" +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: Update Discussion Title
         env:
@@ -20,11 +29,13 @@ jobs:
           TITLE: ${{ github.event.discussion.title }}
           DATE: ${{ steps.date.outputs.today }}
         run: |
-          # 제목 앞에 [2026-04-09]를 붙여서 업데이트
+          # 결과 예시: [2026-04-09] [Next Step] 제목
+          NEW_TITLE="[$DATE] $TITLE"
+          
           gh api graphql -f query='
             mutation($id: ID!, $title: String!) {
               updateDiscussion(input: {discussionId: $id, title: $title}) {
                 discussion { title }
               }
             }
-          ' -f id="$D_ID" -f title="[$DATE] $TITLE"
+          ' -f id="$D_ID" -f title="$NEW_TITLE"
