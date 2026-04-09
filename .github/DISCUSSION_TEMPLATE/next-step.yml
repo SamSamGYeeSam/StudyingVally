@@ -1,0 +1,65 @@
+name: "🚀 Next Step"
+description: "다음 단계의 작업 계획 및 로드맵을 수립합니다."
+title: "[Next Step] "
+labels: ["next-step", "planning"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!TIP]
+        > **성장을 위한 다음 발걸음(Next Step)**
+        > 현재의 성과에 안주하지 않고, 다음에 집중해야 할 핵심 과제를 팀원들과 공유해 주세요.
+        
+        ```diff
+        ! 이 작업이 왜 필요한지 가치를 중심으로 작성해 주세요.
+        + 관련 로드맵이나 마일스톤이 있다면 함께 언급해 주세요.
+        ```
+
+  - type: textarea
+    id: objective
+    attributes:
+      label: "🎯 핵심 목표 (Objective)"
+      description: "이 단계에서 달성하고자 하는 궁극적인 목표가 무엇인가요?"
+      placeholder: "예: 사용자 이탈 방지를 위한 알림 시스템 고도화"
+    validations:
+      required: true
+
+  - type: textarea
+    id: action_items
+    attributes:
+      label: "🚀 실행 항목 (Action Items)"
+      description: "목표 달성을 위해 필요한 구체적인 활동들입니다."
+      value: |
+        - [ ] 핵심 로직 설계 및 리뷰
+        - [ ] 프로토타입 구현 및 피드백 수렴
+        - [ ] 운영 환경 배포 및 모니터링
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "🚦 전략적 중요도"
+      description: "이 작업이 우리 서비스/팀에 미치는 영향력을 선택해 주세요."
+      options:
+        - "🔥 Critical (비즈니스 핵심 가치/즉시 실행 필요)"
+        - "⚡ High (성장에 큰 기여/우선순위 높음)"
+        - "🌱 Growth (지속적 개선 및 기반 다지기)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: "⚠️ 고려 사항 및 제약 조건"
+      description: "작업 시 주의해야 할 기술적 제약이나 의존 관계를 적어주세요."
+      placeholder: "예: 외부 API 호출 제한 확인 필요, 기존 DB 스키마 변경 시 하위 호환성 유지"
+
+  - type: textarea
+    id: success_metrics
+    attributes:
+      label: "📈 성공 지표 (Success Metrics)"
+      description: "이 작업이 성공했음을 어떻게 측정할 수 있을까요?"
+      placeholder: "예: 페이지 로딩 속도 1.5초 단축, 사용자 클릭률 10% 증가"
+    validations:
+      required: false
