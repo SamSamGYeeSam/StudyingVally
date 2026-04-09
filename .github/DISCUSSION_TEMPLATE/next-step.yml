@@ -1,31 +1,65 @@
----
-name: "🚀 Next Step"
-description: "팀 AtwoBthree의 다음 도약을 위한 계획을 수립합니다."
 title: "[Next Step] "
 labels: ["next-step", "planning"]
----
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!NOTE]
+        > **Team AtwoBthree: Next Step 가이드**
+        > 다음 단계의 목표를 설정하고, 팀원들이 나아갈 방향을 공유해 주세요.
+        
+        ```diff
+        + 목표는 최대한 구체적인 수치나 결과물로 적어주세요.
+        ! 작업 간의 우선순위를 고려하여 배치해 주세요.
+        ```
 
-## 🏁 Next Step: 새로운 도전
-> **"작은 발걸음이 모여 큰 변화를 만듭니다."**
-> 오늘 논의할 다음 단계의 핵심을 명확하게 기록해 주세요.
+  - type: textarea
+    id: next_goal
+    attributes:
+      label: "🎯 다음 단계 핵심 목표"
+      description: "이번 단계에서 우리가 도달해야 할 가장 중요한 지점은 어디인가요?"
+      placeholder: "예: 검색 엔진 최적화(SEO) 적용 및 구글 검색 노출 확인"
+    validations:
+      required: true
 
----
+  - type: textarea
+    id: action_plan
+    attributes:
+      label: "🚀 상세 실행 계획"
+      description: "목표 달성을 위한 구체적인 작업 단위입니다."
+      value: |
+        - [ ] 
+        - [ ] 
+        - [ ] 
+    validations:
+      required: true
 
-### 🎯 이번 단계의 핵심 목표
-*무엇을 달성하려고 하나요? (가장 중요한 한 문장)*
-- 
+  - type: dropdown
+    id: strategic_priority
+    attributes:
+      label: "🚦 전략적 중요도"
+      description: "현재 프로젝트 로드맵에서 이 작업이 차지하는 비중을 선택해 주세요."
+      options:
+        - "🔥 Critical (즉시 실행 및 비즈니스 핵심)"
+        - "⚡ High (빠른 성장을 위해 우선 필요)"
+        - "🌱 Growth (장기적 개선 및 기반 작업)"
+    validations:
+      required: true
 
-### 📝 세부 실행 계획
-*목표 달성을 위해 필요한 구체적인 할 일들입니다.*
-- [ ] 
-- [ ] 
-- [ ] 
+  - type: textarea
+    id: expected_impact
+    attributes:
+      label: "📈 기대 효과 및 결과"
+      description: "이 단계를 완료했을 때 어떤 변화나 이득이 생기나요?"
+      placeholder: "예: 페이지 로딩 속도 20% 개선, 신규 유저 유입 경로 확보"
+    validations:
+      required: false
 
-### 💥 기대 효과 및 임팩트
-- [ ] **🌟 혁신적** (서비스의 핵심 가치를 변화시킴)
-- [ ] **⚡ 효율적** (기존 프로세스를 크게 개선함)
-- [ ] **🛠 안정적** (시스템의 기반을 견고히 함)
-
-### 📎 참고 자료 및 링크
-*Figma 시안, 관련 이슈 번호, 혹은 벤치마킹 자료*
--
+  - type: textarea
+    id: resources
+    attributes:
+      label: "🛠 참고 자료 및 링크"
+      description: "작업에 참고할 문서, 피그마, 또는 관련 이슈 번호를 적어주세요."
+      placeholder: "URL이나 #이슈번호를 입력해 주세요."
+    validations:
+      required: false
