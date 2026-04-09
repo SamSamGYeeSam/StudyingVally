@@ -1,0 +1,55 @@
+title: "[PR] "
+labels: ["pr", "review-needed"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!IMPORTANT]
+        > **Team AtwoBthree PR 가이드**
+        > 리뷰어가 변경 내용을 쉽게 파악할 수 있도록 핵심 위주로 작성해 주세요.
+        
+        ```diff
+        + 어떤 문제를 해결했는지 설명해 주세요.
+        # 코드 리뷰 시 특별히 확인이 필요한 부분이 있다면 꼭 언급해 주세요.
+        ```
+
+  - type: textarea
+    id: pr_summary
+    attributes:
+      label: "📌 변경 요약"
+      description: "이번 PR에서 어떤 작업을 수행했는지 간략하게 적어주세요."
+      placeholder: "예: 로그인 API 예외 처리 추가 및 유효성 검사 로직 개선"
+    validations:
+      required: true
+
+  - type: textarea
+    id: pr_changes
+    attributes:
+      label: "🛠 주요 변경 사항"
+      description: "기술적으로 어떤 부분을 수정했는지 핵심 내용을 작성해 주세요."
+      value: |
+        - 
+        - 
+    validations:
+      required: true
+
+  - type: textarea
+    id: pr_checklist
+    attributes:
+      label: "✅ 리뷰 전 체크리스트"
+      description: "병합 전 확인해야 할 필수 사항들입니다."
+      value: |
+        - [ ] 모든 테스트 코드가 통과되었나요?
+        - [ ] 코드 컨벤션(Lint)을 준수했나요?
+        - [ ] 불필요한 주석이나 디버깅용 print문은 제거했나요?
+    validations:
+      required: true
+
+  - type: textarea
+    id: visual_evidence
+    attributes:
+      label: "🖼 스크린샷 또는 참고 자료 (선택)"
+      description: "UI 변경 사항이 있다면 스크린샷을 첨부하거나, 관련 문서 링크를 적어주세요."
+      placeholder: "이미지를 드래그해서 넣어주세요."
+    validations:
+      required: false
