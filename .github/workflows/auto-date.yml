@@ -1,0 +1,30 @@
+name: Add Date to Next Step Title
+
+on:
+  discussion:
+    types: [created]
+
+jobs:
+  update-title:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.discussion.title, '[Next Step]')
+    steps:
+      - name: Get Current Date
+        id: date
+        run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Update Discussion Title
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          D_ID: ${{ github.event.discussion.node_id }}
+          TITLE: ${{ github.event.discussion.title }}
+          DATE: ${{ steps.date.outputs.today }}
+        run: |
+          # 제목 앞에 [2026-04-09]를 붙여서 업데이트
+          gh api graphql -f query='
+            mutation($id: ID!, $title: String!) {
+              updateDiscussion(input: {discussionId: $id, title: $title}) {
+                discussion { title }
+              }
+            }
+          ' -f id="$D_ID" -f title="[$DATE] $TITLE"
