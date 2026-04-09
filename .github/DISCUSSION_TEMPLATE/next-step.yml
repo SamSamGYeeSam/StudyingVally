@@ -10,28 +10,29 @@ body:
   - type: textarea
     id: goal
     attributes:
-      label: "📌 이번 단계 목표"
-      description: "달성하고자 하는 결과를 명확히 작성해 주세요."
+      label: "🎯 핵심 목표"
+      description: "이번 단계의 가장 중요한 목적을 작성해 주세요."
       value: "**[목표]** "
     validations:
       required: true
 
   - type: textarea
-    id: list
+    id: roadmap
     attributes:
-      label: "🏃 실행 항목"
-      description: "진행할 작업을 순서대로 나열해 주세요."
+      label: "🏃 실행 순서"
+      description: "번호 뒤에 다음 할 일들을 작성해 주세요."
       value: |
-        • 
-        • 
-        • 
+        **1. **
+        **2. **
+        **3. **
     validations:
       required: true
 
   - type: textarea
     id: note
     attributes:
-      label: "📝 비고"
-      description: "참고 사항 및 특이 사항을 기록합니다."
+      label: "📝 추가 참고"
+      description: "필요한 경우에만 작성합니다."
+      placeholder: "자유롭게 내용을 입력하세요."
     validations:
       required: false
