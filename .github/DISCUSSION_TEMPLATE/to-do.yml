@@ -1,56 +1,67 @@
-name: 🗓️ TO DO 작성 양식
-description: 새로운 할 일을 등록하고 우선순위를 정합니다.
-title: "[TODO]: " # 글 제목 앞에 자동으로 붙는 접두어
-labels: ["todo", "enhancement"] # 자동으로 붙을 라벨 (선택 사항)
+# .github/DISCUSSION_TEMPLATE/to-do.yml
+title: "[TO DO] "
+labels: ["todo", "enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
-        ## 📌 Task Checklist
-        새로운 작업을 등록할 때 아래 정보를 상세히 적어주세요.
+        > [!IMPORTANT]
+        > **Team AtwoBthree 작업 가이드**
+        > 팀원들이 작업 내용을 명확히 이해할 수 있도록 구체적으로 작성해 주세요.
+        
+        ```diff
+        + 관련 이슈나 문서가 있다면 링크를 첨부해 주세요.
+        # 작업이 완료되면 체크박스를 업데이트해 주세요.
+        ```
 
-  - type: input
-    id: task_title
+  - type: textarea
+    id: task_summary
     attributes:
-      label: 🛠 작업 명칭
-      placeholder: "예: Flutter 로그인 페이지 UI 수정"
+      label: "📌 작업 요약"
+      description: "어떤 작업을 수행해야 하는지 핵심 내용을 작성해 주세요."
+      placeholder: "예: API 응답 데이터 캐싱 로직 구현 및 예외 처리"
+    validations:
+      required: true
+
+  - type: textarea
+    id: task_list
+    attributes:
+      label: "✅ 세부 할 일 목록"
+      description: "작업을 완료하기 위해 필요한 단계별 체크리스트입니다."
+      value: |
+        - [ ] 기능 설계 및 인터페이스 정의
+        - [ ] 핵심 로직 구현
+        - [ ] 단위 테스트(Unit Test) 작성 및 통과
+        - [ ] 관련 문서(Readme 등) 업데이트
     validations:
       required: true
 
   - type: dropdown
     id: priority
     attributes:
-      label: 🚨 우선순위
+      label: "🚨 우선순위"
+      description: "팀 내 논의를 통해 결정된 작업의 긴급도를 선택해 주세요."
       options:
-        - 긴급 (Critical)
-        - 높음 (High)
-        - 보통 (Medium)
-        - 낮음 (Low)
+        - "🔴 High (중요 결함 수정 또는 핵심 기능)"
+        - "🟡 Medium (일반적인 기능 개선 및 개발)"
+        - "🔵 Low (사소한 UI 수정 또는 리팩토링)"
     validations:
       required: true
 
   - type: textarea
-    id: description
+    id: technical_specs
     attributes:
-      label: 📖 상세 내용
-      description: 무엇을 해야 하는지 구체적으로 적어주세요.
-      placeholder: "기능 정의 및 구현 범위 등..."
+      label: "🛠 기술 스펙 및 참고 사항"
+      description: "사용할 스택, 라이브러리, 또는 아키텍처 관련 참고 사항을 적어주세요."
+      placeholder: "예: Redis를 활용한 캐싱 처리, 기존 인터페이스 하위 호환성 유지 필요"
     validations:
-      required: true
+      required: false
 
   - type: textarea
-    id: resources
+    id: dod
     attributes:
-      label: 🔗 관련 링크 및 자료
-      description: 참고할 문서나 API 명세서가 있다면 링크를 남겨주세요.
-      placeholder: "Groq API 문서, 피그마 디자인 링크 등"
-
-  - type: checkboxes
-    id: steps
-    attributes:
-      label: ✅ 하위 작업 (Sub-tasks)
-      options:
-        - [ ] 환경 설정 및 의존성 추가
-        - [ ] 로직 구현
-        - [ ] 단위 테스트 완료
-        - [ ] PR 및 코드 리뷰 요청
+      label: "🏁 완료 조건 (Definition of Done)"
+      description: "이 작업이 최종적으로 '완료'되었다고 판단하는 기준입니다."
+      placeholder: "예: 모든 API 응답 시간이 200ms 이내로 단축되고 에러 없이 병합됨"
+    validations:
+      required: true
