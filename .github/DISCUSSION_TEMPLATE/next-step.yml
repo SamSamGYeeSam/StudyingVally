@@ -4,29 +4,14 @@ body:
   - type: markdown
     attributes:
       value: |
-        > [!NOTE]
-        > **Team AtwoBthree: Next Step 가이드**
-        > 다음 단계의 목표를 설정하고, 팀원들이 나아갈 방향을 공유해 주세요.
-        
-        ```diff
-        + 목표는 최대한 구체적인 수치나 결과물로 적어주세요.
-        ! 작업 간의 우선순위를 고려하여 배치해 주세요.
-        ```
+        ## 🚀 Next Step 계획
+        > **Team AtwoBthree**의 다음 작업 방향을 간결하게 공유해 주세요.
 
   - type: textarea
-    id: next_goal
+    id: checklist
     attributes:
-      label: "🎯 다음 단계 핵심 목표"
-      description: "이번 단계에서 우리가 도달해야 할 가장 중요한 지점은 어디인가요?"
-      placeholder: "예: 검색 엔진 최적화(SEO) 적용 및 구글 검색 노출 확인"
-    validations:
-      required: true
-
-  - type: textarea
-    id: action_plan
-    attributes:
-      label: "🚀 상세 실행 계획"
-      description: "목표 달성을 위한 구체적인 작업 단위입니다."
+      label: "✅ 세부 할 일 목록"
+      description: "다음에 진행할 작업들을 체크박스(- [ ])로 작성해 주세요."
       value: |
         - [ ] 
         - [ ] 
@@ -34,32 +19,11 @@ body:
     validations:
       required: true
 
-  - type: dropdown
-    id: strategic_priority
-    attributes:
-      label: "🚦 전략적 중요도"
-      description: "현재 프로젝트 로드맵에서 이 작업이 차지하는 비중을 선택해 주세요."
-      options:
-        - "🔥 Critical (즉시 실행 및 비즈니스 핵심)"
-        - "⚡ High (빠른 성장을 위해 우선 필요)"
-        - "🌱 Growth (장기적 개선 및 기반 작업)"
-    validations:
-      required: true
-
   - type: textarea
-    id: expected_impact
+    id: additional_info
     attributes:
-      label: "📈 기대 효과 및 결과"
-      description: "이 단계를 완료했을 때 어떤 변화나 이득이 생기나요?"
-      placeholder: "예: 페이지 로딩 속도 20% 개선, 신규 유저 유입 경로 확보"
-    validations:
-      required: false
-
-  - type: textarea
-    id: resources
-    attributes:
-      label: "🛠 참고 자료 및 링크"
-      description: "작업에 참고할 문서, 피그마, 또는 관련 이슈 번호를 적어주세요."
-      placeholder: "URL이나 #이슈번호를 입력해 주세요."
+      label: "📝 추가 내용"
+      description: "필요한 경우 참고 자료, 링크, 혹은 주의 사항을 자유롭게 적어주세요."
+      placeholder: "기타 참고 사항이 없다면 비워두셔도 됩니다."
     validations:
       required: false
