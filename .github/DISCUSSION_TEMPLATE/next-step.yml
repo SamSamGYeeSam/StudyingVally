@@ -4,35 +4,41 @@ body:
   - type: markdown
     attributes:
       value: |
-        # 🚀 Next Step: 삼삼그이삼
-        > **우리가 다음에 나아갈 방향을 명확하고 큼직하게 기록해 주세요.**
+        # 🚀 Next Step | 삼삼그이삼
         ---
 
   - type: textarea
-    id: main_goal
+    id: core_objective
     attributes:
       label: "🎯 핵심 목표"
-      description: "이번 단계에서 달성해야 할 가장 큰 목표를 작성해 주세요."
-      value: "## "
+      description: "이번 단계에서 도달해야 할 가장 중요한 목적을 작성합니다."
+      value: "### "
     validations:
       required: true
 
   - type: textarea
-    id: plan_details
+    id: roadmap
     attributes:
-      label: "📝 상세 실행 계획"
-      description: "목표를 이루기 위한 세부 내용을 작성해 주세요. (글머리 기호 사용 권장)"
+      label: "🏃 실천 계획"
+      description: "목표 달성을 위해 진행할 작업을 순서대로 나열해 주세요."
       value: |
-        ### 
-        - 
+        1. 
+        2. 
+        3. 
     validations:
       required: true
 
   - type: textarea
-    id: extra_notes
+    id: technical_note
     attributes:
-      label: "📎 추가 참고 및 주의 사항"
-      description: "팀원들이 알아야 할 제약 사항이나 링크가 있다면 적어주세요."
-      placeholder: "자유롭게 내용을 입력하거나 마크다운으로 꾸며주세요."
+      label: "📝 기술적 고려사항 및 비고"
+      description: "관련 링크, 제약 사항 또는 참고할 만한 기술 스택을 기록합니다."
+      placeholder: "없을 경우 비워두셔도 됩니다."
     validations:
       required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        > **Last Updated:** 2026-04-09
