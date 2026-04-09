@@ -5,7 +5,7 @@ body:
     attributes:
       value: |
         > [!IMPORTANT]
-        > **Team AtwoBthree PR 가이드**
+        > **Team 삼삼그이삼 PR 가이드**
         > 리뷰어가 변경 내용을 쉽게 파악할 수 있도록 핵심 위주로 작성해 주세요.
         
         ```diff
