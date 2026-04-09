@@ -1,0 +1,44 @@
+title: "[BUG] "
+labels: ["bug", "fix-needed"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **TEAM 삼삼그이삼 | 버그 리포트**
+        ---
+        > [!CAUTION]
+        > 발견된 문제와 시도했던 해결 방법을 명확히 공유해 주세요.
+        > 해결 시 **코멘트를 남기고 Discussion을 Closed** 상태로 변경 바랍니다.
+
+  - type: textarea
+    id: bug_description
+    attributes:
+      label: "🐞 발생 상황 및 현상"
+      description: "어디서 무엇을 할 때 어떤 문제가 발생했나요?"
+      placeholder: "예: 로그인 API 연동 시 500 오류 발생, Course.java 파일 수정 중 타입 불일치 에러 등"
+    validations:
+      required: true
+
+  - type: textarea
+    id: attempted_solutions
+    attributes:
+      label: "🔍 시도해본 방법"
+      description: "문제를 해결하기 위해 어떤 시도들을 해보셨나요?"
+      placeholder: "예: import 재설정, Spring 빈(Bean) 등록 여부 확인, DB 스키마 재확인 등"
+    validations:
+      required: true
+
+  - type: textarea
+    id: error_log
+    attributes:
+      label: "📝 로그 또는 스택 트레이스 (선택)"
+      description: "발생한 에러 로그나 관련 코드를 복사해서 붙여넣어 주세요."
+      placeholder: "에러 메시지를 이곳에 붙여넣어 주시면 해결이 빠릅니다."
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        **🏁 완료 가이드:** 문제가 해결되었다면 해결 방안을 기록하고 상태를 종료해 주세요.
