@@ -65,5 +65,3 @@ body:
       placeholder: "예: 모든 API 응답 시간이 200ms 이내로 단축되고 에러 없이 병합됨"
     validations:
       required: true
-
-title에 오늘날짜 자동으로 들어가게 못하나
