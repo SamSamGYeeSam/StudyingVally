@@ -11,7 +11,7 @@ body:
   - type: textarea
     id: big_todo_list
     attributes:
-      label: "✅ 상세 할 일 (크게 보기)"
+      label: "✅ 상세 할 일"
       description: "체크박스 뒤에 내용을 작성하면 글씨가 큼직하게 보입니다."
       value: |
         ### - [ ] 
@@ -36,6 +36,6 @@ body:
     attributes:
       label: "🏁 완료 조건 (Definition of Done)"
       description: "이 작업이 끝났다고 판단하는 기준을 크게 작성해 주세요."
-      value: "## "
+      value: "## 체크박스가 전부 체크되면 완료입니다"
     validations:
       required: true
