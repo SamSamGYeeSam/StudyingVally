@@ -4,26 +4,35 @@ body:
   - type: markdown
     attributes:
       value: |
-        ## 🚀 Next Step 계획
-        > **삼삼그이삼**의 다음 작업 방향을 간결하게 공유해 주세요.
+        # 🚀 Next Step: 삼삼그이삼
+        > **우리가 다음에 나아갈 방향을 명확하고 큼직하게 기록해 주세요.**
+        ---
 
   - type: textarea
-    id: checklist
+    id: main_goal
     attributes:
-      label: "✅ 세부 할 일 목록"
-      description: "다음에 진행할 작업들을 체크박스(- [ ])로 작성해 주세요."
-      value: |
-        - [ ] 
-        - [ ] 
-        - [ ] 
+      label: "🎯 핵심 목표"
+      description: "이번 단계에서 달성해야 할 가장 큰 목표를 작성해 주세요."
+      value: "## "
     validations:
       required: true
 
   - type: textarea
-    id: additional_info
+    id: plan_details
     attributes:
-      label: "📝 추가 내용"
-      description: "필요한 경우 참고 자료, 링크, 혹은 주의 사항을 자유롭게 적어주세요."
-      placeholder: "기타 참고 사항이 없다면 비워두셔도 됩니다."
+      label: "📝 상세 실행 계획"
+      description: "목표를 이루기 위한 세부 내용을 작성해 주세요. (글머리 기호 사용 권장)"
+      value: |
+        ### 
+        - 
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra_notes
+    attributes:
+      label: "📎 추가 참고 및 주의 사항"
+      description: "팀원들이 알아야 할 제약 사항이나 링크가 있다면 적어주세요."
+      placeholder: "자유롭게 내용을 입력하거나 마크다운으로 꾸며주세요."
     validations:
       required: false
