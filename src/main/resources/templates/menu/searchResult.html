@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+<h3 th:text="|${price} 원을 초과하는 메뉴 목록|"></h3>
+
+<table border="1">
+    <tr>
+        <th>메뉴번호</th>
+        <th>메뉴이름</th>
+        <th>메뉴가격</th>
+        <th>카테고리코드</th>
+        <th>판매상태</th>
+    </tr>
+    <tr th:each="result : ${menuList}">
+        <td th:text="${result.menuCode}"></td>
+        <td th:text="${result.menuName}"></td>
+        <td th:text="${result.menuPrice}"></td>
+        <td th:text="${result.categoryCode}"></td>
+        <td th:text="${result.orderableStatus}"></td>
+    </tr>
+</table>
+
+</body>
+</html>

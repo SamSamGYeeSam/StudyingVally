@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>멍멍 레스토랑 - 메뉴 탐색</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #dcedc1;
+            background-image: radial-gradient(circle at 50% 100%, #a8e6cf 0%, transparent 80%);
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 안내 문구 */
+        .guide-text {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 800;
+            color: #2f3542;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 12px 24px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            pointer-events: none;
+            z-index: 500;
+        }
+
+        /* 🐶 강아지 캐릭터 */
+        #character {
+            position: absolute;
+            font-size: 50px;
+            z-index: 1000;
+            pointer-events: none;
+            left: 50px;
+            top: 50px;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+        }
+
+        /* 🔘 흩뿌려진 버튼들 */
+        .scattered-btn {
+            position: absolute;
+            background: #ffffff;
+            color: #2f3542;
+            border: none;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 800;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .scattered-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+            color: #ff6b81;
+        }
+
+        /* ✨ 강아지가 닿았을 때 눌리는 효과 */
+        .scattered-btn.triggered {
+            background: #ff6b81;
+            color: #ffffff;
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 107, 129, 0.6);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="guide-text">우클릭으로 강아지를 움직여 메뉴를 선택하세요!</div>
+
+<div id="character">🐶</div>
+
+<button class="scattered-btn" onclick="location.href='/menu/13'" style="top: 20%; left: 15%;">특정 메뉴 조회</button>
+<button class="scattered-btn" onclick="location.href='/menu/list'" style="top: 15%; left: 65%;">전체 메뉴 조회</button>
+<button class="scattered-btn" onclick="location.href='/menu/querymethod'" style="top: 50%; left: 75%;">쿼리메소드</button>
+<button class="scattered-btn" onclick="location.href='/menu/regist'" style="top: 75%; left: 20%;">메뉴 등록</button>
+<button class="scattered-btn" onclick="location.href='/menu/modify'" style="top: 80%; left: 60%;">메뉴 수정</button>
+<button class="scattered-btn" onclick="location.href='/menu/delete'" style="top: 45%; left: 40%;">메뉴 삭제</button>
+
+<script>
+    const character = document.getElementById('character');
+    const buttons = document.querySelectorAll('.scattered-btn');
+
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault(); // 기본 우클릭 메뉴 방지
+
+        // 강아지를 마우스 클릭 위치 정중앙으로 이동
+        character.style.left = `${e.clientX - 25}px`;
+        character.style.top = `${e.clientY - 25}px`;
+
+        // 강아지 이동 애니메이션(0.5초)이 끝날 때쯤 버튼 충돌 검사
+        setTimeout(() => {
+            const charRect = character.getBoundingClientRect();
+            const charCenterX = charRect.left + charRect.width / 2;
+            const charCenterY = charRect.top + charRect.height / 2;
+
+            buttons.forEach(button => {
+                const btnRect = button.getBoundingClientRect();
+
+                // 강아지 중심점이 버튼 영역 안에 있는지 확인
+                if (
+                    charCenterX >= btnRect.left && charCenterX <= btnRect.right &&
+                    charCenterY >= btnRect.top && charCenterY <= btnRect.bottom
+                ) {
+                    // 버튼 정중앙으로 강아지 위치 살짝 보정
+                    character.style.left = `${btnRect.left + btnRect.width / 2 - 25}px`;
+                    character.style.top = `${btnRect.top + btnRect.height / 2 - 25}px`;
+
+                    // 버튼 눌림 효과 추가
+                    button.classList.add('triggered');
+
+                    // 0.3초 뒤에 원래 경로(location.href)로 페이지 이동
+                    setTimeout(() => {
+                        const action = button.getAttribute('onclick');
+                        if (action) {
+                            new Function(action)(); // onclick 안의 자바스크립트 실행
+                        }
+                    }, 300);
+                }
+            });
+        }, 500);
+    });
+</script>
+</body>
+</html>
