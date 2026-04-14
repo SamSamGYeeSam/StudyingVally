@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>강의 마을 - 로그인</title>
+  <link rel="stylesheet" href="/css/auth.css">
+
+</head>
+<body>
+<div class="game-screen">
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+
+  <div class="mountains"></div>
+  <div class="far-trees"></div>
+
+  <div class="ground"></div>
+  <div class="path"></div>
+  <div class="fence"></div>
+
+  <div class="house">
+    <div class="roof"></div>
+    <div class="body"></div>
+    <div class="window left"></div>
+    <div class="window right"></div>
+    <div class="door"></div>
+  </div>
+
+  <div class="panel-wrap">
+    <div class="panel">
+
+
+      <!-- 로그인 화면 -->
+      <section id="loginScreen" class="form-screen active">
+        <h1 class="title">로그인</h1>
+
+
+        <div class="form-box">
+          <div class="field">
+            <label for="loginId">아이디</label>
+            <input type="text" id="loginId" placeholder="아이디 입력" />
+          </div>
+
+          <div class="field">
+            <label for="loginPwd">비밀번호</label>
+            <input type="password" id="loginPwd" placeholder="비밀번호 입력" />
+          </div>
+
+          <div class="bottom-row">
+            <button onclick="location.href='/main'" class="pixel-btn secondary" id="backFromLoginBtn">뒤로가기</button>
+            <button onclick="location.href='/auth/logincheck'" class="pixel-btn" id="loginSubmitBtn">로그인</button>
+          </div>
+
+
+          <div id="loginMsg" class="msg"></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- <script src="login.js" defer></script> -->
+</body>
+</html>
