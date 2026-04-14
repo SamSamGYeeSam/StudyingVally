@@ -61,7 +61,7 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
          * 관리자 권한이면 아직 관리자 메인페이지가 없으므로 공용 /main 으로 이동한다.
          */
         if (hasRole(authorities, "ROLE_ADMIN")) {
-            response.sendRedirect("/main");
+            response.sendRedirect("/admin/main");
             return;
         }
 
