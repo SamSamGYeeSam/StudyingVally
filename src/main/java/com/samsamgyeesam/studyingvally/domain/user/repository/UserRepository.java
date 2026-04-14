@@ -16,4 +16,10 @@ public interface UserRepository extends JpaRepository<UserUser, Long> {
      * @return User Optional
      */
     Optional<UserUser> findByUserId(String userId);
+    /*
+     * 이름과 전화번호로 사용자를 조회한다.
+     *
+     * 아이디 찾기 기능에서 사용한다.
+     */
+    Optional<UserUser> findByUserNameAndUserPhoneNumber(String userName, String userPhoneNumber);
 }
