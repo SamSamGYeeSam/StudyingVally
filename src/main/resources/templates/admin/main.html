@@ -2,77 +2,162 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 메인 페이지</title>
     <style>
+        /* comment.
+         *  전체 페이지 기본 스타일
+         *  스타듀밸리 느낌을 위해 자연색 계열 배경과 부드러운 톤을 사용한다.
+         */
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, "맑은 고딕", sans-serif;
-            background-color: #f5f7fa;
+            font-family: "Malgun Gothic", sans-serif;
+            background: linear-gradient(to bottom, #cfeea6 0%, #bde08f 35%, #d7c39c 100%);
+            min-height: 100vh;
+            color: #2d2418;
         }
 
+        /* comment.
+         *  전체 컨텐츠를 감싸는 래퍼
+         *  화면 중앙 정렬과 적절한 여백을 위해 사용한다.
+         */
         .wrapper {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 50px 20px 70px;
         }
 
-        .page-title {
+        /* comment.
+         *  상단 타이틀 영역
+         *  관리자 페이지지만 너무 딱딱하지 않게 게임 타이틀판 느낌을 준다.
+         */
+        .title-box {
+            background-color: rgba(255, 248, 220, 0.9);
+            border: 4px solid #6b4f2a;
+            border-radius: 18px;
+            box-shadow: 0 8px 0 #8b6a3d;
             text-align: center;
-            font-size: 36px;
-            font-weight: bold;
-            color: #222;
+            padding: 28px 20px;
             margin-bottom: 50px;
         }
 
+        /* comment.
+         *  관리자 메인 제목 스타일
+         */
+        .title-box h1 {
+            margin: 0;
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        /* comment.
+         *  관리자 메인 부제목 스타일
+         */
+        .title-box p {
+            margin: 12px 0 0;
+            font-size: 18px;
+            color: #5a4a34;
+        }
+
+        /* comment.
+         *  메뉴 카드 2x2 배치용 그리드
+         */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
+            gap: 28px;
         }
 
+        /* comment.
+         *  메뉴 카드 기본 스타일
+         *  나무 게시판 또는 목재 메뉴판 느낌을 주기 위한 색상과 테두리를 사용한다.
+         */
         .menu-card {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 180px;
-            background-color: white;
-            border-radius: 16px;
+            display: block;
             text-decoration: none;
-            color: #222;
-            font-size: 24px;
-            font-weight: bold;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            color: #fff8e8;
+            background: linear-gradient(to bottom, #9b6b3f 0%, #7a522f 100%);
+            border: 4px solid #53351b;
+            border-radius: 22px;
+            box-shadow: 0 10px 0 #5f3f22;
+            padding: 32px 28px;
+            min-height: 180px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            position: relative;
+            overflow: hidden;
         }
 
+        /* comment.
+         *  메뉴 카드 상단 하이라이트
+         *  나무판에 빛이 비치는 느낌을 표현한다.
+         */
+        .menu-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 45%;
+            background: rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+
+        /* comment.
+         *  마우스 호버 시 카드가 살짝 떠오르도록 처리한다.
+         */
         .menu-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+            box-shadow: 0 16px 0 #5f3f22;
         }
 
-        .menu-sub-text {
-            display: block;
-            margin-top: 12px;
-            font-size: 14px;
-            font-weight: normal;
-            color: #666;
+        /* comment.
+         *  메뉴 제목 스타일
+         */
+        .menu-title {
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+
+        /* comment.
+         *  메뉴 설명 스타일
+         */
+        .menu-desc {
+            font-size: 17px;
+            line-height: 1.7;
+            color: #f9edd3;
+        }
+
+        /* comment.
+         *  하단 안내 박스 스타일
+         */
+        .footer-note {
+            margin-top: 45px;
+            background-color: rgba(255, 248, 220, 0.92);
+            border: 3px solid #6b4f2a;
+            border-radius: 16px;
+            padding: 18px 20px;
             text-align: center;
+            font-size: 17px;
+            color: #4e3e2b;
         }
 
-        @media (max-width: 768px) {
+        /* comment.
+         *  반응형 처리
+         *  태블릿/모바일에서는 1열로 변경한다.
+         */
+        @media (max-width: 900px) {
             .menu-grid {
                 grid-template-columns: 1fr;
             }
 
-            .page-title {
-                font-size: 28px;
+            .title-box h1 {
+                font-size: 34px;
             }
 
-            .menu-card {
-                min-height: 140px;
-                font-size: 20px;
+            .menu-title {
+                font-size: 26px;
             }
         }
     </style>
@@ -80,37 +165,64 @@
 <body>
 
 <div class="wrapper">
-    <h1 class="page-title">관리자 메인 페이지</h1>
 
+    <!-- comment.
+         관리자 메인 상단 제목 영역
+         현재 페이지가 관리자 기능의 시작점임을 명확히 보여준다.
+    -->
+    <div class="title-box">
+        <h1>관리자 메인 페이지</h1>
+        <p>운영에 필요한 기능을 선택해 관리할 수 있는 관리자 전용 메뉴 화면</p>
+    </div>
+
+    <!-- comment.
+         관리자 주요 메뉴 카드 영역
+         각 메뉴 카드를 누르면 해당 관리 페이지로 이동한다.
+    -->
     <div class="menu-grid">
+
         <a th:href="@{/admin/usercare}" class="menu-card">
-            <div>
-                사용자 관리
-                <span class="menu-sub-text">회원 조회 및 상태 관리</span>
+            <div class="menu-title">사용자 관리</div>
+            <div class="menu-desc">
+                강사와 학생 계정을 조회하고,<br>
+                계정 상태를 확인하며 관리할 수 있는 메뉴
             </div>
         </a>
 
         <a th:href="@{/admin/coursecare}" class="menu-card">
-            <div>
-                강의 관리
-                <span class="menu-sub-text">강의 조회 및 승인/비활성화 관리</span>
+            <div class="menu-title">강의 관리</div>
+            <div class="menu-desc">
+                강의 목록을 확인하고,<br>
+                공개 상태 및 승인 여부를 관리하는 메뉴
             </div>
         </a>
 
         <a th:href="@{/admin/callcenter}" class="menu-card">
-            <div>
-                고객센터
-                <span class="menu-sub-text">공지사항, 문의함, 신고함 관리</span>
+            <div class="menu-title">고객센터</div>
+            <div class="menu-desc">
+                공지사항, 문의함, 신고함을 확인하고<br>
+                운영 응답을 처리하는 메뉴
             </div>
         </a>
 
         <a th:href="@{/admin/datacare}" class="menu-card">
-            <div>
-                데이터 관리
-                <span class="menu-sub-text">운영 데이터 확인</span>
+            <div class="menu-title">데이터 관리</div>
+            <div class="menu-desc">
+                운영 현황과 관리 데이터를 확인하는<br>
+                관리자용 통합 정보 메뉴
             </div>
         </a>
+
     </div>
+
+    <!-- comment.
+         하단 안내 문구
+         관리자 화면이라는 점을 다시 명확히 보여준다.
+    -->
+    <div class="footer-note">
+        필요한 관리자 기능을 선택하여 각 영역의 정보를 확인하고 운영 작업을 진행할 수 있습니다.
+    </div>
+
 </div>
 
 </body>

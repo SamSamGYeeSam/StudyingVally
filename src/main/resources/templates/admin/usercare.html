@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 관리 페이지</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, "맑은 고딕", sans-serif;
+            background-color: #e9e9e9;
+        }
+
+        .header {
+            background-color: #c7ef74;
+            padding: 30px 40px;
+            position: relative;
+        }
+
+        .header-path {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header-title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 30px 20px 50px;
+        }
+
+        .top-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 30px;
+        }
+
+        .filter-box {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 140px;
+            height: 120px;
+            background-color: #e8d96d;
+            text-decoration: none;
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .back-area {
+            text-align: right;
+        }
+
+        .back-path {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 180px;
+            height: 80px;
+            background-color: #c7ef74;
+            border: 4px solid black;
+            text-decoration: none;
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th, td {
+            border: 4px solid black;
+            padding: 24px 16px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+
+        .action-form {
+            display: inline-block;
+            margin: 0 4px;
+        }
+
+        .action-button {
+            padding: 10px 14px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-path">/admin/usercare</div>
+    <div class="header-title">사용자 관리 페이지</div>
+</div>
+
+<div class="content">
+    <div class="top-area">
+        <div class="filter-group">
+            <a th:href="@{/admin/usercare(role='TEACHER')}" class="filter-box">강사</a>
+            <a th:href="@{/admin/usercare(role='STUDENT')}" class="filter-box">학생</a>
+        </div>
+
+        <div class="back-area">
+            <div class="back-path">/admin/main</div>
+            <a th:href="@{/admin/main}" class="back-button">돌아가기</a>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>회원번호</th>
+            <th>이름</th>
+            <th>닉네임</th>
+            <th>전화번호</th>
+            <th>역할</th>
+            <th>계정 상태</th>
+            <th>상태 변경</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${userList}">
+            <td th:text="${user.userNo}"></td>
+            <td th:text="${user.userName}"></td>
+            <td th:text="${user.userNickname}"></td>
+            <td th:text="${user.userPhoneNumber}"></td>
+            <td th:text="${user.userRole}"></td>
+            <td th:text="${user.userStatus}"></td>
+            <td>
+                <form th:if="${user.userStatus == 'ACTIVE'}" th:action="@{/admin/usercare/disable}" method="post" class="action-form">
+                    <input type="hidden" name="userNo" th:value="${user.userNo}">
+                    <button type="submit" class="action-button">비활성화</button>
+                </form>
+
+                <form th:if="${user.userStatus == 'INACTIVE'}" th:action="@{/admin/usercare/enable}" method="post" class="action-form">
+                    <input type="hidden" name="userNo" th:value="${user.userNo}">
+                    <button type="submit" class="action-button">활성화</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
