@@ -1,5 +1,6 @@
 package com.samsamgyeesam.studyingvally.global.Config;
 
+import com.samsamgyeesam.studyingvally.domain.user.service.AuthSuccessHandler;
 import com.samsamgyeesam.studyingvally.domain.user.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +10,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-/**
+/*
  * Spring Security 설정 클래스이다.
  *
  * 현재 단계의 목표:
@@ -26,12 +27,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    /**
-     * 사용자 인증 시 DB 조회를 담당하는 서비스이다.
-     */
+    // 사용자 인증 시 DB 조회를 담당하는 서비스이다.
     private final CustomUserDetailsService customUserDetailsService;
+    private final AuthSuccessHandler authSuccessHandler;
 
-    /**
+    /*
      * 평문 비밀번호 비교용 PasswordEncoder이다.
      *
      * 현재 DB에 비밀번호가 평문으로 저장되어 있으므로
@@ -44,7 +44,7 @@ public class SecurityConfig {
         return NoOpPasswordEncoder.getInstance();
     }
 
-    /**
+    /*
      * Security 필터 체인 설정이다.
      *
      * 핵심 포인트:
@@ -60,8 +60,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
+
         http
-                /**
+                /*
                  * 사용자 조회 서비스 등록
                  */
                 .userDetailsService(customUserDetailsService)
@@ -85,9 +86,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                /**
-                 * 로그인 설정
-                 */
+                // 로그인 설정
                 .formLogin(login -> login
                         // 커스텀 로그인 페이지 경로
                         .loginPage("/auth/login")
@@ -102,17 +101,15 @@ public class SecurityConfig {
                         .passwordParameter("password")
 
                         // 로그인 성공 시 이동 경로
-                        .defaultSuccessUrl("/main", true)
+                        .successHandler(authSuccessHandler)
 
                         // 로그인 실패 시 다시 로그인 화면으로 이동
                         .failureUrl("/auth/login?error=true")
                 )
 
-                /**
-                 * 현재 단계에서는 로그아웃 기능을 구현하지 않으므로 별도 설정하지 않는다.
-                 */
+                // 현재 단계에서는 로그아웃 기능을 구현하지 않으므로 별도 설정하지 않는다.
 
-                /**
+                /*
                  * 학습 단계에서는 CSRF를 잠시 비활성화한다.
                  * 나중에 POST 폼이 늘어나면 CSRF 토큰 적용을 고려해야 한다.
                  */
