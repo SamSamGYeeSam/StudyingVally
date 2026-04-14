@@ -25,31 +25,11 @@ body:
   - type: textarea
     id: discussion_summary
     attributes:
-      label: "📌 회의 요약"
+      label: "📌 회의 내용"
       description: "오늘 어떤 주제로 회의를 진행했는지 핵심만 간략히 적어주세요."
       placeholder: "예: API 응답 데이터 캐싱 로직 구현 관련 회의"
     validations:
       required: false
-
-  - type: textarea
-    id: discussions
-    attributes:
-      label: "💬 상세 논의 내용"
-      description: "회의 중 오고 간 주요 의견이나 상세한 내용을 자유롭게 기록하세요."
-      value: |
-        - 
-        - 
-        - 
-    validations:
-      required: true
-
-  - type: textarea
-    id: action_items
-    attributes:
-      label: "✅ 결정 사항 및 할 일 (Action Items)"
-      description: "회의 결과로 결정된 사항과 향후 진행할 작업을 할 일 목록으로 작성하세요."
-      value: |
-        - [ ] 
         - [ ] 
     validations:
       required: true
