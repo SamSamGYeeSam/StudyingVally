@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>퀴즈 리스트 등록</title>
+    <style>
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; }
+        input[type="text"], textarea { width: 100%; padding: 8px; margin-top: 5px; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<h2>새 퀴즈 리스트 추가</h2>
+
+<form action="/teacher/quiz/create-quizlist" method="post">
+
+    <input type="hidden" id="quizNo" name="quizNo" value="">
+
+    <div class="form-group">
+        <label for="quizTitle">퀴즈 제목</label>
+        <input type="text" id="quizTitle" name="quizTitle" placeholder="제목을 입력하세요" required>
+    </div>
+
+    <div class="form-group">
+        <label for="quizDesc">퀴즈 설명</label>
+        <textarea id="quizDesc" name="quizDesc" rows="4" placeholder="퀴즈에 대한 설명을 입력하세요"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="quizAnswer">정답</label>
+        <input type="text" id="quizAnswer" name="quizAnswer" placeholder="정답 입력" required>
+    </div>
+
+    <div class="form-group">
+        <label for="quizAnswerDesc">정답 해설</label>
+        <textarea id="quizAnswerDesc" name="quizAnswerDesc" rows="3" placeholder="해설을 입력하세요"></textarea>
+    </div>
+
+    <button type="submit">저장하기</button>
+</form>
+
+<script>
+    // 자바스크립트 내에 저장되어 있는 퀴즈 번호 (예시)
+    const currentQuizNo = "QZ-2024-001";
+
+    // 페이지 로드 시 hidden input에 값을 할당
+    document.getElementById('quizNo').value = currentQuizNo;
+
+    console.log("현재 설정된 퀴즈 번호:", currentQuizNo);
+</script>
+</body>
+</html>
