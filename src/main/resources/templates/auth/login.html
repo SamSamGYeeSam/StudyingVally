@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <!-- 문자 인코딩 -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>강의 마을 - 로그인</title>
-  <link rel="stylesheet" href="/css/auth.css">
 
+  <!-- 반응형 설정 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 브라우저 탭 제목 -->
+  <title>강의 마을 - 로그인</title>
+
+  <!-- CSS 연결 -->
+  <link rel="stylesheet" th:href="@{/css/auth.css}">
 </head>
 <body>
 <div class="game-screen">
@@ -32,38 +38,60 @@
   <div class="panel-wrap">
     <div class="panel">
 
-
       <!-- 로그인 화면 -->
       <section id="loginScreen" class="form-screen active">
         <h1 class="title">로그인</h1>
 
+        <!--
+          실제 로그인 요청을 서버로 보내는 form이다.
+          action과 name 값은 SecurityConfig와 반드시 맞아야 한다.
+        -->
+        <form class="form-box" th:action="@{/auth/login}" method="post">
 
-        <div class="form-box">
           <div class="field">
             <label for="loginId">아이디</label>
-            <input type="text" id="loginId" placeholder="아이디 입력" />
+            <input type="text"
+                   id="loginId"
+                   name="loginId"
+                   placeholder="아이디 입력"
+                   required />
           </div>
 
           <div class="field">
-            <label for="loginPwd">비밀번호</label>
-            <input type="password" id="loginPwd" placeholder="비밀번호 입력" />
+            <label for="password">비밀번호</label>
+            <input type="password"
+                   id="password"
+                   name="password"
+                   placeholder="비밀번호 입력"
+                   required />
           </div>
 
           <div class="bottom-row">
-            <button onclick="location.href='/main'" class="pixel-btn secondary" id="backFromLoginBtn">뒤로가기</button>
-            <button onclick="location.href='/auth/logincheck'" class="pixel-btn" id="loginSubmitBtn">로그인</button>
+            <!-- 뒤로가기는 submit이 아니라 단순 이동 -->
+            <button type="button"
+                    onclick="location.href='/main'"
+                    class="pixel-btn secondary"
+                    id="backFromLoginBtn">
+              뒤로가기
+            </button>
+
+            <!-- 실제 로그인 제출 -->
+            <button type="submit"
+                    class="pixel-btn"
+                    id="loginSubmitBtn">
+              로그인
+            </button>
           </div>
 
-
-          <div id="loginMsg" class="msg"></div>
-        </div>
+          <!-- 로그인 실패 시 메시지 -->
+          <div id="loginMsg" class="msg show error" th:if="${loginError}">
+            아이디 또는 비밀번호를 확인해주세요.
+          </div>
+        </form>
       </section>
 
     </div>
   </div>
 </div>
-
-
-<!-- <script src="login.js" defer></script> -->
 </body>
 </html>

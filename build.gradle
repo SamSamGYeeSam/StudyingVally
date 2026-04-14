@@ -8,6 +8,11 @@ group = 'com.samsamgyeesam'
 version = '0.0.1-SNAPSHOT'
 description = 'Studying-Vally'
 
+def localAppData = System.getenv('LOCALAPPDATA')
+if (localAppData) {
+    layout.buildDirectory.set(file("${localAppData}/StudyingVally/build"))
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
