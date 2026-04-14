@@ -8,17 +8,17 @@ body:
         > **회의록 작성 가이드**
         > 회의에서 논의된 주요 내용과 결정된 사항을 명확하게 기록하고 공유해 주세요.
 
-  - type: checkboxes
+  - type: textarea
     id: attendees
     attributes:
-      label: "👥 참석자"
-      description: "오늘 회의에 참석한 팀원을 모두 체크해 주세요."
-      options:
-        - label: "김진도"
-        - label: "전지원"
-        - label: "지석범"
-        - label: "모성진"
-        - label: "임수영"
+      label: "👥 참석자 및 비고"
+      description: "참석 여부를 체크([x])하고, 이름 옆에 역할이나 필요한 코멘트를 자유롭게 적어주세요."
+      value: |
+        - [ ] 김진도: 
+        - [ ] 전지원: 
+        - [ ] 지석범: 
+        - [ ] 모성진: 
+        - [ ] 임수영: 
     validations:
       required: false
 
