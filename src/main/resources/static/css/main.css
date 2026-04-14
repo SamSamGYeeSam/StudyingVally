@@ -1,0 +1,404 @@
+:root {
+    --sky-top: #7cc7ff;
+    --sky-bottom: #dff6ff;
+    --grass-1: #97d95c;
+    --grass-2: #6ebf4b;
+    --grass-3: #4c9d3f;
+    --wood-light: #f3d49a;
+    --wood-main: #c98a3d;
+    --wood-dark: #7b4c1f;
+    --panel-bg: #f7e7bf;
+    --panel-line: #8d5a2b;
+    --btn-main: #d9852f;
+    --btn-hover: #f29a38;
+    --btn-shadow: #8f4e1c;
+    --text-main: #4b2f17;
+    --white: #fffdf5;
+    --danger: #d9534f;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Verdana", "Geneva", sans-serif;
+    background: linear-gradient(to bottom, var(--sky-top) 0%, var(--sky-bottom) 58%, #b9ecff 58%, #c8f3b5 100%);
+    min-height: 100vh;
+    overflow: hidden;
+    color: var(--text-main);
+    image-rendering: pixelated;
+}
+
+.game-screen {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* 하늘 */
+.sun {
+    position: absolute;
+    top: 42px;
+    right: 90px;
+    width: 82px;
+    height: 82px;
+    background: #ffd85c;
+    border: 4px solid #f4b521;
+    box-shadow: 0 0 0 4px rgba(255, 216, 92, 0.25);
+    border-radius: 0;
+}
+
+.cloud {
+    position: absolute;
+    background: #ffffffd9;
+    width: 120px;
+    height: 28px;
+    box-shadow:
+            28px -16px 0 0 #ffffffd9,
+            62px -6px 0 0 #ffffffd9,
+            88px 0 0 0 #ffffffd9,
+            15px 8px 0 0 #ffffffd9,
+            52px 10px 0 0 #ffffffd9;
+}
+
+.cloud.c1 { top: 70px; left: 70px; }
+.cloud.c2 { top: 120px; left: 330px; transform: scale(1.1); }
+.cloud.c3 { top: 90px; right: 260px; transform: scale(0.95); }
+
+/* 산 */
+.mountains {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 240px;
+    height: 230px;
+    background:
+            linear-gradient(135deg, transparent 24%, #7eb0b8 24% 26%, transparent 26%) 0 0 / 180px 100%,
+            linear-gradient(225deg, transparent 24%, #6aa2ad 24% 26%, transparent 26%) 0 0 / 180px 100%,
+            linear-gradient(to top, #6b9aa1, #8dc1ca);
+    clip-path: polygon(
+            0% 100%, 0% 58%, 10% 30%, 18% 50%, 28% 18%, 37% 48%, 50% 12%, 60% 42%,
+            70% 24%, 80% 50%, 88% 20%, 100% 55%, 100% 100%
+    );
+    opacity: 0.9;
+}
+
+.far-trees {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 205px;
+    height: 120px;
+    background:
+            repeating-linear-gradient(
+                    to right,
+                    #5ca34d 0 24px,
+                    #6ab759 24px 52px,
+                    #4e9442 52px 74px
+            );
+    clip-path: polygon(
+            0% 100%, 0% 70%, 3% 56%, 7% 72%, 10% 48%, 14% 75%, 19% 52%, 24% 80%, 31% 50%,
+            36% 76%, 42% 44%, 48% 72%, 55% 50%, 61% 82%, 68% 46%, 74% 78%, 81% 55%,
+            87% 74%, 92% 50%, 100% 72%, 100% 100%
+    );
+}
+
+/* 땅 */
+.ground {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 250px;
+    background:
+            linear-gradient(to bottom, var(--grass-1) 0 24%, var(--grass-2) 24% 60%, var(--grass-3) 60% 100%);
+    border-top: 6px solid #4a8f38;
+}
+
+.path {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 280px;
+    height: 240px;
+    transform: translateX(-50%);
+    background:
+            repeating-linear-gradient(
+                    90deg,
+                    #d7b06e 0 18px,
+                    #c99957 18px 36px,
+                    #b98444 36px 54px
+            );
+    clip-path: polygon(38% 0%, 62% 0%, 86% 100%, 14% 100%);
+    border-left: 4px solid #9c6c30;
+    border-right: 4px solid #9c6c30;
+    opacity: 0.95;
+}
+
+/* 집 */
+.house {
+    position: fixed;
+    right: 120px;
+    bottom: 112px;
+    width: 210px;
+    height: 150px;
+    /* display:none; */
+}
+
+.house .roof {
+    position: absolute;
+    top: 0;
+    left: 18px;
+    width: 174px;
+    height: 62px;
+    background:
+            repeating-linear-gradient(
+                    90deg,
+                    #d35d30 0 12px,
+                    #b6431f 12px 24px
+            );
+    clip-path: polygon(10% 100%, 50% 0%, 90% 100%);
+    border: 4px solid #7d2a14;
+}
+
+.house .body {
+    position: absolute;
+    left: 34px;
+    top: 52px;
+    width: 142px;
+    height: 95px;
+    background:
+            repeating-linear-gradient(
+                    to bottom,
+                    #c69056 0 10px,
+                    #b98049 10px 20px
+            );
+    border: 4px solid #7b4c1f;
+}
+
+.house .door {
+    position: absolute;
+    bottom: 0;
+    left: 88px;
+    width: 32px;
+    height: 52px;
+    background: #8e5a2a;
+    border: 4px solid #5b3413;
+}
+
+.house .window {
+    position: absolute;
+    top: 78px;
+    width: 28px;
+    height: 28px;
+    background: #ffd778;
+    border: 4px solid #7b4c1f;
+    box-shadow: inset 0 0 0 2px #fff0a3;
+}
+
+.house .window.left { left: 50px; }
+.house .window.right { right: 50px; }
+
+/* 울타리 */
+.fence {
+    position: absolute;
+    left: 60px;
+    right: 60px;
+    bottom: 50px;
+    height: 70px;
+}
+
+.fence::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 18px;
+    height: 8px;
+    background: repeating-linear-gradient(
+            to right,
+            #8b5a2b 0 18px,
+            #8b5a2b 18px 22px,
+            transparent 22px 46px
+    );
+    box-shadow: 0 18px 0 0 #8b5a2b;
+}
+
+.fence::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 54px;
+    background: repeating-linear-gradient(
+            to right,
+            #7a4b22 0 10px,
+            #a36933 10px 18px,
+            transparent 18px 48px
+    );
+    mask: linear-gradient(#000 0 0);
+    opacity: 0.95;
+}
+
+/* 중앙 패널 */
+.panel-wrap {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding: 30px; */
+    padding-bottom:50px;
+
+}
+
+.panel {
+    width: 1200px;
+    padding: 28px 24px 24px;
+    position: relative;
+}
+
+/* 타이틀과 서브타이틀 */
+.title-container {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.main-title-img {
+    height: auto;
+    width: 65%;
+    margin-bottom: 15px;
+}
+
+.subtitle-container {
+    margin-bottom: 0px;
+    text-align: center;
+}
+
+.subtitle-img {
+    max-width: 100%;
+    height: auto;
+    width: 500px;
+}
+
+.button-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 7px auto 0;
+    justify-content: center;
+}
+
+/* form이 button-row의 직접 자식이 되었으니 form을 flex 대상으로 잡는다 */
+.button-row form {
+    flex: 1;
+    margin: 0;
+}
+
+/* form 안 버튼이 부모 너비를 꽉 채우게 한다 */
+.button-row form .pixel-btn {
+    width: 100%;
+    margin: 0;
+    font-size: 25px;
+}
+
+.menu-screen {
+    display: none;
+}
+
+.active {
+    display: block;
+}
+
+.pixel-btn {
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    background: var(--btn-main);
+    color: var(--white);
+    font-size: 18px;
+    font-weight: bold;
+    padding: 16px 12px;
+    margin: 12px 0;
+    border: 4px solid var(--btn-shadow);
+    box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.15);
+    transition: transform 0.08s ease, background 0.15s ease;
+}
+
+.pixel-btn:hover {
+    background: var(--btn-hover);
+    transform: translateY(-2px);
+}
+
+.pixel-btn:active {
+    transform: translateY(1px);
+}
+
+@media (max-width: 640px) {
+    .main-title-img {
+        width: 450px;
+        padding-right: 5%;
+    }
+
+    .subtitle-img {
+        margin-top: 60px;
+        width: 500px;
+    }
+
+    .button-row {
+        display: flex;
+        gap: 12px;
+        margin-top: 10px;
+        padding: 0 20px;
+        width: 100%;
+        max-width: 580px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .button-row form {
+        flex: 1;
+        margin: 0;
+    }
+
+    .button-row form .pixel-btn {
+        width: 100%;
+        margin: 8px 0;
+        justify-content: center;
+    }
+
+    .sun {
+        width: 58px;
+        height: 58px;
+        top: 24px;
+        right: 32px;
+    }
+
+    .house {
+        display: none;
+    }
+
+    .cloud.c2,
+    .cloud.c3 {
+        display: none;
+    }
+}
+
+.cloud {
+    animation: cloud-drift 55s linear infinite;
+}
+
+.cloud.c1 { animation-duration: 80s; --scale: 1; }
+.cloud.c2 { animation-duration: 80s; --scale: 1.1; }
+.cloud.c3 { animation-duration: 80s; --scale: 0.95; }
+
+@keyframes cloud-drift {
+    0%   { transform: translateX(0) scale(var(--scale, 1)); }
+    100% { transform: translateX(100vw) scale(var(--scale, 1)); }
+}
