@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>퀴즈(챕터) 등록</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: inline-block; width: 100px; }
+        .message { color: blue; font-weight: bold; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<h2>퀴즈(챕터) 등록</h2>
+
+<div th:if="${message}" class="message" th:text="${message}"></div>
+
+<form action="/teacher/quizQuiz/create-quizQuiz" method="post">
+
+    <div class="form-group">
+        <label for="chapNo">챕터 번호 :</label>
+        <input type="number" id="chapNo" name="chapNo" th:value="${chapNo}" readonly required>
+    </div>
+
+    <div class="form-group">
+        <label for="quizTitle">퀴즈 제목 :</label>
+        <input type="text" id="quizTitle" name="quizTitle" placeholder="퀴즈 제목을 입력하세요" required>
+    </div>
+
+    <button type="submit">퀴즈 등록하기</button>
+</form>
+
+</body>
+</html>

@@ -10,28 +10,19 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-
 @Entity
-@Table(name = "quiz_list")
-public class QuizList {
+@Table(name = "quiz")
+public class QuizQuiz {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "quiz_list_no")
-    private int quizListNo;
+    @Column(name = "quiz_no")
+    private int quizNo;
 
     @Column(name = "quiz_title")
     private String quizTitle;
 
-    @Column(name = "quiz_desc")
-    private String quizDesc;
-
-    @Column(name = "quiz_answer")
-    private String quizAnswer;
-
-    @Column(name = "quiz_answer_desc")
-    private String quizAnswerDesc;
-
-    @Column(name = "quiz_no")
-    private String quizNo;
+    @Column(name = "chap_no")
+    private int chapNo;
 
 }
