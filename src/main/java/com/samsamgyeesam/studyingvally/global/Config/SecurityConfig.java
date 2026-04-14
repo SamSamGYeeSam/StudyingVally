@@ -106,6 +106,27 @@ public class SecurityConfig {
                         // 로그인 실패 시 다시 로그인 화면으로 이동
                         .failureUrl("/auth/login?error=true")
                 )
+                /**
+                 * 로그아웃 설정
+                 *
+                 * logoutUrl("/auth/logout")
+                 * - 사용자가 이 URL로 요청하면 로그아웃 처리한다.
+                 *
+                 * logoutSuccessUrl("/main")
+                 * - 로그아웃 완료 후 첫 화면으로 이동한다.
+                 *
+                 * invalidateHttpSession(true)
+                 * - 현재 세션을 완전히 무효화한다.
+                 *
+                 * deleteCookies("JSESSIONID")
+                 * - 세션 식별 쿠키를 제거한다.
+                 */
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .logoutSuccessUrl("/main")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                )
 
                 // 현재 단계에서는 로그아웃 기능을 구현하지 않으므로 별도 설정하지 않는다.
 
