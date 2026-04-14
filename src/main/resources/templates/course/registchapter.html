@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1>챕터 등록 페이지</h1>
+<p><strong>강의명:</strong> <span th:text="${courseTitle}"></span></p>
+
+<form action="/teacher/registchapter" method="post" enctype="multipart/form-data">
+
+    <input type="hidden" name="courseTitle" th:value="${courseTitle}">
+    <input type="hidden" name="courseDescription" th:value="${courseDescription}">
+
+    <label>챕터 제목</label><br>
+    <input type="text" name="chapTitle" placeholder="제목을 입력하십시오"><br>
+    <label>챕터 설명</label><br>
+    <textarea rows="10" name="chapDesc" cols="50" placeholder="강의 설명을 입력하십시오"></textarea>
+    <br>
+    <label>강의 영상</label><br>
+    <input type="file" name="videoFile"><br><br>
+
+    <input type="submit" value="등록 완료하기">
+</form>
+
+<form action="/teacher/register" method="post" style="display:inline;">
+    <button type="submit">이전으로</button>
+</form>
+
+</body>
+</html>
