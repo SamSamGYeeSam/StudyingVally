@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Vally - 메인 광장</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'DungGeunMo', sans-serif; }
+
+        /* 맵 배경 설정 */
+        #field {
+            width: 100vw;
+            height: 100vh;
+            background: url('/image/stardew-main.png') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            image-rendering: pixelated; /* 픽셀 아트 선명도 유지 */
+        }
+
+        /* 캐릭터 스타일 */
+        #character {
+            position: absolute;
+            /* 한 프레임의 크기 (정확한 튜닝 필요) */
+            width: 64px;
+            height: 130px;
+            /* 생성된 Sprite Sheet 이미지 */
+            background: url('/image/character-sheet.png') no-repeat;
+            /*background-size: 512px 256px; !* 이미지 전체 크기 (수정 필요) *!*/
+            background-size: 512px 512px; /* 이미지 전체 크기 (수정 필요) */
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            pointer-events: none;
+            filter: drop-shadow(3px 5px 2px rgba(0,0,0,0.4));
+
+            /* 초기 위치: 정면 서 있는 모습 */
+            /*background-position: 0px 0px;*/
+            background-position: -256px -5px;
+        }
+
+
+        /* 상호작용 지점 (건물 입구) */
+        .entity {
+            position: absolute;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* 스타듀밸리 스타일 라벨 */
+        .entity-label {
+            background: #fdf1d5;
+            color: #4e342e;
+            padding: 5px 12px;
+            border: 3px solid #5d4037;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.2s ease;
+            transform: translateY(10px);
+            white-space: nowrap;
+        }
+
+        .entity:hover .entity-label {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        /* [핵심] 생성된 이미지의 건물 위치에 맞춘 좌표 세팅 */
+        /* 던전 */
+        #dungeon { top: 15%; left: 15%; }
+        /* 학교 (좌측 상단 시계 건물) */
+        #school { top: 15%; left: 80%; }
+        /* 우리 집 (우측 상단 통나무집) */
+        #home   { top: 75%; left: 15%; }
+        /* 게시판 (중앙 길목) */
+        #notice { top: 45%; left: 50%; }
+        /* NPC 상점 (우측 하단 할아버지 계신 곳) */
+        #npc    { top: 73%; left: 80%; }
+
+
+        /* 히트박스 크기 조정 */
+        .hitbox { width: 40px; height: 40px; }
+
+
+        /* 하단 게임 메뉴바 */
+        .game-menu {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 200;
+        }
+
+        .menu-btn {
+            background: #8d6e63;
+            border: 3px solid #fff8e1;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+<div id="field">
+    <div id="school" class="entity" data-url="/student/school" data-method="GET">
+        <div class="entity-label">🏫 학교 (강의신청)</div>
+        <div class="hitbox"></div>
+    </div>
+
+    <div id="home" class="entity" data-url="/student/home" data-method="POST">
+        <div class="entity-label">🏡 나의 오두막 (수강내역)</div>
+        <div class="hitbox"></div>
+    </div>
+
+    <div id="notice" class="entity" data-url="/student/notice" data-method="GET">
+        <div class="entity-label">📜 마을 공고</div>
+        <div class="hitbox" style="width: 60px; height: 60px;"></div>
+    </div>
+
+    <div id="npc" class="entity" data-url="/npc" data-method="GET">
+        <div class="entity-label">🧙‍♂️ 촌장님</div>
+        <div class="hitbox" style="width: 150px; height: 100px;"></div>
+    </div>
+
+    <div id="dungeon" class="entity" data-url="/student/dungeon" data-method="GET">
+        <div class="entity-label">💀 비밀 던전</div>
+        <div class="hitbox"></div>
+    </div>
+
+    <div id="character"></div>
+
+    <div class="game-menu">
+        <div class="menu-btn" onclick="location.href='/student/logout'">로그아웃</div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const field = document.getElementById('field');
+    const character = document.getElementById('character');
+    const entities = document.querySelectorAll('.entity');
+
+    let charX = window.innerWidth * 0.5;
+    let charY = window.innerHeight * 0.8;
+    let targetX = charX;
+    let targetY = charY;
+    const speed = 7;
+    let isMoving = false;
+    let isColliding = false;
+
+    let currentFrame = 0;
+    let frameCounter = 0;
+    const frameRate = 10;
+    const sheetWidth = 512;
+    const sheetHeight = 256;
+
+    updateCharacterPosition();
+
+    field.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        targetX = e.clientX;
+        targetY = e.clientY;
+
+        // 이동 방향에 따라 캐릭터 좌우 반전 (이미지 자체가 오른쪽을 보고 있다면)
+        // character.style.transform = `translate(-50%, -50%) scaleX(${targetX < charX ? -1 : 1})`;
+
+        if (!isMoving) {
+            isMoving = true;
+            isColliding = false;
+            requestAnimationFrame(moveLoop);
+        }
+    });
+
+    // 초기 위치
+    function updateCharacterPosition() {
+        character.style.left = charX + 'px';
+        character.style.top = charY + 'px';
+
+        // 애니메이션 업데이트 호출 추가
+        updateAnimationFrame();
+    }
+
+    function updateAnimationFrame() {
+        if (!isMoving) {
+            // character.style.backgroundPosition = '0px 0px'; // 멈췄을 때 정면
+            character.style.backgroundPosition = '-256px -5px';
+            return;
+        }
+
+        frameCounter++;
+        if (frameCounter >= frameRate) {
+            currentFrame = (currentFrame + 1) % 4;
+            frameCounter = 0;
+        }
+
+        // let dirY;
+        // if (Math.abs(targetX - charX) > Math.abs(targetY - charY)) {
+        //     dirY = targetX < charX ? 128 : 192; // 좌/우 좌표 (시트 크기에 맞게 조정)
+        // } else {
+        //     dirY = targetY < charY ? 64 : 0;   // 상/하 좌표 (시트 크기에 맞게 조정)
+        // }
+        let dirY;
+        if (Math.abs(targetX - charX) > Math.abs(targetY - charY)) {
+            // 가로 이동 (좌/우) - 시트의 3, 4번째 줄
+            dirY = targetX < charX ? 261 : 389; // 좌: -143px, 우: -271px (여백 포함)
+        } else {
+            // 세로 이동 (상/하) - 시트의 1, 2번째 줄
+            dirY = targetY < charY ? 133 : 5;   // 상: -79px, 하: -15px (여백 포함)
+        }
+
+        // const dirX = currentFrame * 64;
+        const dirX = (currentFrame * 64) + 256;
+        character.style.backgroundPosition = `-${dirX}px -${dirY}px`;
+    }
+
+    // 우클릭 이동 로직
+    field.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        targetX = e.clientX;
+        targetY = e.clientY;
+
+        // 방향 전환 (이미지 반전)
+        character.style.transform = `translate(-50%, -50%) scaleX(${targetX < charX ? -1 : 1})`;
+
+        if (!isMoving) {
+            isMoving = true;
+            isColliding = false;
+            requestAnimationFrame(moveLoop);
+        }
+    });
+
+    function moveLoop() {
+        if (!isMoving) return;
+
+        const dx = targetX - charX;
+        const dy = targetY - charY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < speed) {
+            charX = targetX;
+            charY = targetY;
+            isMoving = false;
+        } else {
+            charX += (dx / distance) * speed;
+            charY += (dy / distance) * speed;
+        }
+
+        character.style.left = charX + 'px';
+        character.style.top = charY + 'px';
+
+        checkCollision();
+
+        if (isMoving) requestAnimationFrame(moveLoop);
+    }
+
+    function checkCollision() {
+        if (isColliding) return;
+        const charRect = character.getBoundingClientRect();
+
+        entities.forEach(entity => {
+            const entRect = entity.getBoundingClientRect();
+            const padding = 20;
+
+            if (charRect.left + padding < entRect.right && charRect.right - padding > entRect.left &&
+                charRect.top + padding < entRect.bottom && charRect.bottom - padding > entRect.top) {
+
+                isColliding = true;
+                isMoving = false;
+
+                const url = entity.getAttribute('data-url');
+                const method = entity.getAttribute('data-method');
+
+                // 페이지 이동 지연 (효과음이나 애니메이션 대용)
+                setTimeout(() => {
+                    if (method === 'POST') {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = url;
+                        document.body.appendChild(form);
+                        form.submit();
+                    } else {
+                        window.location.href = url;
+                    }
+                }, 150);
+            }
+        });
+    }
+</script>
+</body>
+</html>
