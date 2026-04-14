@@ -71,4 +71,10 @@ public class UserUser {
      */
     @Column(name = "user_nickname")
     private String userNickname;
+
+    /**
+     * 사용자 이름
+     */
+    @Column(name = "user_name", nullable = false)
+    private String userName;
 }
