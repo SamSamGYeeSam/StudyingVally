@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface QuizListRepository extends JpaRepository<QuizList, Integer> {
-
+    
 }
