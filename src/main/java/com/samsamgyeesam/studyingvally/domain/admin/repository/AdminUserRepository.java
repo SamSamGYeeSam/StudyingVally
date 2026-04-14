@@ -6,14 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 /* comment.
- *  관리자 사용자 관리 전용 Repository 인터페이스
+ * 관리자 사용자 관리 기능에서 사용자 데이터를 조회하기 위한 Repository 인터페이스
  */
 
 public interface AdminUserRepository extends JpaRepository<AdminUser, Long> {
 
-    /* comment.
-     *  역할별 사용자 목록 조회 메서드
-     */
+    List<AdminUser> findAllByOrderByUserNoDesc();
 
-    List<AdminUser> findByUserRole(String userRole);
+    List<AdminUser> findByUserRoleOrderByUserNoDesc(String userRole);
 }

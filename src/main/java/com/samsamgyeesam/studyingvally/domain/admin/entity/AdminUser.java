@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /* comment.
- *  관리자 사용자 관리 기능에서 user 테이블을 조회하기 위한 전용 엔티티 클래스
+ * 관리자 사용자 관리 기능에서 user 테이블을 조회하기 위한 전용 엔티티 클래스
  */
 
 @Entity
@@ -48,7 +48,6 @@ public class AdminUser {
 
     @Column(name = "user_gender", nullable = false)
     private String userGender;
-
 
     public void changeUserStatus(String userStatus) {
         this.userStatus = userStatus;

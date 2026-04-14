@@ -1,5 +1,6 @@
 package com.samsamgyeesam.studyingvally.domain.admin.controller;
 
+import com.samsamgyeesam.studyingvally.domain.admin.dto.AdminUserDetailResponseDTO;
 import com.samsamgyeesam.studyingvally.domain.admin.dto.AdminUserListResponseDTO;
 import com.samsamgyeesam.studyingvally.domain.admin.service.AdminUserService;
 import lombok.RequiredArgsConstructor;
@@ -13,57 +14,100 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 /* comment.
- *  관리자 사용자 관리 페이지 요청을 처리하는 컨트롤러
- *
- *  왜 필요한가?
- *  - 관리자 화면에서 사용자 목록 조회와 상태 변경 요청을 처리하기 위해 필요하다.
+ * 관리자 사용자 관리 페이지 요청을 처리하는 컨트롤러
  */
+
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/usercare")
 public class AdminUserController {
 
     private final AdminUserService adminUserService;
 
     /* comment.
-     *  사용자 관리 목록 페이지 반환 메서드
+     * 전체 사용자 목록 조회
      */
+    @GetMapping("")
+    public String findAllUsers(Model model) {
 
-    @GetMapping("/usercare")
-    public String showUserCarePage(@RequestParam(value = "role", required = false) String role,
-                                   Model model) {
-
-        List<AdminUserListResponseDTO> userList;
-
-        if (role == null || role.isBlank()) {
-            userList = adminUserService.findAllUsers();
-        } else {
-            userList = adminUserService.findUsersByRole(role);
-        }
+        List<AdminUserListResponseDTO> userList = adminUserService.findAllUsers();
 
         model.addAttribute("userList", userList);
-        model.addAttribute("selectedRole", role);
+        model.addAttribute("selectedFilter", "ALL");
 
         return "admin/usercare";
     }
 
     /* comment.
-     *  사용자 계정 비활성화 처리 메서드
+     * 선생님 사용자 목록 조회
      */
+    @GetMapping("/teacher")
+    public String findAllTeachers(Model model) {
 
-    @PostMapping("/usercare/disable")
-    public String disableUser(@RequestParam("userNo") Long userNo) {
-        adminUserService.disableUser(userNo);
-        return "redirect:/admin/usercare";
+        List<AdminUserListResponseDTO> userList = adminUserService.findUsersByRole("TEACHER");
+
+        model.addAttribute("userList", userList);
+        model.addAttribute("selectedFilter", "TEACHER");
+
+        return "admin/usercare";
     }
 
     /* comment.
-     *  사용자 계정 활성화 처리 메서드
+     * 학생 사용자 목록 조회
      */
+    @GetMapping("/student")
+    public String findAllStudents(Model model) {
 
-    @PostMapping("/usercare/enable")
-    public String enableUser(@RequestParam("userNo") Long userNo) {
+        List<AdminUserListResponseDTO> userList = adminUserService.findUsersByRole("STUDENT");
+
+        model.addAttribute("userList", userList);
+        model.addAttribute("selectedFilter", "STUDENT");
+
+        return "admin/usercare";
+    }
+
+    /* comment.
+     * 사용자 상세 조회
+     * userNo는 form body로 전달받아 주소창에 노출되지 않도록 처리
+     */
+    @PostMapping("/detail")
+    public String findUserDetail(@RequestParam("userNo") Long userNo,
+                                 Model model) {
+
+        AdminUserDetailResponseDTO userDetail = adminUserService.findUserDetail(userNo);
+
+        model.addAttribute("userDetail", userDetail);
+
+        return "admin/userdetail";
+    }
+
+    /* comment.
+     * 사용자 활성화 처리
+     */
+    @PostMapping("/enable")
+    public String enableUser(@RequestParam("userNo") Long userNo,
+                             Model model) {
+
         adminUserService.enableUser(userNo);
-        return "redirect:/admin/usercare";
+
+        AdminUserDetailResponseDTO userDetail = adminUserService.findUserDetail(userNo);
+        model.addAttribute("userDetail", userDetail);
+
+        return "admin/userdetail";
+    }
+
+    /* comment.
+     * 사용자 비활성화 처리
+     */
+    @PostMapping("/disable")
+    public String disableUser(@RequestParam("userNo") Long userNo,
+                              Model model) {
+
+        adminUserService.disableUser(userNo);
+
+        AdminUserDetailResponseDTO userDetail = adminUserService.findUserDetail(userNo);
+        model.addAttribute("userDetail", userDetail);
+
+        return "admin/userdetail";
     }
 }
