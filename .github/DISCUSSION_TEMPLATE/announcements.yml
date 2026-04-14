@@ -1,0 +1,35 @@
+title: "[Meeting] "
+labels: ["meeting", "documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!NOTE]
+        > **회의록 작성 가이드**
+        > 회의에서 논의된 주요 내용과 결정된 사항을 명확하게 기록하고 공유해 주세요.
+
+  - type: textarea
+    id: attendees
+    attributes:
+      label: "👥 팀원 역할 분배"
+      description: "참석 여부를 체크([x])하고, 이름 옆에 역할이나 필요한 코멘트를 자유롭게 적어주세요."
+      value: |
+        - [ ] 김진도: 
+        - [ ] 전지원: 
+        - [ ] 지석범: 
+        - [ ] 모성진: 
+        - [ ] 임수영: 
+    validations:
+      required: false
+
+  - type: textarea
+    id: discussion_summary
+    attributes:
+      label: "📌 회의 내용"
+      description: "오늘 어떤 주제로 회의를 진행했는지 핵심만 간략히 적어주세요."
+      placeholder: "예: API 응답 데이터 캐싱 로직 구현 관련 회의"
+    validations:
+      required: false
+        - [ ] 
+    validations:
+      required: true
