@@ -1,18 +1,31 @@
-# 디스커션 회의록 템플릿
-title: "[여기에 회의 제목을 입력하세요]"
+# 회의록 템플릿 (YAML)
+metadata:
+  title: "" # [회의 제목을 입력하세요]
+  date: "2026-04-14"
+  location: ""
 
-info:
-  date: "202X-0X-0X"
-  attendees:
-    - "[김진도]"
-    - "[전지원]"
-    - "[지석범]"
-    - "[모성진]"
-    - "[임수영]"
+participants:
+  - name: "김진도"
+    role: ""
+  - name: "전지원"
+    role: ""
+  - name: "지석범"
+    role: ""
+  - name: "모성진"
+    role: ""
+  - name: "임수영"
+    role: ""
 
 discussions:
-  - "[논의된 첫 번째 주제나 의견을 작성하세요]"
-  - "[관련된 상세 내용을 자유롭게 기술하세요]"
+  - topic: "" # 논의 주제
+    content: |
+      - 
+      - 
+  - topic: ""
+    content: |
+      - 
 
 decisions:
-  - "[결정된 사항이나 다음 회의 전까지 완료해야 할 일을 작성하세요]"
+  - item: "" # 결정된 사항
+    action_item: "" # 향후 할 일
+    assignee: "" # 담당자
