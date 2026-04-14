@@ -35,17 +35,26 @@
       <section id="menuScreen" class="menu-screen active">
         <!-- Studying Valley Title -->
         <div class="title-container">
-          <img src="/image/studying_valley_title.svg" alt="STUDYING VALLEY" class="main-title-img">
+          <img th:src="@{/image/studying_valley_title.svg}"
+               alt="STUDYING VALLEY"
+               class="main-title-img">
         </div>
 
         <!-- Subtitle -->
         <div class="subtitle-container">
-          <img src="/image/subtitle.svg" alt="Game-based Learning System" class="subtitle-img">
+          <img th:src="@{/image/subtitle.svg}"
+               alt="Game-based Learning System"
+               class="subtitle-img">
         </div>
 
         <div class="button-row">
-          <button onclick="location.href='/auth/login'" class="pixel-btn" id="goLoginBtn">로그인</button>
-          <button onclick="location.href='/auth/signup1'" class="pixel-btn" id="goSignupBtn">회원가입</button>
+          <!-- 로그인을 눌렀을 시 로그인 페이지로 이동-->
+          <form  th:action="@{/auth/login}" method="get">
+            <button type="submit" class="pixel-btn" id="goLoginBtn">로그인</button>
+          </form>
+          <form th:action="@{/auth/signup1}" method="get">
+            <button type="submit" class="pixel-btn" id="goSignupBtn">회원가입</button>
+          </form>
         </div>
 
       </section>

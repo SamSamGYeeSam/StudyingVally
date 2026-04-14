@@ -286,20 +286,26 @@ body {
     width: 500px;
 }
 
-/* 버튼 나란히 배치 */
 .button-row {
     display: flex;
     gap: 12px;
     width: 100%;
     max-width: 1000px;
     margin: 7px auto 0;
+    justify-content: center;
 }
 
-.button-row .pixel-btn {
+/* form이 button-row의 직접 자식이 되었으니 form을 flex 대상으로 잡는다 */
+.button-row form {
     flex: 1;
     margin: 0;
+}
+
+/* form 안 버튼이 부모 너비를 꽉 채우게 한다 */
+.button-row form .pixel-btn {
+    width: 100%;
+    margin: 0;
     font-size: 25px;
-    /* font-weight: 700; */
 }
 
 .menu-screen {
@@ -356,9 +362,14 @@ body {
         margin-right: auto;
     }
 
-    .button-row .pixel-btn {
-        margin: 8px 0;
+    .button-row form {
         flex: 1;
+        margin: 0;
+    }
+
+    .button-row form .pixel-btn {
+        width: 100%;
+        margin: 8px 0;
         justify-content: center;
     }
 
