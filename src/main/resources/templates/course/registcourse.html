@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1>강의 등록 페이지</h1>
+<form action="/teacher/registcourse" method="post" >
+
+    <label>강의 제목</label><br>
+    <input type="text" name="courseTitle" placeholder="제목을 입력하십시오"><br>
+    <label>강의 설명</label><br>
+    <textarea rows="10" name="courseDescription" cols="50" placeholder="강의 설명을 입력하십시오"></textarea>
+    <br>
+
+    <input type="submit" value="챕터 등록하기">
+</form>
+
+<form action="/teacher/teachermain" method="post" style="display:inline;">
+    <button type="submit">이전으로</button>
+</form>
+</body>
+</html>
