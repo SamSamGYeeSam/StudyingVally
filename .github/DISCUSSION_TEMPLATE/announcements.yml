@@ -11,7 +11,7 @@ body:
   - type: textarea
     id: attendees
     attributes:
-      label: "👥 참석자 및 비고"
+      label: "👥 팀원 역할 분배"
       description: "참석 여부를 체크([x])하고, 이름 옆에 역할이나 필요한 코멘트를 자유롭게 적어주세요."
       value: |
         - [ ] 김진도: 
