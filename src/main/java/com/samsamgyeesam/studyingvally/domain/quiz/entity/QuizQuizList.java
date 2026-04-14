@@ -13,7 +13,7 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "quiz_list")
-public class QuizList {
+public class QuizQuizList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quiz_list_no")
