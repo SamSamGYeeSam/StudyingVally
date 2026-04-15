@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>챕터 목록 - 스타잉밸리</title>
+    <style>
+        .container { width: 900px; margin: 20px auto; font-family: 'Arial', sans-serif; }
+        .progress-section { margin-bottom: 20px; padding: 15px; background: #f9f9f9; border: 2px solid #ddd; }
+        .progress-bar { width: 100%; background: #eee; height: 25px; border-radius: 12px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #4caf50; transition: width 0.3s; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ccc; padding: 12px; text-align: center; }
+        th { background-color: #f2f2f2; }
+
+        .btn-back-list {
+            padding: 10px 20px;
+            background-color: #607d8b; /* 차분한 회색 계열 */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .btn-back-list:hover {
+            background-color: #455a64;
+        }
+
+        .btn-study { padding: 5px 15px; background: #2196F3; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        .status-done { color: #4caf50; font-weight: bold; }
+        .status-yet { color: #f44336; }
+
+        .video-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+        }
+        .modal-content {
+            position: relative;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%; max-width: 800px;
+            background: #000;
+        }
+        .close-btn {
+            position: absolute;
+            top: -40px; right: 0;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        /* 팝업 배경 */
+        #videoPopup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; }
+        .popup-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; }
+        .close-btn { float: right; cursor: pointer; font-size: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>📖 강의 챕터 목록</h1>
+        <button class="btn-back-list" th:onclick="|location.href='/student/course?id=${courseId}'|">
+            🔙 강의 목록으로
+        </button>
+    </div>
+    <div class="progress-section">
+        <p>전체 학습 진행률: <span th:text="${progress}">0</span>%</p>
+        <div class="progress-bar">
+            <div class="progress-fill" th:style="'width: ' + ${progress} + '%;'"></div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>챕터명</th>
+            <th>상세 설명</th>
+            <th>수강</th>
+            <th>수강 여부</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="chapter : ${chapters}">
+            <td th:text="${chapter.chapTitle}">챕터 제목</td>
+            <td th:text="${chapter.chapDesc}">상세 설명 내용이 들어갑니다.</td>
+            <td>
+                <button class="btn-study"
+                        th:onclick="|location.href='/student/chapter/class?chapNo=${chapter.chapNo}&courseId=${courseId}'|">
+                    수강하기
+                </button>
+            </td>
+            <td>
+                <span th:if="${#lists.contains(completedChapters, chapter.chapNo)}" class="status-done">✅ 완료</span>
+                <span th:unless="${#lists.contains(completedChapters, chapter.chapNo)}" class="status-yet">❌ 미완료</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="videoPopup" class="video-modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeVideo()">&times; 닫기</span>
+        <div id="videoContainer"></div>
+    </div>
+</div>
+
+<div id="popupOverlay" onclick="closeVideo()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;"></div>
+
+<script th:inline="javascript">
+    function openVideo(button) {
+        const url = button.getAttribute('data-url');
+        const chapNo = button.getAttribute('data-no');
+        const courseId = button.getAttribute('data-course');
+
+        // 1. 팝업 띄우기 로직
+        const popup = document.getElementById('videoPopup');
+        const container = document.getElementById('videoContainer');
+        const embedUrl = url.replace("watch?v=", "embed/"); // URL 변환
+
+        container.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
+        popup.style.display = 'block';
+
+        // 2. 서버에 수강 완료 신호 보내기 (열자마자 실행)
+        fetch(`/student/chapter/complete?chapNo=${chapNo}&courseId=${courseId}`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if(response.ok) {
+                    // 3. 성공하면 즉시 UI 변경 (새로고침 없이 체크 표시)
+                    // '수강하기' 버튼을 '완료' 상태로 바꾸거나 체크 아이콘을 보여줌
+                    button.innerText = "✅ 완료";
+                    button.classList.add("completed");
+                    // 만약 전체 진행률도 갱신하고 싶다면 location.reload()를 쓰는 게 가장 확실합니다.
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // 닫기 버튼 함수 (단순히 닫기만 함)
+    function closeVideo() {
+        document.getElementById('videoPopup').style.display = 'none';
+        document.getElementById('videoContainer').innerHTML = '';
+
+        // 사용자가 '나오면 완료 표시로 바뀌었으면 좋겠다'고 하셨으니
+        // 창을 닫을 때 페이지를 새로고침해서 진행도와 체크표시를 최신화합니다.
+        location.reload();
+    }
+</script>
+
+</body>
+</html>
