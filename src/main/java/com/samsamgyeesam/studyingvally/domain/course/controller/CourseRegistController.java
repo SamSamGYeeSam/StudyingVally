@@ -24,8 +24,8 @@ import java.util.List;
 public class CourseRegistController {
     // 강의 및 챕터 등록 클래스
     /*역할
-    * 1. /teacher/regist
-    * 2. */
+     * 1. /teacher/regist
+     * 2. */
 
     private final CourseService courseService;
     private final ChapterService chapterService;
@@ -70,7 +70,7 @@ public class CourseRegistController {
                                 HttpSession session) {
 
 //        Long userNo = 1L;
-         Long userNo = (Long) session.getAttribute("userNo");
+        Long userNo = (Long) session.getAttribute("userNo");
 
         // 강의 등록
         CourseDTO courseDTO = new CourseDTO();
