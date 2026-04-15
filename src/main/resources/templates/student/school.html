@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Vally - 학교</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <style>
+        body {
+            background-color: #f0e68c;
+            font-family: 'DungGeunMo', sans-serif;
+            margin: 0; padding: 20px;
+            /* 배경 이미지를 스타듀밸리풍으로 넣고 싶다면 여기에 추가하세요 */
+        }
+        .school-container {
+            background: rgba(255, 255, 255, 0.9);
+            border: 4px solid #5d4037;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            box-shadow: 8px 8px 0px #5d4037;
+        }
+        h1 { text-align: center; color: #5d4037; margin-bottom: 30px; }
+
+        .course-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        .course-table th, .course-table td {
+            border: 2px solid #5d4037;
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .course-table th { background: #8d6e63; color: white; }
+
+        .btn {
+            padding: 8px 12px;
+            border: 2px solid #5d4037;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'DungGeunMo', sans-serif;
+            font-size: 14px;
+        }
+        .btn-review { background: #ffb74d; color: #5d4037; }
+        .btn-regist { background: #4caf50; color: white; }
+        .btn-completed { background: #bdbdbd; color: #757575; cursor: not-allowed; }
+
+        .desc-link {
+            color: #1976d2;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+        }
+        .custom-modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background: #fff8e1;
+            border: 4px solid #4e342e;
+            padding: 20px;
+            box-shadow: 10px 10px 0px #4e342e;
+            z-index: 1000;
+        }
+        .modal-header { border-bottom: 2px dashed #4e342e; margin-bottom: 15px; padding-bottom: 5px; font-weight: bold; }
+        .modal-body { background: white; padding: 15px; border: 1px solid #4e342e; min-height: 100px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<div class="school-container">
+    <h1>🏫 수강신청 센터</h1>
+
+    <table class="course-table">
+        <thead>
+        <tr>
+            <th>올린 날짜</th>
+            <th>강의명</th>
+            <th>강사명</th>
+            <th>강의 설명</th>
+            <th>강의평 보기</th>
+            <th>구분</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="course : ${courses}">
+            <td th:text="${#temporals.format(course.courseCreatedAt, 'yyyy-MM-dd')}">2026-04-14</td>
+            <td th:text="${course.user != null ? course.user.userNickname : '강사미정'}">강사명</td>
+            <td th:text="${course.courseTitle}">자바 알고리즘</td>
+
+            <td>
+    <span class="desc-link"
+          th:data-title="${course.courseTitle}"
+          th:data-desc="${course.courseDescription}"
+          onclick="openDescModal(this)"
+          th:text="${#strings.abbreviate(course.courseDescription, 15)}">자바의 정석...</span>
+            </td>
+
+            <td>
+                <button class="btn btn-review"
+                        th:data-id="${course.courseId}"
+                        th:data-title="${course.courseTitle}"
+                        onclick="openReviewModal(this)">
+                    강의평 보기
+                </button>
+            </td>
+
+            <td>
+                <div th:if="${enrolledCourseIds.contains(course.courseId)}">
+                    <button type="button" class="btn btn-completed" disabled>수강 완료</button>
+                </div>
+
+                <div th:unless="${enrolledCourseIds.contains(course.courseId)}">
+                    <form th:action="@{/student/school/regist}" method="post">
+                        <input type="hidden" name="courseId" th:value="${course.courseId}">
+                        <button type="submit" class="btn btn-regist">신청하기</button>
+                    </form>
+                </div>
+            </td>
+
+<!--            <td>-->
+<!--                <form th:action="@{/student/school/regist}" method="post">-->
+<!--                    <input type="hidden" name="courseId" th:value="${course.courseId}">-->
+<!--                    <button type="submit" class="btn btn-regist">신청하기</button>-->
+<!--                </form>-->
+<!--            </td>-->
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top: 20px; text-align: right;">
+        <a th:href="@{/student/main}" style="text-decoration: none; color: #5d4037;">[광장으로 나가기]</a>
+    </div>
+</div>
+
+<div id="modal-overlay" class="modal-overlay" onclick="closeModal()"></div>
+<div id="custom-modal" class="custom-modal">
+    <div id="modal-header" class="modal-header"></div>
+    <div id="modal-rating" style="margin-bottom: 10px; color: #fbc02d;"></div>
+    <div id="modal-body" class="modal-body"></div>
+    <button onclick="closeModal()" class="btn" style="width: 100%; margin-top: 15px; background: #8d6e63; color: white;">닫기</button>
+</div>
+
+<script>
+    function openDescModal(element) {
+        const title = element.getAttribute('data-title');
+        const content = element.getAttribute('data-desc');
+        // 설명은 일반 텍스트이므로 false 전달
+        openModal('설명', title, content, false);
+    }
+
+    function openReviewModal(element) {
+        const courseId = element.getAttribute('data-id');
+        const title = element.getAttribute('data-title');
+
+        if (!courseId) {
+            alert("강의 번호를 찾을 수 없습니다.");
+            return;
+        }
+
+        fetch(`/student/reviews/${courseId}`)
+            .then(response => {
+                if (!response.ok) throw new Error("404 혹은 서버 에러");
+                return response.json();
+            })
+            .then(data => {
+                let reviewHtml = "";
+                if (!data || data.length === 0) {
+                    reviewHtml = "<p style='text-align:center;'>아직 등록된 강의평이 없습니다.</p>";
+                } else {
+                    data.forEach(rev => {
+                        reviewHtml += `
+                            <div style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #ccc;">
+                                <div style="color: #fbc02d; font-weight: bold;">⭐ ${rev.score} / 5.0</div>
+                                <div style="margin-top: 5px; color: #333;">${rev.content}</div>
+                                <div style="text-align: right; font-size: 0.8em; color: #888;">${rev.nickname || '익명'}</div>
+                            </div>`;
+                    });
+                }
+                // 강의평 리스트는 HTML 구조이므로 true 전달
+                openModal('리뷰', title, reviewHtml, true);
+            })
+            .catch(err => {
+                console.error(err);
+                openModal('에러', title, '데이터를 불러오는 중 오류가 발생했습니다. (경로 확인 필요)', false);
+            });
+    }
+
+    // 네 번째 인자 이름을 rating에서 isHtml로 변경하여 로직 수정
+    function openModal(type, title, content, isHtml = false) {
+        const header = document.getElementById('modal-header');
+        const body = document.getElementById('modal-body');
+        const ratingBox = document.getElementById('modal-rating');
+
+        header.innerText = `[${type}] ${title}`;
+
+        // 중요: HTML 여부에 따라 innerHTML 또는 innerText 선택
+        if (isHtml) {
+            body.innerHTML = content;
+        } else {
+            body.innerText = content || "내용이 없습니다.";
+        }
+
+        // 별점 박스는 리뷰 리스트 안에서 직접 그리므로 여기서는 숨김
+        ratingBox.style.display = 'none';
+
+        document.getElementById('custom-modal').style.display = 'block';
+        document.getElementById('modal-overlay').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('custom-modal').style.display = 'none';
+        document.getElementById('modal-overlay').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

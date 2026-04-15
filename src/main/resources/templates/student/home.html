@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>우리 집 - 마이페이지</title>
+</head>
+<body>
+<h1>마이페이지 (우리 집)</h1>
+
+<div class="menu-container">
+  <ul>
+    <li>
+      <a th:href="@{/student/home/password}">내 정보 보기</a>
+    </li>
+
+    <li>
+      <a th:href="@{/student/finddetail}">수강 중인 강의 조회</a>
+    </li>
+
+    <li>
+      <a th:href="@{/student/main}">광장으로 돌아가기</a>
+    </li>
+  </ul>
+</div>
+</body>
+</html>
