@@ -101,10 +101,6 @@ public class AuthUserDetails implements UserDetails {
         return userNo;
     }
 
-    public void setUserNo(Long userNo) {
-        this.userNo = userNo;
-    }
-
     /**
      * 로그인 아이디 반환
      *
