@@ -2,6 +2,7 @@ package com.samsamgyeesam.studyingvally.domain.user.service;
 
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserAdmin;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserUser;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import java.util.List;
  *
  * 현재는 User와 Admin을 모두 처리할 수 있도록 확장한다.
  */
+@Getter
 public class AuthUserDetails implements UserDetails {
 
     /**
@@ -36,6 +38,8 @@ public class AuthUserDetails implements UserDetails {
      */
     private final String displayName;
 
+    private Long userNo;
+
     /**
      * 일반 사용자(User) 기반 생성자
      *
@@ -46,6 +50,7 @@ public class AuthUserDetails implements UserDetails {
         this.password = user.getUserPassword();
         this.role = "ROLE_" + user.getUserRole().name();
         this.displayName = user.getUserNickname();
+        this.userNo = user.getUserNo();
     }
 
     /**
