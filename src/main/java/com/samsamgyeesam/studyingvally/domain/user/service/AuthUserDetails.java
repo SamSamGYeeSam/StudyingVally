@@ -15,7 +15,7 @@ import java.util.List;
  *
  * 현재는 User와 Admin을 모두 처리할 수 있도록 확장한다.
  */
-@Getter
+
 public class AuthUserDetails implements UserDetails {
 
     /**
@@ -95,6 +95,14 @@ public class AuthUserDetails implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public Long getUserNo() {
+        return userNo;
+    }
+
+    public void setUserNo(Long userNo) {
+        this.userNo = userNo;
     }
 
     /**
