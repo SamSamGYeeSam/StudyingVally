@@ -44,7 +44,9 @@
 
         <a th:href="@{/student/createreview(courseId=${courseId})}" class="pixel-btn">강의평 쓰기</a>
 
-        <a th:href="@{/student/home/courses}" class="pixel-btn">나가기</a>
+        <button class="btn-back" onclick="location.href='/student/main'">
+            🚪 강의실 나가기
+        </button>
     </div>
 </div>
 

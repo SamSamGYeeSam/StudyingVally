@@ -40,19 +40,26 @@
         const chapNo = [[${chapter.chapNo}]];
         const courseId = [[${courseId}]];
 
+        // 1. 서버에 수강 완료 데이터 전송
         fetch(`/student/chapter/complete?chapNo=${chapNo}&courseId=${courseId}`, {
             method: 'POST'
         })
             .then(response => {
                 if(response.ok) {
-                    alert("수강 완료 처리가 되었습니다!");
-                    // 완료 후 자동으로 목록으로 돌아가기
-                    location.href = `/student/chapter?courseId=${courseId}`;
+                    alert("수강 완료! 강의는 어떠셨나요? 평가 페이지로 이동합니다. 🌟");
+
+                    // 2. 컨트롤러(@GetMapping("/createrevaluation"))에 맞춰서 이동
+                    // 쿼리 스트링(?courseId=...)을 붙여줘야 컨트롤러가 @RequestParam으로 받습니다.
+                    // 주소가 /student/evaluation/write 로 바뀝니다.
+                    location.href = `/student/evaluation/write?courseId=${courseId}`;
                 } else {
                     alert("처리 중 오류가 발생했습니다.");
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                alert("서버와 통신 중 문제가 발생했습니다.");
+            });
     }
 </script>
 

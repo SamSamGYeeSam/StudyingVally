@@ -1,6 +1,5 @@
 package com.samsamgyeesam.studyingvally.domain.course.controller;
 
-import com.samsamgyeesam.studyingvally.domain.course.entity.Chapter;
 import com.samsamgyeesam.studyingvally.domain.course.entity.StudentChapter;
 import com.samsamgyeesam.studyingvally.domain.course.repository.StudentChapterAttemptRepository;
 import com.samsamgyeesam.studyingvally.domain.course.repository.StudentChapterRepository;
@@ -82,10 +81,26 @@ public class StudentCourseController {
         return ResponseEntity.ok("success");
     }
 
-    @GetMapping("/createreview")
-    public String reviewForm(@RequestParam Long courseId, Model model) {
-        model.addAttribute("courseId", courseId);
-        return "student/studentcreatereview";
+//    @GetMapping("/create/evaluation")
+//    public String reviewForm(@RequestParam Long courseId, Model model) {
+//        model.addAttribute("courseId", courseId);
+//        return "evaluation";
+//    }
+
+    @PostMapping("/evaluation/save")
+    public String saveStudentEvaluation(
+            @RequestParam("courseId") Long courseId,
+            @RequestParam("rating") int rating,
+            @RequestParam("content") String content,
+            HttpSession session)
+    {
+        Long userNo = (Long) session.getAttribute("userNo");
+        if (userNo == null) userNo = 1L;
+
+        studentCourseService.saveStudentEvaluation(userNo, courseId, rating, content);
+        System.out.println("리뷰 저장됨: 강의=" + courseId + ", 별점=" + rating + ", 내용=" + content);
+
+        return "redirect:/student/chapter?courseId=" + courseId;
     }
 
 }
