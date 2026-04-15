@@ -1,7 +1,7 @@
 package com.samsamgyeesam.studyingvally.global.Config;
 
 import com.samsamgyeesam.studyingvally.domain.user.service.AuthSuccessHandler;
-import com.samsamgyeesam.studyingvally.domain.user.service.CustomUserDetailsService;
+import com.samsamgyeesam.studyingvally.domain.user.service.AuthUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +28,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     // 사용자 인증 시 DB 조회를 담당하는 서비스이다.
-    private final CustomUserDetailsService customUserDetailsService;
+    private final AuthUserDetailsService authUserDetailsService;
     private final AuthSuccessHandler authSuccessHandler;
 
     /*
@@ -65,7 +65,7 @@ public class SecurityConfig {
                 /*
                  * 사용자 조회 서비스 등록
                  */
-                .userDetailsService(customUserDetailsService)
+                .userDetailsService(authUserDetailsService)
 
                 /**
                  * URL별 인가 정책 설정

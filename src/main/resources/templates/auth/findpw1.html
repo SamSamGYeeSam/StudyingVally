@@ -1,0 +1,27 @@
+<form class="form-box" th:action="@{/auth/findpw2}" method="get">
+
+    <div class="field">
+        <label>아이디</label>
+        <input type="text" name="userId" required>
+    </div>
+
+    <div class="field">
+        <label>전화번호</label>
+        <input type="text" name="phoneNumber" required>
+    </div>
+
+    <div class="bottom-row">
+        <button type="button" onclick="location.href='/main'" class="pixel-btn secondary">
+            뒤로가기
+        </button>
+
+        <button type="submit" class="pixel-btn">
+            비밀번호 찾기
+        </button>
+    </div>
+
+    <div class="msg show error" th:if="${findPwError}">
+        <span th:text="${findPwError}"></span>
+    </div>
+
+</form>
