@@ -17,7 +17,7 @@ import java.util.Collection;
  * 현재 팀 프로젝트 기준 경로:
  * - 강사 : /course/teachermain
  * - 학생 : /student/main
- * - 관리자 : /main
+ * - 관리자 : admin/main
  */
 @Component
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {

@@ -14,7 +14,7 @@ import java.util.List;
  *
  * 현재는 User와 Admin을 모두 처리할 수 있도록 확장한다.
  */
-public class CustomUserDetails implements UserDetails {
+public class AuthUserDetails implements UserDetails {
 
     /**
      * 로그인 아이디
@@ -41,7 +41,7 @@ public class CustomUserDetails implements UserDetails {
      *
      * @param user 일반 사용자 엔티티
      */
-    public CustomUserDetails(UserUser user) {
+    public AuthUserDetails(UserUser user) {
         this.loginId = user.getUserId();
         this.password = user.getUserPassword();
         this.role = "ROLE_" + user.getUserRole().name();
@@ -56,7 +56,7 @@ public class CustomUserDetails implements UserDetails {
      *
      * @param admin 관리자 엔티티
      */
-    public CustomUserDetails(UserAdmin admin) {
+    public AuthUserDetails(UserAdmin admin) {
         this.loginId = admin.getAdminId();
         this.password = admin.getAdminPassword();
         this.role = "ROLE_ADMIN";
