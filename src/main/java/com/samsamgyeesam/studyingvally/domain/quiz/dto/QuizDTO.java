@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 public class QuizDTO {
-    private int quizNo;
+    private Long quizNo;
     private String quizTitle;
-    private int chapNo; // 파라미터로 받을 챕터 번호
+    private Long chapNo; // 파라미터로 받을 챕터 번호
 }

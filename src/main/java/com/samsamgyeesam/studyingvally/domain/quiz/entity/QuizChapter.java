@@ -17,7 +17,7 @@ public class QuizChapter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chap_no")
-    private int chapNo;
+    private Long chapNo;
 
     @Column(name = "chap_title")
     private String chapTitle;
@@ -29,6 +29,6 @@ public class QuizChapter {
     private String chapUrl;
 
     @Column(name = "course_id")
-    private Integer courseId;
+    private Long courseId;
 
 }

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>퀴즈방 입장</title>
+</head>
+<body>
+<h2>학생 퀴즈방에 오신 것을 환영합니다!</h2>
+<p>아래 버튼을 눌러 수강 중인 강의의 퀴즈를 확인해 보세요.</p>
+
+<form action="/student/quiz/course" method="get">
+    <button type="submit" style="padding: 10px 20px; font-size: 16px;">내 수강 강의 보기</button>
+</form>
+</body>
+</html>
