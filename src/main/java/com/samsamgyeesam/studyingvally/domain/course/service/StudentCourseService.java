@@ -1,12 +1,7 @@
 package com.samsamgyeesam.studyingvally.domain.course.service;
 
-import com.samsamgyeesam.studyingvally.domain.course.entity.StudentChapter;
-import com.samsamgyeesam.studyingvally.domain.course.entity.StudentChapterAttempt;
-import com.samsamgyeesam.studyingvally.domain.course.entity.StudentCourse;
-import com.samsamgyeesam.studyingvally.domain.course.repository.StudentChapterAttemptRepository;
-import com.samsamgyeesam.studyingvally.domain.course.repository.StudentChapterRepository;
-import com.samsamgyeesam.studyingvally.domain.course.repository.StudentCourseRepository;
-import com.samsamgyeesam.studyingvally.domain.course.repository.StudentEnrollmentRepository;
+import com.samsamgyeesam.studyingvally.domain.course.entity.*;
+import com.samsamgyeesam.studyingvally.domain.course.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +19,7 @@ public class StudentCourseService {
     private final StudentChapterRepository studentChapterRepository;
     private final StudentChapterAttemptRepository studentChapterAttemptRepository;
     private final StudentEnrollmentRepository studentEnrollmentRepository;
+    private final StudentEvaluationRepository studentEvaluationRepository;
 
     public List<StudentCourse> getOpenCourses() {
         return studentCourseRepository.findAll().stream()
@@ -82,6 +78,18 @@ public class StudentCourseService {
         data.put("progress", progress);
 
         return data;
+    }
+
+    @Transactional
+    public void saveStudentEvaluation(Long userNo, Long courseId, int rating, String content) {
+        StudentEvaluation studentEvaluation = StudentEvaluation.builder()
+                .userNo(userNo)
+                .courseId(courseId)
+                .evaluationScore((double) rating)
+                .evaluationDesc(content)
+                .build();
+
+        studentEvaluationRepository.save(studentEvaluation);
     }
 
 }

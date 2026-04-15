@@ -48,7 +48,7 @@ public class StudentCourse {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<StudentEnrollment> studentEnrollments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "studentCourse", cascade = CascadeType.ALL)
     private List<StudentEvaluation> studentEvaluations = new ArrayList<>();
 
 }
