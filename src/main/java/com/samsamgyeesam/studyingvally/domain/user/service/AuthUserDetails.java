@@ -2,6 +2,7 @@ package com.samsamgyeesam.studyingvally.domain.user.service;
 
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserAdmin;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserUser;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,8 @@ import java.util.List;
  *
  * 현재는 User와 Admin을 모두 처리할 수 있도록 확장한다.
  */
-public class CustomUserDetails implements UserDetails {
+
+public class AuthUserDetails implements UserDetails {
 
     /**
      * 로그인 아이디
@@ -36,16 +38,19 @@ public class CustomUserDetails implements UserDetails {
      */
     private final String displayName;
 
+    private Long userNo;
+
     /**
      * 일반 사용자(User) 기반 생성자
      *
      * @param user 일반 사용자 엔티티
      */
-    public CustomUserDetails(UserUser user) {
+    public AuthUserDetails(UserUser user) {
         this.loginId = user.getUserId();
         this.password = user.getUserPassword();
         this.role = "ROLE_" + user.getUserRole().name();
         this.displayName = user.getUserNickname();
+        this.userNo = user.getUserNo();
     }
 
     /**
@@ -56,7 +61,7 @@ public class CustomUserDetails implements UserDetails {
      *
      * @param admin 관리자 엔티티
      */
-    public CustomUserDetails(UserAdmin admin) {
+    public AuthUserDetails(UserAdmin admin) {
         this.loginId = admin.getAdminId();
         this.password = admin.getAdminPassword();
         this.role = "ROLE_ADMIN";
@@ -90,6 +95,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public Long getUserNo() {
+        return userNo;
     }
 
     /**

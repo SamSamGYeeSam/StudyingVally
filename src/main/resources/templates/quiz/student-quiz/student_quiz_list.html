@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>퀴즈 목록 선택</title>
+</head>
+<body>
+<button type="button" onclick="history.back();" style="margin-bottom: 20px;">⬅ 챕터 목록으로 돌아가기</button>
+<h2>선택한 챕터의 퀴즈 목록</h2>
+<p>도전할 퀴즈를 선택해 주세요.</p>
+
+<ul>
+    <li th:each="quiz : ${quizList}">
+        <form action="/student/quiz/solve-post" method="post" style="display:inline;">
+            <input type="hidden" name="quizNo" th:value="${quiz.quizNo}">
+            <button type="submit"
+                    style="cursor:pointer; font-weight:bold; background:none; border:none; padding:0; font-size:18px; color:green;"
+                    th:text="${quiz.quizTitle}"></button>
+        </form>
+    </li>
+</ul>
+
+<div th:if="${#lists.isEmpty(quizList)}" style="color: gray;">
+    등록된 퀴즈가 없습니다.
+</div>
+</body>
+</html>

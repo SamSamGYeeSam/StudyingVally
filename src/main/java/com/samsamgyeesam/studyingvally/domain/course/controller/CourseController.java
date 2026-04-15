@@ -22,11 +22,18 @@ public class CourseController {
     private final CourseService courseService;
     private final ChapterService chapterService;
 
-
-    @PostMapping("/teachermain")
-    public String gotoTeacherMain(){
+    // url에 입력해서 경로 이동하는 경우 get방식
+    @GetMapping("/teachermain")
+    public String gotoTeacherMainGet(){
         return "course/teachermain";
     }
+
+    // form에서 post로 넘어오는 경우
+    @PostMapping("/teachermain")
+    public String gotoTeacherMainPost(){
+        return "course/teachermain";
+    }
+
 
     // 메인페이지에서 강의 목록 조회 눌렀을 때 넘어와서 화면 넘어가는 클래스
     @GetMapping("/course")

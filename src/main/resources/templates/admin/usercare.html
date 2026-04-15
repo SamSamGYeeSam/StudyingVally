@@ -132,7 +132,7 @@
     <table>
         <thead>
         <tr>
-            <th>회원번호</th>
+            <th>번호</th> <!-- 변경 -->
             <th>이름</th>
             <th>닉네임</th>
             <th>전화번호</th>
@@ -146,16 +146,19 @@
             <td colspan="7">조회된 사용자가 없습니다.</td>
         </tr>
 
-        <tr th:each="user : ${userList}">
-            <td th:text="${user.userNo}">1</td>
+        <tr th:each="user, stat : ${userList}">
+            <td th:text="${stat.index + 1}">1</td> <!-- 핵심 변경 -->
+
             <td th:text="${user.userName}">홍길동</td>
             <td th:text="${user.userNickname}">닉네임</td>
             <td th:text="${user.userPhoneNumber}">010-0000-0000</td>
             <td th:text="${user.userRoleLabel}">학생</td>
             <td th:text="${user.userStatusLabel}">활성화</td>
+
             <td>
                 <form th:action="@{/admin/usercare/detail}" method="post" class="select-form">
                     <input type="hidden" name="userNo" th:value="${user.userNo}">
+                    <input type="hidden" name="displayNo" th:value="${stat.index + 1}"> <!-- 추가 -->
                     <button type="submit" class="select-btn">선택</button>
                 </form>
             </td>

@@ -22,4 +22,7 @@ public interface UserRepository extends JpaRepository<UserUser, Long> {
      * 아이디 찾기 기능에서 사용한다.
      */
     Optional<UserUser> findByUserNameAndUserPhoneNumber(String userName, String userPhoneNumber);
+
+    // 아이디와 전화번호를 조회해 비밀번호를 찾는다.
+    Optional<UserUser> findByUserIdAndUserPhoneNumber(String userId, String userPhoneNumber);
 }

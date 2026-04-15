@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>문제 수정</title>
+</head>
+<body>
+<button type="button" onclick="history.back();" style="margin-bottom: 20px;">⬅ 수정 취소하고 돌아가기</button>
+<h2>퀴즈 문제 수정</h2>
+
+<form action="/teacher/quiz/update-quizlist" method="post">
+    <input type="hidden" name="quizListNo" th:value="${quizListDTO.quizListNo}">
+    <input type="hidden" name="quizNo" th:value="${quizListDTO.quizNo}">
+
+    <label>문제 제목 :</label>
+    <input type="text" name="quizTitle" th:value="${quizListDTO.quizTitle}" required><br><br>
+
+    <label>문제 지문 :</label>
+    <textarea name="quizDesc" rows="4" th:text="${quizListDTO.quizDesc}"></textarea><br><br>
+
+    <label>정답 :</label>
+    <input type="text" name="quizAnswer" th:value="${quizListDTO.quizAnswer}"><br><br>
+
+    <label>정답 해설 :</label>
+    <textarea name="quizAnswerDesc" rows="4" th:text="${quizListDTO.quizAnswerDesc}"></textarea><br><br>
+
+    <button type="submit">수정 완료 (저장)</button>
+</form>
+</body>
+</html>

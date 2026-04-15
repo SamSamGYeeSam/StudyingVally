@@ -49,4 +49,17 @@ public class UserService {
          */
         return foundUser.getUserId();
     }
+
+    public String findUserPassword(String userId, String phoneNumber) {
+
+        if (userId == null || userId.isBlank() || phoneNumber == null || phoneNumber.isBlank()) {
+            throw new IllegalArgumentException("회원가입 정보를 모두 입력해주세요");
+        }
+
+        UserUser user = userRepository
+                .findByUserIdAndUserPhoneNumber(userId, phoneNumber)
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원 정보를 찾을 수 없습니다."));
+
+        return user.getUserPassword();
+    }
 }
