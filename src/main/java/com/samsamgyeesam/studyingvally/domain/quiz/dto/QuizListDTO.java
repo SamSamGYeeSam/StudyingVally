@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 
 public class QuizListDTO {
-    private int quizListNo;
+    private Long quizListNo;
     private String quizTitle;
     private String quizDesc;
     private String quizAnswer;

@@ -1,54 +1,52 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>퀴즈 리스트 등록</title>
-    <style>
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; }
-        input[type="text"], textarea { width: 100%; padding: 8px; margin-top: 5px; }
-        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
-    </style>
+    <title>문제 신규 등록</title>
 </head>
 <body>
+<button type="button" onclick="history.back();" style="margin-bottom: 20px;">⬅ 작성 취소하고 돌아가기</button>
 
-<h2>새 퀴즈 리스트 추가</h2>
+<h2>새 문제 만들기</h2>
+<div th:if="${message}" th:text="${message}" style="color: blue; margin-bottom: 15px;"></div>
 
-<form action="/teacher/quizQuiz/create-quizlist" method="post">
+<form action="/teacher/quiz/create-quizlist" method="post" id="quizForm">
+    <input type="hidden" name="quizNo" th:value="${quizNo}">
 
-    <input type="hidden" id="quizNo" name="quizNo" value="">
+    <label>문제 제목 :</label>
+    <input type="text" name="quizTitle" required><br><br>
 
-    <div class="form-group">
-        <label for="quizTitle">퀴즈 제목</label>
-        <input type="text" id="quizTitle" name="quizTitle" placeholder="제목을 입력하세요" required>
-    </div>
+    <label>문제 지문 :</label>
+    <textarea name="quizDesc" rows="4"></textarea><br><br>
 
-    <div class="form-group">
-        <label for="quizDesc">퀴즈 설명</label>
-        <textarea id="quizDesc" name="quizDesc" rows="4" placeholder="퀴즈에 대한 설명을 입력하세요"></textarea>
-    </div>
+    <label>정답 :</label>
+    <input type="text" name="quizAnswer"><br><br>
 
-    <div class="form-group">
-        <label for="quizAnswer">정답</label>
-        <input type="text" id="quizAnswer" name="quizAnswer" placeholder="정답 입력" required>
-    </div>
+    <label>정답 해설 :</label>
+    <textarea name="quizAnswerDesc" rows="4"></textarea><br><br>
 
-    <div class="form-group">
-        <label for="quizAnswerDesc">정답 해설</label>
-        <textarea id="quizAnswerDesc" name="quizAnswerDesc" rows="3" placeholder="해설을 입력하세요"></textarea>
-    </div>
-
-    <button type="submit">저장하기</button>
+    <button type="submit">문제 등록 완료</button>
 </form>
 
 <script>
-    // 자바스크립트 내에 저장되어 있는 퀴즈 번호 (예시)
-    const currentQuizNo = "QZ-2024-001";
+    document.addEventListener("DOMContentLoaded", function() {
+        if(sessionStorage.getItem("draft_quizTitle")) document.querySelector("input[name='quizTitle']").value = sessionStorage.getItem("draft_quizTitle");
+        if(sessionStorage.getItem("draft_quizDesc")) document.querySelector("textarea[name='quizDesc']").value = sessionStorage.getItem("draft_quizDesc");
+        if(sessionStorage.getItem("draft_quizAnswer")) document.querySelector("input[name='quizAnswer']").value = sessionStorage.getItem("draft_quizAnswer");
+        if(sessionStorage.getItem("draft_quizAnswerDesc")) document.querySelector("textarea[name='quizAnswerDesc']").value = sessionStorage.getItem("draft_quizAnswerDesc");
+    });
 
-    // 페이지 로드 시  hidden input에 값을 할당
-    document.getElementById('quizNo').value = currentQuizNo;
+    document.querySelector("input[name='quizTitle']").addEventListener("input", function() { sessionStorage.setItem("draft_quizTitle", this.value); });
+    document.querySelector("textarea[name='quizDesc']").addEventListener("input", function() { sessionStorage.setItem("draft_quizDesc", this.value); });
+    document.querySelector("input[name='quizAnswer']").addEventListener("input", function() { sessionStorage.setItem("draft_quizAnswer", this.value); });
+    document.querySelector("textarea[name='quizAnswerDesc']").addEventListener("input", function() { sessionStorage.setItem("draft_quizAnswerDesc", this.value); });
 
-    console.log("현재 설정된 퀴즈 번호:", currentQuizNo);
+    document.getElementById("quizForm").addEventListener("submit", function() {
+        sessionStorage.removeItem("draft_quizTitle");
+        sessionStorage.removeItem("draft_quizDesc");
+        sessionStorage.removeItem("draft_quizAnswer");
+        sessionStorage.removeItem("draft_quizAnswerDesc");
+    });
 </script>
 </body>
 </html>

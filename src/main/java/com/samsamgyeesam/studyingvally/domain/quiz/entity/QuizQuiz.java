@@ -17,12 +17,12 @@ public class QuizQuiz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quiz_no")
-    private int quizNo;
+    private Long quizNo;
 
     @Column(name = "quiz_title")
     private String quizTitle;
 
     @Column(name = "chap_no")
-    private int chapNo;
+    private Long chapNo;
 
 }

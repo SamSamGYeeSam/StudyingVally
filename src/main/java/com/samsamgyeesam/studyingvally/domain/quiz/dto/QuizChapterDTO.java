@@ -8,9 +8,9 @@ import lombok.*;
 @Setter
 @ToString
 public class QuizChapterDTO {
-    private int chapNo;
+    private Long chapNo;
     private String chapTitle;
     private String chapDesc;
     private String chapUrl;
-    private Integer courseId;
+    private Long courseId;
 }

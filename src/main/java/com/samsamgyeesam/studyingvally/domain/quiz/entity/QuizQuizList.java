@@ -17,7 +17,7 @@ public class QuizQuizList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quiz_list_no")
-    private int quizListNo;
+    private Long quizListNo;
 
     @Column(name = "quiz_title")
     private String quizTitle;

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface QuizChapterRepository extends JpaRepository<QuizChapter, Integer> {
+public interface QuizChapterRepository extends JpaRepository<QuizChapter, Long> {
 
-    List<QuizChapter> findByCourseId(Integer courseId);
+    List<QuizChapter> findByCourseId(Long courseId);
 
 }
