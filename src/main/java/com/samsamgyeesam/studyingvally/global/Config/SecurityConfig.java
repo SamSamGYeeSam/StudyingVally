@@ -12,6 +12,16 @@ import org.springframework.security.web.SecurityFilterChain;
 
 /*
  * Spring Security 설정 클래스이다.
+ *
+ * 현재 단계의 목표:
+ * 1. 서버 실행 시 첫 화면은 /main 으로 보여주기
+ * 2. 기본 로그인 페이지(/login) 대신 커스텀 로그인 페이지(/auth/login) 사용
+ * 3. user 테이블 기준 로그인 동작 확인
+ *
+ * 주의:
+ * - 현재는 평문 비밀번호 비교를 사용한다.
+ * - 실무에서는 NoOpPasswordEncoder를 사용하면 안 된다.
+ * - 지금은 부트캠프 팀프로젝트의 최소 로그인 동작 확인용이다.
  */
 @Configuration
 @RequiredArgsConstructor

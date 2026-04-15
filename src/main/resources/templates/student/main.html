@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Vally - 메인 광장</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'DungGeunMo', sans-serif; }
+        #field {
+            width: 100vw; height: 100vh;
+            background: url('/image/stardew-main.png') no-repeat center center;
+            background-size: cover; position: relative; image-rendering: pixelated;
+        }
+        #character {
+            position: absolute;
+            width: 64px; height: 128px;
+            background: url('/image/character-sheet.png') no-repeat;
+            background-size: 512px 512px;
+            transform: translate(-50%, -85%);
+            z-index: 100; pointer-events: none;
+            image-rendering: pixelated;
+            background-position: -256px 0px;
+            transition: transform 0.05s linear;
+        }
+        .entity { position: absolute; display: flex; flex-direction: column; align-items: center; z-index: 10; }
+        .entity-label { background: #fdf1d5; color: #4e342e; padding: 5px 12px; border: 3px solid #5d4037; border-radius: 6px; font-size: 15px; font-weight: bold; opacity: 0; transition: 0.2s; white-space: nowrap; pointer-events: none; }
+        .entity:hover .entity-label { opacity: 1; transform: translateY(-5px); }
+        .hitbox { width: 60px; height: 60px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div id="field">
+    <div id="school" class="entity" data-url="/student/school"><div class="entity-label">🏫 학교</div><div class="hitbox"></div></div>
+    <div id="home" class="entity" data-url="/student/home" data-method="POST"><div class="entity-label">🏡 우리집</div><div class="hitbox"></div></div>
+    <div id="character"></div>
+</div>
+
+<script th:inline="javascript">
+    const character = document.getElementById('character');
+    const entities = document.querySelectorAll('.entity');
+
+    let charX = window.innerWidth * 0.5;
+    let charY = window.innerHeight * 0.8;
+    const speed = 4;
+
+    let keys = {};
+    let lastKey = "";
+
+    let currentFrame = 0;
+    let frameCounter = 0;
+    const frameRate = 8;
+    let currentDirY = 0;
+    let flipX = 1;
+
+    character.style.left = charX + 'px';
+    character.style.top = charY + 'px';
+
+    // 1. 키 입력 감지 (대문자/소문자 모두 대응하기 위해 toLowerCase 사용)
+    window.addEventListener('keydown', (e) => {
+        const k = e.key.toLowerCase();
+        if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd'].includes(k)) {
+            if (!keys[k]) {
+                keys[k] = true;
+                lastKey = k;
+            }
+        }
+    });
+
+    window.addEventListener('keyup', (e) => {
+        const k = e.key.toLowerCase();
+        keys[k] = false;
+
+        const remainingKeys = Object.keys(keys).filter(key => keys[key]);
+        if (remainingKeys.length > 0) {
+            lastKey = remainingKeys[remainingKeys.length - 1];
+        } else {
+            lastKey = "";
+        }
+    });
+
+    window.addEventListener('blur', () => {
+        keys = {};
+        lastKey = "";
+    });
+
+    function gameLoop() {
+        let dx = 0;
+        let dy = 0;
+        let xFix = 0; // xFix 선언 추가
+
+        // 2. 실제 이동 거리 계산
+        if (keys['arrowleft'] || keys['a']) dx -= speed;
+        if (keys['arrowright'] || keys['d']) dx += speed;
+        if (keys['arrowup'] || keys['w']) dy -= speed;
+        if (keys['arrowdown'] || keys['s']) dy += speed;
+
+        if (dx !== 0 || dy !== 0) {
+            // 3. 이미지 방향 결정 (lastKey 사용)
+            if (lastKey === 'arrowleft' || lastKey === 'a') {
+                currentDirY = 256 + 5; flipX = 1; xFix = 3;
+            } else if (lastKey === 'arrowright' || lastKey === 'd') {
+                currentDirY = 256 + 5; flipX = -1; xFix = 3;
+            } else if (lastKey === 'arrowup' || lastKey === 'w') {
+                currentDirY = 128 + 5; flipX = 1; xFix = 2;
+            } else if (lastKey === 'arrowdown' || lastKey === 's') {
+                currentDirY = 0 + 5; flipX = 1; xFix = 0;
+            }
+
+            charX += dx;
+            charY += dy;
+            charX = Math.max(30, Math.min(window.innerWidth - 30, charX));
+            charY = Math.max(30, Math.min(window.innerHeight - 30, charY));
+
+            character.style.left = charX + 'px';
+            character.style.top = charY + 'px';
+            character.style.transform = `translate(-50%, -85%) scaleX(${flipX})`;
+
+            frameCounter++;
+            if (frameCounter >= frameRate) {
+                currentFrame = (currentFrame + 1) % 4;
+                frameCounter = 0;
+            }
+            checkCollision();
+        } else {
+            currentFrame = 0;
+            xFix = 0;
+        }
+
+        const dirX = (currentFrame * 64) + 256 + xFix;
+        character.style.backgroundPosition = `-${dirX}px -${currentDirY}px`;
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    function checkCollision() {
+        entities.forEach(entity => {
+            const rect = entity.getBoundingClientRect();
+            if (charX > rect.left && charX < rect.right && charY > rect.top && charY < rect.bottom) {
+                const url = entity.getAttribute('data-url');
+                if (url) window.location.href = url;
+            }
+        });
+    }
+
+    requestAnimationFrame(gameLoop);
+</script>
+</body>
+</html>
