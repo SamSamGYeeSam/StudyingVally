@@ -14,7 +14,7 @@
 
 <h2>새 퀴즈 리스트 추가</h2>
 
-<form action="/teacher/quiz/create-quizlist" method="post">
+<form action="/teacher/quizQuiz/create-quizlist" method="post">
 
     <input type="hidden" id="quizNo" name="quizNo" value="">
 
@@ -45,7 +45,7 @@
     // 자바스크립트 내에 저장되어 있는 퀴즈 번호 (예시)
     const currentQuizNo = "QZ-2024-001";
 
-    // 페이지 로드 시 hidden input에 값을 할당
+    // 페이지 로드 시  hidden input에 값을 할당
     document.getElementById('quizNo').value = currentQuizNo;
 
     console.log("현재 설정된 퀴즈 번호:", currentQuizNo);

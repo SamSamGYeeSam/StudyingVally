@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>강의 삭제 확인</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .container {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 30px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            color: #d32f2f;
+            text-align: center;
+        }
+
+        .course-info {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .info-row {
+            margin: 10px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+            display: inline-block;
+            width: 120px;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            color: #856404;
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 30px;
+            margin: 0 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-delete {
+            background-color: #d32f2f;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #b71c1c;
+        }
+
+        .btn-cancel {
+            background-color: #757575;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #616161;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>⚠️ 강의 삭제 확인</h2>
+
+    <div class="course-info">
+        <div class="info-row">
+            <span class="label">강의 번호:</span>
+            <span th:text="${course.courseId}"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">강의명:</span>
+            <span th:text="${course.courseTitle}"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">강의 설명:</span>
+            <span th:text="${course.courseDescription}"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">상태:</span>
+            <span th:text="${course.courseStatus == 'OPEN' ? '개설' : '미개설'}"></span>
+        </div>
+    </div>
+
+    <div class="warning">
+        <strong>⚠️ 경고:</strong> 이 작업은 되돌릴 수 없습니다.<br>
+        강의와 관련된 모든 데이터가 삭제될 수 있습니다.
+    </div>
+
+    <div>
+        <!-- 삭제 버튼  -->
+        <form th:action="@{/teacher/course/delete}" method="post" style="display:inline;">
+            <input type="hidden" name="courseId" th:value="${course.courseId}">
+            <button type="submit">삭제하기</button>
+        </form>
+
+        <!-- 취소 버튼 -->
+        <form action="/teacher/course" method="get" style="display:inline;">
+            <button type="submit">취소</button>
+        </form>
+    </div>
+
+
+</div>
+
+
+</body>
+</html>

@@ -206,7 +206,7 @@ body {
     position: absolute;
     left: 60px;
     right: 60px;
-    bottom: 84px;
+    bottom: 50px;
     height: 70px;
 }
 
@@ -251,7 +251,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 30px;
+    padding: 50px;
 }
 
 .panel {
@@ -315,7 +315,7 @@ body {
     margin-top: 10px;
     /* padding: 0 20px;  */
     width: 100%;
-    max-width: 1000px;
+    max-width: 700px;
     margin: 10px auto 0;
 }
 
@@ -508,7 +508,7 @@ body {
 
         padding: 0 20px;
         width: 100%;
-        max-width: 580px;
+        max-width: 460px;
         margin-left: auto;
         margin-right: auto;
     }
