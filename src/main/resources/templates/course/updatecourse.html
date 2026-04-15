@@ -1,34 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>강의 수정</title>
 </head>
 <body>
 
+<h1>강의 수정 페이지</h1>
 
-<!--<h1>강의 수정 페이지</h1>-->
-<!--<form action="/teacher/course/updatecourse" method="post">-->
+<form action="/teacher/course/updatecourse" method="post">
 
-<!--    &lt;!&ndash; 강의 ID (hidden) &ndash;&gt;-->
-<!--    <input type="hidden" name="courseId" th:value="${course.courseId}">-->
+    <input type="hidden" name="courseId" th:value="${course.courseId}">
 
-<!--    <label>강의 제목</label>-->
-<!--    <input type="text" name="courseTitle" th:value="${course.courseTitle}" required><br><br>-->
+    <label>강의 제목</label><br>
+    <input type="text" name="courseTitle" th:value="${course.courseTitle}" required><br><br>
 
-<!--    <label>강의 설명</label><br>-->
-<!--    <textarea rows="10" cols="50" name="courseDescription"-->
-<!--              th:text="${course.courseDescription}" required></textarea><br><br>-->
+    <label>강의 설명</label><br>
+    <textarea rows="10" cols="50" name="courseDescription" th:text="${course.courseDescription}" required></textarea><br><br>
 
-<!--    <label>강의 상태</label>-->
-<!--    <select name="courseStatus">-->
-<!--        <option value="OPEN" th:selected="${course.courseStatus == 'OPEN'}">공개</option>-->
-<!--        <option value="CLOSED" th:selected="${course.courseStatus == 'CLOSED'}">비공개</option>-->
-<!--    </select><br><br>-->
 
-<!--    <button type="button" onclick="location.href='/teacher/course'">취소</button>-->
-<!--    <input type="submit" value="수정하기">-->
-<!--</form>-->
+    <button type="submit">수정하기</button>
+</form>
+
+<form action="/teacher/course/update" method="post" style="display:inline; margin-left: 10px;">
+    <input type="hidden" name="courseId" th:value="${course.courseId}">
+    <button type="submit">이전으로</button>
+</form>
 
 </body>
 </html>

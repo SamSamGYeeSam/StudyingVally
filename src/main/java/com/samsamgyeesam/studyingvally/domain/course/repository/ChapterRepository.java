@@ -9,4 +9,7 @@ import java.util.List;
 @Repository
 public interface ChapterRepository extends JpaRepository<Chapter, Long> {
     List<Chapter> findByCourseId(Long courseId);
+
+    void deleteByCourseId(Long courseId);
+
 }

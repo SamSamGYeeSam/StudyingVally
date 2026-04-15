@@ -26,8 +26,8 @@ public class StudentSchoolController {
 
     @GetMapping("/{courseId}")
     @ResponseBody
-    public List<StudentEvaluationResponseDTO> getReviews(@PathVariable("courseId") Long courseId) {
-        return studentSchoolService.getCourseReviews(courseId);
+    public List<StudentEvaluationResponseDTO> getEvaluations(@PathVariable("courseId") Long courseId) {
+        return studentSchoolService.getCourseEvaluations(courseId);
     }
 
     @GetMapping("/school")
