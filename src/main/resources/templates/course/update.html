@@ -1,10 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>강의 수정</title>
 </head>
 <body>
+
+<h1>강의 수정 </h1>
+
+<!-- 강의 -->
+<div style="border: 2px solid black; padding: 20px; margin-bottom: 20px;">
+    <h3>
+        <span th:text="${course.courseTitle}"></span>
+        <form action="/teacher/course/courseupdate" method="post" style="display:inline; margin-left: 10px;">
+            <input type="hidden" name="courseId" th:value="${course.courseId}">
+            <button type="submit">✏️</button>
+        </form>
+    </h3>
+</div>
+
+<!-- 챕터 -->
+<div style="border: 2px solid black; padding: 20px;">
+    <ul>
+        <li th:each="chapter : ${chapterList}">
+            <span th:text="${chapter.chapTitle}"></span>
+            <form action="/teacher/course/chapterupdate" method="post" style="display:inline; margin-left: 10px;">
+                <input type="hidden" name="chapNo" th:value="${chapter.chapNo}">
+                <input type="hidden" name="courseId" th:value="${course.courseId}">
+                <button type="submit">✏️</button>
+            </form>
+        </li>
+
+
+    </ul>
+</div>
+
+<br>
+
+<!-- 이전으로 버튼 -->
+<form action="/teacher/course" method="get" style="display:inline;">
+    <button type="submit">이전으로</button>
+</form>
 
 </body>
 </html>

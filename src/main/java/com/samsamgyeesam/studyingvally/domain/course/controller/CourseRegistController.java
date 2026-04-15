@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,7 +33,7 @@ public class CourseRegistController {
     private final FileService fileService;
 
     // 메인화면에서 강의등록 버튼 눌렀을 때 넘어와서 화면 넘어가는 클래스
-    @PostMapping("/register")
+    @GetMapping("/register")
     public String registCourse(HttpSession session) {
 
         // 세션 초기화
@@ -100,28 +101,11 @@ public class CourseRegistController {
             chapterService.registChapter(chapterDTO);
         }
 
-        // 등록하고 나서 세션 비우기
+        // 등록하고 나서 세션 없애기
         session.removeAttribute("tempCourseTitle");
         session.removeAttribute("tempCourseDescription");
 
-        // 저장 완료 후
-        return "course/registcomplete";
-    }
-
-    // 영상 파일 저장
-    private String saveVideoFile(MultipartFile videoFile) {
-        if (videoFile.isEmpty()) {
-            return null;
-        }
-
-        // 실제로는 파일을 서버에 저장하고 경로 반환
-        // 여기서는 임시로 파일명만 반환
-        String fileName = videoFile.getOriginalFilename();
-
-        // TODO: 실제 파일 저장 로직 구현
-        // 예: /uploads/videos/파일명.mp4
-
-        return "/uploads/videos/" + fileName;
+        return "redirect:/teacher/course";
     }
 
     @PostMapping("/registcourse/back")
