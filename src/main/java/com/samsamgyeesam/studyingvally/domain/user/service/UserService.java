@@ -1,5 +1,7 @@
 package com.samsamgyeesam.studyingvally.domain.user.service;
 
+import com.samsamgyeesam.studyingvally.domain.user.dto.SignupDTO;
+import com.samsamgyeesam.studyingvally.domain.user.entity.UserRole;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserUser;
 import com.samsamgyeesam.studyingvally.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -61,5 +63,40 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원 정보를 찾을 수 없습니다."));
 
         return user.getUserPassword();
+    }
+
+    @Transactional
+    public void signup(SignupDTO requestDTO) {
+
+        /* 필수값 검증 */
+        if (requestDTO.getUserName() == null || requestDTO.getUserName().isBlank()
+                || requestDTO.getUserId() == null || requestDTO.getUserId().isBlank()
+                || requestDTO.getUserPassword() == null || requestDTO.getUserPassword().isBlank()
+                || requestDTO.getUserPhoneNumber() == null || requestDTO.getUserPhoneNumber().isBlank()
+                || requestDTO.getUserEmail() == null || requestDTO.getUserEmail().isBlank()
+                || requestDTO.getUserNickname() == null || requestDTO.getUserNickname().isBlank()
+                || requestDTO.getUserGender() == null || requestDTO.getUserGender().isBlank()) {
+
+            throw new IllegalArgumentException("회원가입 정보를 모두 입력해주세요.");
+        }
+
+        /* 아이디 중복 검사 */
+        if (userRepository.existsByUserId(requestDTO.getUserId())) {
+            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+        }
+
+        /* DTO -> Entity 변환 */
+        UserUser newUser = UserUser.builder()
+                .userName(requestDTO.getUserName())
+                .userId(requestDTO.getUserId())
+                .userPassword(requestDTO.getUserPassword())
+                .userPhoneNumber(requestDTO.getUserPhoneNumber())
+                .userEmail(requestDTO.getUserEmail())
+                .userNickname(requestDTO.getUserNickname())
+                .userGender(requestDTO.getUserGender())
+                .userRole(UserRole.STUDENT)
+                .userStatus("ACTIVE");
+
+        userRepository.save(newUser);
     }
 }

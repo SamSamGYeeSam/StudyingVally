@@ -48,64 +48,70 @@
                     다음으로 버튼 클릭 시 /auth/signup2 로 이동하며,
                     입력한 값을 다음 단계 화면으로 전달한다.
                 -->
-                <form class="form-box" th:action="@{/auth/signup2}" method="get">
+                <form th:action="@{/auth/signup2}" method="post">
 
+                    <!-- 이름 입력 -->
                     <div class="field">
                         <label for="userName">이름</label>
                         <input type="text"
                                id="userName"
                                name="userName"
                                placeholder="이름 입력"
+                               th:value="${signupDTO != null ? signupDTO.userName : ''}"
                                required />
                     </div>
 
+                    <!-- 아이디 입력 -->
                     <div class="field">
                         <label for="userId">아이디</label>
                         <input type="text"
                                id="userId"
                                name="userId"
                                placeholder="아이디 입력"
+                               th:value="${signupDTO != null ? signupDTO.userId : ''}"
                                required />
                     </div>
 
+                    <!-- 비밀번호 입력 -->
                     <div class="field">
                         <label for="userPassword">비밀번호</label>
                         <input type="password"
                                id="userPassword"
                                name="userPassword"
                                placeholder="비밀번호 입력"
+                               th:value="${signupDTO != null ? signupDTO.userPassword : ''}"
                                required />
                     </div>
 
-                    <div class="field">
-                        <label for="userNickname">닉네임</label>
-                        <input type="text"
-                               id="userNickname"
-                               name="userNickname"
-                               placeholder="닉네임 입력"
-                               required />
-                    </div>
-
+                    <!-- 전화번호 입력 -->
                     <div class="field">
                         <label for="userPhoneNumber">전화번호</label>
                         <input type="text"
                                id="userPhoneNumber"
                                name="userPhoneNumber"
                                placeholder="전화번호 입력"
+                               th:value="${signupDTO != null ? signupDTO.userPhoneNumber : ''}"
                                required />
                     </div>
 
+                    <!-- 이메일 입력 -->
                     <div class="field">
                         <label for="userEmail">이메일</label>
                         <input type="email"
                                id="userEmail"
                                name="userEmail"
                                placeholder="이메일 입력"
+                               th:value="${signupDTO != null ? signupDTO.userEmail : ''}"
                                required />
                     </div>
 
+                    <!-- 회원가입 1단계 에러 메시지 -->
+                    <div th:if="${signup1Error != null}" class="error-message" th:text="${signup1Error}">
+                        회원가입 정보를 모두 입력해주세요.
+                    </div>
+
                     <div class="bottom-row">
-                        <!-- 첫 화면으로 이동 -->
+                        <!-- 메인 화면으로 이동 -->
                         <button type="button"
                                 onclick="location.href='/main'"
                                 class="pixel-btn secondary"
@@ -113,17 +119,12 @@
                             뒤로가기
                         </button>
 
-                        <!-- 회원가입 2단계로 이동 -->
+                        <!-- signup2 화면으로 이동 -->
                         <button type="submit"
-                                class="pixel-btn"
-                                id="goSignup2Btn">
+                                class="pixel-btn primary"
+                                id="goToSignup2Btn">
                             다음으로
                         </button>
-                    </div>
-
-                    <!-- 회원가입 에러 메시지 출력 영역 -->
-                    <div id="signup1Msg" class="msg show error" th:if="${signup1Error}">
-                        <span th:text="${signup1Error}">회원가입 정보를 모두 입력해주세요.</span>
                     </div>
                 </form>
             </section>
