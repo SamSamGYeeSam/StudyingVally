@@ -94,7 +94,7 @@ public class AuthController {
     }
 
     @GetMapping("/findpw1")
-    public String findPw1() {
+    public String findPw() {
         return "auth/findpw1";
     }
 
@@ -105,9 +105,7 @@ public class AuthController {
 
         try {
             String foundPassword = userService.findUserPassword(userId, phoneNumber);
-
             model.addAttribute("foundPassword", foundPassword);
-
             return "auth/findpw2";
 
         } catch (IllegalArgumentException exception) {
