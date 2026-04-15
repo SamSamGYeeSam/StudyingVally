@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${chapter.chapTitle}">강의 시청</title>
+    <style>
+        body { background-color: #1a1a1a; color: white; margin: 0; font-family: sans-serif; }
+        .video-header { padding: 20px; background: #2d2d2d; display: flex; justify-content: space-between; align-items: center; }
+        .video-container { width: 90%; max-width: 1000px; margin: 30px auto; aspect-ratio: 16/9; background: #000; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .video-footer { text-align: center; margin-top: 20px; padding-bottom: 50px; }
+
+        .btn { padding: 12px 25px; font-size: 16px; cursor: pointer; border-radius: 5px; border: none; margin: 0 10px; font-weight: bold; }
+        .btn-complete { background-color: #4caf50; color: white; }
+        .btn-back { background-color: #607d8b; color: white; }
+        .btn:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+<div class="video-header">
+    <h2 th:text="${chapter.chapTitle}">챕터 제목</h2>
+    <span th:text="'과목 번호: ' + ${courseId}">코스 ID</span>
+</div>
+
+<div class="video-container">
+    <video width="100%" height="100%" controls controlsList="nodownload">
+        <source th:src="${chapter.chapUrl}" type="video/mp4">
+        브라우저가 비디오 태그를 지원하지 않습니다.
+    </video>
+</div>
+
+<div class="video-footer">
+    <button class="btn btn-complete" onclick="markAsComplete()">✅ 수강 완료</button>
+    <button class="btn btn-back" th:onclick="|location.href='/student/chapter?courseId=${courseId}'|">🔙 돌아가기</button>
+</div>
+
+<script th:inline="javascript">
+    function markAsComplete() {
+        const chapNo = [[${chapter.chapNo}]];
+        const courseId = [[${courseId}]];
+
+        fetch(`/student/chapter/complete?chapNo=${chapNo}&courseId=${courseId}`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if(response.ok) {
+                    alert("수강 완료 처리가 되었습니다!");
+                    // 완료 후 자동으로 목록으로 돌아가기
+                    location.href = `/student/chapter?courseId=${courseId}`;
+                } else {
+                    alert("처리 중 오류가 발생했습니다.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+
+</body>
+</html>
