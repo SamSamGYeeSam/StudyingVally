@@ -43,7 +43,14 @@ public class CourseService {
 
     // 실제 강의 수정
     @Transactional
-    public void modifyCourse(Long courseId, String courseTitle, String courseDescription, String courseStatus) {
+    public void modifyCourse(Long courseId, String courseTitle, String courseDescription) {
+
+        // 강의 조회
+        Course foundCourse = courseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("강의를 찾을 수 없습니다."));
+
+        foundCourse.updateCourseInfo(courseTitle,courseDescription);
+
     }
 
     // 강의 삭제

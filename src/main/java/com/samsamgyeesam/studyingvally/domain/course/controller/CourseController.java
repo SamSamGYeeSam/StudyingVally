@@ -95,18 +95,30 @@ public class CourseController {
     // 수정하기
     @PostMapping("/course/update")
     public String update(@RequestParam Long courseId, Model model) {
+        // 강의 조회
         CourseDTO course = courseService.findCourseById(courseId);
+        // 챕터 조회
+        List<ChapterDTO> chapterList = chapterService.findChaptersByCourseId(courseId);
         model.addAttribute("course", course);
+        model.addAttribute("chapterList", chapterList);
         return "course/update";
     }
 
+    // 강의 정보 찾아서 강의 수정 페이지로 이동
+    @PostMapping("/course/courseupdate")
+    public String updateCoursePage(@RequestParam Long courseId, Model model) {
+        CourseDTO course = courseService.findCourseById(courseId);
+        model.addAttribute("course", course);
+        return "course/updatecourse";
+    }
+
+    // 강의 수정 처리
     @PostMapping("/course/updatecourse")
     public String updateCourse(@RequestParam Long courseId,
                                @RequestParam String courseTitle,
-                               @RequestParam String courseDescription,
-                               @RequestParam String courseStatus) {
+                               @RequestParam String courseDescription) {
 
-        courseService.modifyCourse(courseId, courseTitle, courseDescription, courseStatus);
+        courseService.modifyCourse(courseId, courseTitle, courseDescription);
 
         return "redirect:/teacher/course";
     }
