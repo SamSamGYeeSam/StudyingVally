@@ -66,7 +66,7 @@ public class AdminUserService {
         String courseSectionTitle = "";
 
         if ("TEACHER".equalsIgnoreCase(adminUser.getUserRole())) {
-            courseTitleList = adminCourseRepository.findByUserNoOrderByCourseIdDesc(userNo)
+            courseTitleList = adminCourseRepository.findByTeacher_UserNoOrderByCourseIdDesc(userNo)
                     .stream()
                     .map(AdminCourse::getCourseTitle)
                     .collect(Collectors.toList());
