@@ -23,24 +23,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserAdmin {
 
-    /**
+    /*
      * 관리자 PK
      */
     @Id
     @Column(name = "admin_no")
     private Long adminNo;
 
-    /**
+    /*
      * 관리자 로그인 아이디
      */
     @Column(name = "admin_id", nullable = false, unique = true)
     private String adminId;
 
-    /**
+    /*
      * 관리자 비밀번호
-     *
-     * 현재는 평문 비교 방식으로 테스트 중이므로
-     * DB 값도 평문 상태를 그대로 사용한다.
      */
     @Column(name = "admin_password", nullable = false)
     private String adminPassword;

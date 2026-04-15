@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetailsService {
+public class AuthUserDetailsService implements UserDetailsService {
 
     /**
      * 일반 사용자 조회용 Repository
@@ -53,7 +53,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserAdmin admin = adminRepository.findByAdminId(loginId).orElse(null);
 
         if (admin != null) {
-            return new CustomUserDetails(admin);
+            return new AuthUserDetails(admin);
         }
 
         /**
@@ -62,6 +62,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserUser user = userRepository.findByUserId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException("일치하는 계정을 찾을 수 없습니다."));
 
-        return new CustomUserDetails(user);
+        return new AuthUserDetails(user);
     }
 }

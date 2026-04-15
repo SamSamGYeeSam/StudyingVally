@@ -93,13 +93,24 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/findpw2")
-    public String findId2() {
-        return "auth/findid2";
+    @GetMapping("/findpw1")
+    public String findPw() {
+        return "auth/findpw1";
     }
 
-    @GetMapping("/findpw1")
-    public String findPw1() {
-        return "auth/findpw1";
+    @GetMapping("/findpw2")
+    public String findPwResult(@RequestParam(required = false) String userId,
+                               @RequestParam(required = false) String phoneNumber,
+                               Model model) {
+
+        try {
+            String foundPassword = userService.findUserPassword(userId, phoneNumber);
+            model.addAttribute("foundPassword", foundPassword);
+            return "auth/findpw2";
+
+        } catch (IllegalArgumentException exception) {
+            model.addAttribute("findPwError", exception.getMessage());
+            return "auth/findpw1";
+        }
     }
 }
