@@ -2,6 +2,7 @@ package com.samsamgyeesam.studyingvally.domain.course.service;
 
 import com.samsamgyeesam.studyingvally.domain.course.dto.ChapterDTO;
 import com.samsamgyeesam.studyingvally.domain.course.entity.Chapter;
+import com.samsamgyeesam.studyingvally.domain.course.entity.Course;
 import com.samsamgyeesam.studyingvally.domain.course.repository.ChapterRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -31,6 +32,14 @@ public class ChapterService {
                 .collect(Collectors.toList());
     }
 
+    // 챕터 번호로 챕터 조회
+    public ChapterDTO findChapterByChapNo(Long chapNo) {
+        Chapter chapter = chapterRepository.findById(chapNo)
+                .orElseThrow(() -> new IllegalArgumentException("챕터를 찾을 수 없습니다."));
+
+        return modelMapper.map(chapter, ChapterDTO.class);
+    }
+
     // 챕터 등록
     @Transactional
     public void registChapter(ChapterDTO chapterDTO) {
@@ -43,5 +52,16 @@ public class ChapterService {
 
         chapterRepository.save(chapter);
     }
+
+    //챕터 수정
+    @Transactional
+    public void modifyChapter(Long chapNo, String chapTitle, String chapDesc, String chapUrl) {
+
+        Chapter foundChapter = chapterRepository.findById(chapNo)
+                .orElseThrow(() -> new IllegalArgumentException("챕터를 찾을 수 없습니다."));
+
+        foundChapter.updateChapterInfo(chapTitle, chapDesc, chapUrl);
+    }
+
 
 }

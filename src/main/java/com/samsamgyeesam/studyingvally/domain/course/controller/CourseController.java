@@ -51,13 +51,7 @@ public class CourseController {
         // 임시로 userNo = 1 고정 (teacher01)
 //        Long userNo = 1L;
 
-        System.out.println("============ 강의 목록 조회 시작 ============");
-        System.out.println("userNo: " + userNo);
-
         List<CourseDTO> result = courseService.findAllCoursesByUserNo(userNo);
-
-        System.out.println("조회된 강의 개수: " + result.size());
-        System.out.println("============ 강의 목록 조회 완료 ============");
 
         return result;
     }
@@ -123,18 +117,33 @@ public class CourseController {
         return "redirect:/teacher/course";
     }
 
-    // 챕터 수정
-    @PostMapping("/course/updatechapter")
-    public String updateChapterPage(@RequestParam Long courseId, Model model) {
-        CourseDTO course = courseService.findCourseById(courseId);
-        List<ChapterDTO> chapterList = chapterService.findChaptersByCourseId(courseId);
+    // 챕터랑 해당 챕터가 속한 강의 정보 가지고 경로롤 이동
+    @PostMapping("/course/chapterupdate")
+    public String updateChapterPage(@RequestParam Long courseId,
+                                    @RequestParam Long chapNo,
+                                    Model model) {
+        ChapterDTO chapter = chapterService.findChapterByChapNo(chapNo);
 
-        model.addAttribute("course", course);
-        model.addAttribute("chapterList", chapterList);
+        model.addAttribute("chapter", chapter);
+        model.addAttribute("courseId", courseId);
 
-        return "course/updatechapter";  // 챕터 수정 페이지
+        return "course/updatechapter";
     }
 
+    // 챕터 수정 처리
+    @PostMapping("/course/updatechapter")
+    public String updateChapter(@RequestParam Long chapNo,
+                                @RequestParam Long courseId,
+                                @RequestParam String chapTitle,
+                                @RequestParam String chapDesc,
+                                @RequestParam String chapUrl,
+                                Model model) {
+
+        // 챕터 수정
+        chapterService.modifyChapter(chapNo, chapTitle, chapDesc, chapUrl);
+
+        return "redirect:/teacher/course";
+    }
 
     // 강의 삭제 확인 페이지
     @PostMapping("/course/deletecheck")

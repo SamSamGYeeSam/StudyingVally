@@ -37,4 +37,11 @@ public class Chapter {
         this.chapUrl = chapUrl;
         this.courseId = courseId;
     }
+
+    //챕터 수정
+    public void updateChapterInfo(String chapTitle, String chapDesc, String chapUrl) {
+        this.chapTitle = chapTitle;
+        this.chapDesc = chapDesc;
+        this.chapUrl = chapUrl;
+    }
 }
