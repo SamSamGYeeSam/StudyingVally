@@ -14,20 +14,88 @@
     <input type="hidden" name="courseTitle" th:value="${courseTitle}">
     <input type="hidden" name="courseDescription" th:value="${courseDescription}">
 
-    <label>챕터 제목</label><br>
-    <input type="text" name="chapTitle" placeholder="제목을 입력하십시오"><br>
-    <label>챕터 설명</label><br>
-    <textarea rows="10" name="chapDesc" cols="50" placeholder="강의 설명을 입력하십시오"></textarea>
-    <br>
-    <label>강의 영상</label><br>
-    <input type="file" name="videoFile"><br><br>
+    <div id="chaptersContainer">
+        <div class="chapter-section">
+            <h3>챕터 1</h3>
+            <label>챕터 제목</label><br>
+            <input type="text" name="chapTitle" placeholder="제목을 입력하십시오" required><br>
+            <label>챕터 설명</label><br>
+            <textarea rows="10" name="chapDesc" cols="50" placeholder="챕터 설명을 입력하십시오" required></textarea><br>
+            <label>강의 영상</label><br>
+            <input type="file" name="videoFile" accept="video/*"><br><br>
+        </div>
+    </div>
 
-    <input type="submit" value="등록 완료하기">
+    <button type="button" onclick="addChapter()">챕터 추가하기</button><br><br>
+    <button type="submit">등록 완료하기</button>
 </form>
 
-<form action="/teacher/register" method="post" style="display:inline;">
+<!--챕터 등록하다가 이전으로 버튼 누르면 강의 등록 페이지로 가는데
+그때 빈칸이 아니라 사용자가 앞서 입력해둔 강의 내용들이 뜨게 하기 위해서 -->
+<form action="/teacher/registcourse/back" method="post" style="display:inline;">
+    <input type="hidden" name="courseTitle" th:value="${courseTitle}">
+    <input type="hidden" name="courseDescription" th:value="${courseDescription}">
     <button type="submit">이전으로</button>
 </form>
+
+
+<script>
+    // 챕터 갯수 세기 -> 챕터 추가하기 전 기본적으로 1개는 작석ㅇ
+    let chapterCount = 1;
+
+    // 챕터 추가 -> 화면 생성
+    function addChapter() {
+        const container = document.getElementById('chaptersContainer');
+        const newIndex = chapterCount;
+
+        const chapterHtml = `
+            <div class="chapter-section">
+                <h3>챕터 ${chapterCount + 1}</h3>
+                <button type="button" onclick="removeChapter(this)">삭제</button><br>
+                <label>챕터 제목</label><br>
+                <input type="text" name="chapTitle" placeholder="제목을 입력하십시오" required><br>
+                <label>챕터 설명</label><br>
+                <textarea rows="10" name="chapDesc" cols="50" placeholder="챕터 설명을 입력하십시오" required></textarea><br>
+                <label>강의 영상</label><br>
+                <input type="file" name="videoFile" accept="video/*"><br><br>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', chapterHtml);
+        chapterCount++;
+    }
+
+    function removeChapter(button) {
+        const chapterSection = button.closest('.chapter-section');
+        const container = document.getElementById('chaptersContainer');
+
+        if (container.children.length <= 1) {
+            alert('최소 1개의 챕터는 필요합니다.');
+            return;
+        }
+
+        chapterSection.remove();
+        updateChapterNumbers();
+    }
+
+    function updateChapterNumbers() {
+        const chapters = document.querySelectorAll('.chapter-section');
+        chapters.forEach((chapter, index) => {
+            const h3 = chapter.querySelector('h3');
+            h3.textContent = `챕터 ${index + 1}`;
+            chapter.setAttribute('data-chapter-index', index);
+
+            const inputs = chapter.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                const name = input.getAttribute('name');
+                if (name && name.includes('chapters[')) {
+                    const newName = name.replace(/chapters\[\d+\]/, `chapters[${index}]`);
+                    input.setAttribute('name', newName);
+                }
+            });
+        });
+    }
+</script>
 
 </body>
 </html>
