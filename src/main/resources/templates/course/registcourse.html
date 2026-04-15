@@ -10,9 +10,9 @@
 <form action="/teacher/registcourse" method="post" >
 
     <label>강의 제목</label><br>
-    <input type="text" name="courseTitle" placeholder="제목을 입력하십시오"><br>
+    <input type="text" name="courseTitle" th:value="${courseTitle}" placeholder="제목을 입력하십시오"><br>
     <label>강의 설명</label><br>
-    <textarea rows="10" name="courseDescription" cols="50" placeholder="강의 설명을 입력하십시오"></textarea>
+    <textarea rows="10" name="courseDescription" cols="50" th:text="${courseDescription}" placeholder="강의 설명을 입력하십시오"></textarea>
     <br>
 
     <input type="submit" value="챕터 등록하기">

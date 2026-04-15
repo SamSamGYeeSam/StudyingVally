@@ -1,10 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>챕터 목록</title>
 </head>
 <body>
+
+<h1>강의 상세 챕터 페이지</h1>
+<h3 th:if="${courseTitle}" th:text="|${courseTitle}|"></h3>
+
+<table>
+    <thead>
+    <tr>
+        <th>챕터명</th>
+        <th>상세 설명</th>
+        <th>퀴즈 등록하기</th>
+        <th>챕터 수정하기</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="chapter : ${chapterList}">
+        <td th:text="${chapter.chapTitle}"></td>
+        <td th:text="${chapter.chapDesc}"></td>
+        <td>
+            <form action="/teacher/quiz/create-quiz" method="post" style="display:inline;">
+                <input type="hidden" name="courseId" th:value="${courseId}">
+                <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">
+                    퀴즈 등록하기
+                </button>
+            </form>
+        </td>
+        <td>
+            <form action="/teacher/course/update" method="post" style="display:inline;">
+                <input type="hidden" name="courseId" th:value="${courseId}">
+                <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">
+                    수정하기
+                </button>
+            </form>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+<br>
+
+<form action="/teacher/course" method="get" style="display:inline;">
+    <button type="submit">이전으로</button>
+</form>
 
 </body>
 </html>
