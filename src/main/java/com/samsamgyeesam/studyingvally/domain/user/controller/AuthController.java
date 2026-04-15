@@ -113,4 +113,41 @@ public class AuthController {
             return "auth/findpw1";
         }
     }
+
+    /*
+     * 회원가입 2단계 화면 반환
+     *
+     * 회원가입 1단계에서 입력한 값을 받아
+     * 다음 단계 화면으로 전달한다.
+     *
+     * @param userName 사용자 이름
+     * @param userId 사용자 아이디
+     * @param userPassword 사용자 비밀번호
+     * @param userNickname 사용자 닉네임
+     * @param userPhoneNumber 사용자 전화번호
+     * @param userEmail 사용자 이메일
+     * @param model View에 전달할 모델 객체
+     * @return auth/signup2
+     */
+    @GetMapping("/signup2")
+    public String signup2(@RequestParam(required = false) String userName,
+                          @RequestParam(required = false) String userId,
+                          @RequestParam(required = false) String userPassword,
+                          @RequestParam(required = false) String userNickname,
+                          @RequestParam(required = false) String userPhoneNumber,
+                          @RequestParam(required = false) String userEmail,
+                          Model model) {
+
+        /**
+         * 회원가입 1단계 입력값을 2단계 화면으로 전달한다.
+         */
+        model.addAttribute("userName", userName);
+        model.addAttribute("userId", userId);
+        model.addAttribute("userPassword", userPassword);
+        model.addAttribute("userNickname", userNickname);
+        model.addAttribute("userPhoneNumber", userPhoneNumber);
+        model.addAttribute("userEmail", userEmail);
+
+        return "auth/signup2";
+    }
 }
