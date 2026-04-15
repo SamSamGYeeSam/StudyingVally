@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/teacher")
 public class CourseController {
     // 강의 조회/삭제/수정 클래스
+    // 상세 챕터 보기
     // 수강생 보기 / 강의평 보기
 
     private final CourseService courseService;
@@ -42,13 +43,13 @@ public class CourseController {
     }
 
     // 강의 전체 목록 띄우기 - db에서 받아서
-    @GetMapping("/course/list") // courselist.html 에서 경로 지정
-    @ResponseBody //
+    @GetMapping("/course/list")
+    @ResponseBody
     public List<CourseDTO> getCourseList(HttpSession session) {
         Long userNo = (Long) session.getAttribute("userNo");
 //
 //        return courseService.findAllCoursesByUserNo(userNo);
-        // 임시로 userNo = 1 고정 (teacher01)
+        // 임시로 userNo = 1
 //        Long userNo = 1L;
 
         List<CourseDTO> result = courseService.findAllCoursesByUserNo(userNo);
@@ -136,10 +137,8 @@ public class CourseController {
                                 @RequestParam Long courseId,
                                 @RequestParam String chapTitle,
                                 @RequestParam String chapDesc,
-                                @RequestParam String chapUrl,
-                                Model model) {
+                                @RequestParam String chapUrl) {
 
-        // 챕터 수정
         chapterService.modifyChapter(chapNo, chapTitle, chapDesc, chapUrl);
 
         return "redirect:/teacher/course";
@@ -153,7 +152,7 @@ public class CourseController {
         return "course/deletecourse";
     }
 
-    // 강의 삭제
+    // 강의 삭제 처리
     @PostMapping("/course/delete")
     public String deleteCourse(@RequestParam Long courseId){
         courseService.deleteCourse(courseId);
