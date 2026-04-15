@@ -1,12 +1,12 @@
 package com.samsamgyeesam.studyingvally.domain.user.controller;
 // 올리기
+import com.samsamgyeesam.studyingvally.domain.user.dto.SignupDTO;
 import com.samsamgyeesam.studyingvally.domain.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 인증 화면 반환을 담당하는 컨트롤러이다.
@@ -129,24 +129,26 @@ public class AuthController {
      * @param model View에 전달할 모델 객체
      * @return auth/signup2
      */
-    @GetMapping("/signup2")
-    public String signup2(@RequestParam(required = false) String userName,
-                          @RequestParam(required = false) String userId,
-                          @RequestParam(required = false) String userPassword,
-                          @RequestParam(required = false) String userNickname,
-                          @RequestParam(required = false) String userPhoneNumber,
-                          @RequestParam(required = false) String userEmail,
+    @PostMapping("/signup2")
+    public String signup2(@ModelAttribute SignupDTO signupDTO,
                           Model model) {
 
-        /**
-         * 회원가입 1단계 입력값을 2단계 화면으로 전달한다.
-         */
-        model.addAttribute("userName", userName);
-        model.addAttribute("userId", userId);
-        model.addAttribute("userPassword", userPassword);
-        model.addAttribute("userNickname", userNickname);
-        model.addAttribute("userPhoneNumber", userPhoneNumber);
-        model.addAttribute("userEmail", userEmail);
+        /* 1단계 입력값 검증 */
+        if (signupDTO.getUserName() == null || signupDTO.getUserName().isBlank()
+                || signupDTO.getUserId() == null || signupDTO.getUserId().isBlank()
+                || signupDTO.getUserPassword() == null || signupDTO.getUserPassword().isBlank()
+                || signupDTO.getUserPhoneNumber() == null || signupDTO.getUserPhoneNumber().isBlank()
+                || signupDTO.getUserEmail() == null || signupDTO.getUserEmail().isBlank()) {
+
+            /* 에러 메시지 + 기존 입력값 유지 */
+            model.addAttribute("signup1Error", "회원가입 정보를 모두 입력해주세요.");
+            model.addAttribute("signupDTO", signupDTO);
+
+            return "auth/signup1";
+        }
+
+        /* signup2.html에서 signupDTO.userName 처럼 꺼낼 수 있도록 DTO 자체를 넘긴다 */
+        model.addAttribute("signupDTO", signupDTO);
 
         return "auth/signup2";
     }

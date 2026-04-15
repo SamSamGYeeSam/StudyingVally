@@ -1,10 +1,515 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>회원가입 2단계</title>
+
+    <style>
+        /* 전체 페이지 기본 설정 */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            position: relative;
+            background: linear-gradient(
+                    to bottom,
+                    #99bee8 0%,
+                    #99bee8 48%,
+                    #a6d36a 48%,
+                    #a6d36a 63%,
+                    #88bd5a 63%,
+                    #88bd5a 100%
+            );
+        }
+
+        /* 해 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 28px;
+            right: 80px;
+            width: 72px;
+            height: 72px;
+            background: #f4d35e;
+            border: 5px solid rgba(212, 165, 48, 0.55);
+            box-sizing: border-box;
+        }
+
+        /* 먼 산 라인 */
+        body::after {
+            content: "";
+            position: absolute;
+            top: 35px;
+            left: 0;
+            width: 100%;
+            height: 230px;
+            background:
+                    polygon(0 100%, 10% 35%, 18% 70%, 28% 25%, 38% 75%, 48% 18%, 58% 72%, 70% 30%, 80% 76%, 88% 22%, 100% 65%, 100% 100%);
+            clip-path: polygon(
+                    0% 100%,
+                    6% 42%,
+                    12% 70%,
+                    20% 28%,
+                    28% 73%,
+                    38% 12%,
+                    49% 72%,
+                    60% 18%,
+                    70% 76%,
+                    79% 25%,
+                    88% 68%,
+                    100% 34%,
+                    100% 100%
+            );
+            background-color: #89a7b7;
+            opacity: 0.9;
+            z-index: 0;
+        }
+
+        /* 배경용 전체 씬 */
+        .scene {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 가까운 산 */
+        .mountains-front {
+            position: absolute;
+            top: 48px;
+            left: 0;
+            width: 100%;
+            height: 210px;
+            background: #7f9ba7;
+            clip-path: polygon(
+                    0% 100%,
+                    8% 52%,
+                    18% 86%,
+                    34% 18%,
+                    48% 88%,
+                    62% 24%,
+                    76% 82%,
+                    88% 28%,
+                    100% 70%,
+                    100% 100%
+            );
+            opacity: 0.6;
+        }
+
+        /* 중간 초원 띠 */
+        .field-strip {
+            position: absolute;
+            top: 188px;
+            left: 0;
+            width: 100%;
+            height: 74px;
+            background:
+                    linear-gradient(to bottom, #9fcb63 0%, #9fcb63 58%, #87b353 58%, #87b353 100%);
+            z-index: 0;
+        }
+
+        /* 작은 언덕 */
+        .hill {
+            position: absolute;
+            bottom: 0;
+            width: 110px;
+            height: 36px;
+            background: #6ea046;
+            clip-path: polygon(0 100%, 12% 68%, 28% 45%, 42% 58%, 58% 34%, 74% 50%, 88% 72%, 100% 100%);
+        }
+
+        .hill.h1 { left: 22px; top: 178px; }
+        .hill.h2 { left: 130px; top: 176px; }
+        .hill.h3 { left: 320px; top: 178px; }
+        .hill.h4 { left: 520px; top: 178px; }
+        .hill.h5 { right: 290px; top: 184px; }
+        .hill.h6 { right: 120px; top: 182px; }
+
+        /* 울타리 */
+        .fence {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 94px;
+            height: 64px;
+            z-index: 0;
+            background:
+                    repeating-linear-gradient(
+                            to right,
+                            transparent 0 18px,
+                            #996733 18px 30px,
+                            transparent 30px 46px
+                    );
+        }
+
+        .fence::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 10px;
+            height: 8px;
+            background: #996733;
+        }
+
+        .fence::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 34px;
+            height: 8px;
+            background: #996733;
+        }
+
+        /* 오른쪽 집 */
+        .house {
+            position: absolute;
+            right: 110px;
+            bottom: 110px;
+            width: 108px;
+            height: 88px;
+            background: #b98a56;
+            border: 5px solid #8a5b2b;
+            box-sizing: border-box;
+            z-index: 0;
+        }
+
+        .house::before {
+            content: "";
+            position: absolute;
+            left: 6px;
+            right: 6px;
+            top: -52px;
+            margin: auto;
+            width: 0;
+            height: 0;
+            border-left: 48px solid transparent;
+            border-right: 48px solid transparent;
+            border-bottom: 52px solid #b75f33;
+        }
+
+        .house::after {
+            content: "";
+            position: absolute;
+            left: 40px;
+            bottom: -5px;
+            width: 24px;
+            height: 46px;
+            background: #8a5b2b;
+            border: 4px solid #6c431c;
+            box-sizing: border-box;
+        }
+
+        /* 구름 */
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 999px;
+            z-index: 0;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: "";
+            position: absolute;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 999px;
+        }
+
+        .cloud.c1 {
+            width: 72px;
+            height: 24px;
+            top: 28px;
+            left: 140px;
+        }
+
+        .cloud.c1::before {
+            width: 28px;
+            height: 28px;
+            left: 8px;
+            top: -10px;
+        }
+
+        .cloud.c1::after {
+            width: 34px;
+            height: 34px;
+            right: 10px;
+            top: -14px;
+        }
+
+        .cloud.c2 {
+            width: 86px;
+            height: 26px;
+            top: 56px;
+            right: 30px;
+        }
+
+        .cloud.c2::before {
+            width: 34px;
+            height: 34px;
+            left: 10px;
+            top: -12px;
+        }
+
+        .cloud.c2::after {
+            width: 40px;
+            height: 40px;
+            right: 8px;
+            top: -16px;
+        }
+
+        /* 회원가입 박스 */
+        .signup-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 420px;
+            margin: 42px auto 0;
+            padding: 30px;
+            background-color: #e9dcc0;
+            border: 5px solid #9c6a2f;
+            box-shadow:
+                    0 0 0 4px #d9c8a1 inset,
+                    0 10px 20px rgba(0, 0, 0, 0.08);
+            box-sizing: border-box;
+        }
+
+        /* 제목 */
+        .signup-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #3b2a1a;
+        }
+
+        /* 성별 선택 전체 영역 */
+        .gender-section {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        /* 남/여 각 선택 영역 */
+        .gender-box {
+            width: 140px;
+            text-align: center;
+        }
+
+        /* 남자 / 여자 텍스트 */
+        .gender-text {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #3b2a1a;
+        }
+
+        /* 기본 radio 버튼은 숨김 */
+        .gender-radio {
+            display: none;
+        }
+
+        /* 캐릭터 이미지 */
+        .gender-image {
+            width: 100px;
+            height: 140px;
+            object-fit: contain;
+            border: 3px solid transparent;
+            background-color: #fff8e8;
+            padding: 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        /* 선택되었을 때 이미지 강조 */
+        .gender-radio:checked + label .gender-image {
+            border: 3px solid #c67c2f;
+            background-color: #f8dfac;
+        }
+
+        /* 닉네임 라벨 */
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #3b2a1a;
+        }
+
+        /* 입력창 */
+        .input-box {
+            width: 100%;
+            height: 42px;
+            padding: 10px;
+            border: 2px solid #b17b3c;
+            background-color: #fff8e8;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+        }
+
+        /* 안내 문구 */
+        .guide-text {
+            font-size: 13px;
+            color: #5a4030;
+            margin-bottom: 20px;
+        }
+
+        /* 버튼 영역 */
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        /* 버튼 공통 */
+        .btn {
+            flex: 1;
+            height: 45px;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            background-color: #b97a38;
+        }
+
+        /* 에러 메시지 */
+        .error-message {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #ffe6e6;
+            color: #c0392b;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
+
+<!-- 배경용 요소만 추가 -->
+<div class="scene">
+    <div class="mountains-front"></div>
+    <div class="field-strip"></div>
+
+    <div class="hill h1"></div>
+    <div class="hill h2"></div>
+    <div class="hill h3"></div>
+    <div class="hill h4"></div>
+    <div class="hill h5"></div>
+    <div class="hill h6"></div>
+
+    <div class="fence"></div>
+    <div class="house"></div>
+
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+</div>
+
+<div class="signup-wrapper">
+    <div class="signup-title">회원가입</div>
+
+    <!--
+        signup1에서 받은 값 + signup2 입력값을
+        최종적으로 /auth/signup으로 전송하는 form
+    -->
+    <form th:action="@{/auth/signup}" method="post">
+
+        <!--
+            signup1에서 넘어온 값을 hidden으로 유지
+            Controller에서 model.addAttribute("signupRequestDTO", signupRequestDTO)
+            해둔 값을 여기서 꺼내 쓴다.
+        -->
+        <input type="hidden" name="userName" th:value="${signupDTO.userName}">
+        <input type="hidden" name="userId" th:value="${signupDTO.userId}">
+        <input type="hidden" name="userPassword" th:value="${signupDTO.userPassword}">
+        <input type="hidden" name="userPhoneNumber" th:value="${signupDTO.userPhoneNumber}">
+        <input type="hidden" name="userEmail" th:value="${signupDTO.userEmail}">
+
+        <!-- 성별 선택 영역 -->
+        <div class="gender-section">
+
+            <!-- 남자 선택 -->
+            <div class="gender-box">
+                <div class="gender-text">남자</div>
+
+                <!-- 실제 서버로 넘어가는 값 -->
+                <input type="radio"
+                       id="male"
+                       name="userGender"
+                       value="MALE"
+                       class="gender-radio"
+                       th:checked="${signupDTO.userGender == 'MALE'}"
+                       required>
+
+                <!-- label 클릭 시 radio 선택 -->
+                <label for="male">
+                    <img th:src="@{/image/male.png}"
+                         alt="남자 캐릭터"
+                         class="gender-image">
+                </label>
+            </div>
+
+            <!-- 여자 선택 -->
+            <div class="gender-box">
+                <div class="gender-text">여자</div>
+
+                <input type="radio"
+                       id="female"
+                       name="userGender"
+                       value="FEMALE"
+                       class="gender-radio"
+                       th:checked="${signupDTO.userGender == 'FEMALE'}"
+                       required>
+
+                <label for="female">
+                    <img th:src="@{/image/female.png}"
+                         alt="여자 캐릭터"
+                         class="gender-image">
+                </label>
+            </div>
+        </div>
+
+        <!-- 닉네임 입력 -->
+        <label for="userNickname" class="input-label">닉네임</label>
+        <input type="text"
+               id="userNickname"
+               name="userNickname"
+               class="input-box"
+               placeholder="닉네임 입력"
+               th:value="${signupDTO.userNickname}"
+               required>
+
+        <!-- 안내 문구 -->
+        <div class="guide-text">
+            성별은 한 번 고른 후 바꿀 수 없으니 신중히 골라주세요.
+        </div>
+
+        <!-- 버튼 영역 -->
+        <div class="button-row">
+            <!-- 뒤로가기 -->
+            <button type="button"
+                    class="btn"
+                    onclick="history.back()">
+                뒤로가기
+            </button>
+
+            <!-- 최종 회원가입 -->
+            <button type="submit" class="btn">
+                회원가입
+            </button>
+        </div>
+
+        <!-- signup2 단계 에러 메시지 -->
+        <div th:if="${signup2Error != null}"
+             class="error-message"
+             th:text="${signup2Error}">
+            회원가입 에러 메시지
+        </div>
+    </form>
+</div>
 
 </body>
 </html>

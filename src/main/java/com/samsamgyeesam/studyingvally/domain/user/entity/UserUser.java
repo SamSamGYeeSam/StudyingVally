@@ -77,4 +77,63 @@ public class UserUser {
      */
     @Column(name = "user_name", nullable = false)
     private String userName;
+
+    /* 상태 */
+    @Column(name = "user_status", nullable = false)
+    private String userStatus;
+
+    /* 성별 */
+    @Column(name = "user_gender", nullable = false)
+    private String userGender;
+
+    public static UserUser builder() {
+        return new UserUser();
+    }
+
+    public UserUser userId(String userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public UserUser userPassword(String userPassword) {
+        this.userPassword = userPassword;
+        return this;
+    }
+
+    public UserUser userPhoneNumber(String userPhoneNumber) {
+        this.userPhoneNumber = userPhoneNumber;
+        return this;
+    }
+
+    public UserUser userEmail(String userEmail) {
+        this.userEmail = userEmail;
+        return this;
+    }
+
+    public UserUser userRole(UserRole userRole) {
+        this.userRole = userRole;
+        return this;
+    }
+
+    public UserUser userNickname(String userNickname) {
+        this.userNickname = userNickname;
+        return this;
+    }
+
+    public UserUser userName(String userName) {
+        this.userName = userName;
+        return this;
+    }
+
+    public UserUser userStatus(String userStatus) {
+        this.userStatus = userStatus;
+        return this;
+    }
+
+    public UserUser userGender(String userGender) {
+        this.userGender = userGender;
+        return this;
+    }
+
+
 }

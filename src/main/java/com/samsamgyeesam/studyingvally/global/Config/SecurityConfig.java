@@ -151,7 +151,34 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/main",
+                                "/auth/login",
+                                "/auth/signup1",
+                                "/auth/signup2",
+                                "/auth/find",
+                                "/auth/findid",
+                                "/auth/findid2",
+                                "/auth/findpw1",
+                                "/auth/findpw2",
+                                "/image/**"
+                                // 이미지를 넣은 이유는 정적 리스소 경로 처리하는데 images는 처리하지만 image는 예외처리에서 빠질 수 있다함
+                                // 그래서 js, css는 뺐지만 image만 따로 넣어줌
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+
+                /**
+                 * 로그인 설정
+                 */
+                .formLogin(login -> login
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/auth/login")
+                        .usernameParameter("loginId")
+                        .passwordParameter("password")
+                        .successHandler(authSuccessHandler)
+                        .failureUrl("/auth/login?error=true")
                 )
                 .formLogin(form -> form.disable());
 

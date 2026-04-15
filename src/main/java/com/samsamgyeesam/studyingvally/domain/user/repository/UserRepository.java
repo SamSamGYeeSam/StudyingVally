@@ -25,4 +25,7 @@ public interface UserRepository extends JpaRepository<UserUser, Long> {
 
     // 아이디와 전화번호를 조회해 비밀번호를 찾는다.
     Optional<UserUser> findByUserIdAndUserPhoneNumber(String userId, String userPhoneNumber);
+
+    /* 회원가입 시 아이디 중복 검사 */
+    boolean existsByUserId(String userId);
 }
