@@ -3,41 +3,48 @@ package com.samsamgyeesam.studyingvally.global.Config;
 import com.samsamgyeesam.studyingvally.domain.user.service.AuthSuccessHandler;
 import com.samsamgyeesam.studyingvally.domain.user.service.AuthUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-/*
+/**
  * Spring Security 설정 클래스이다.
  *
- * 현재 단계의 목표:
- * 1. 서버 실행 시 첫 화면은 /main 으로 보여주기
- * 2. 기본 로그인 페이지(/login) 대신 커스텀 로그인 페이지(/auth/login) 사용
- * 3. user 테이블 기준 로그인 동작 확인
+ * 현재 프로젝트에서는
+ * - 로그인
+ * - 로그아웃
+ * - 권한별 성공 경로 분기
+ * - 정적 리소스(css, js, image) Security 제외
  *
- * 주의:
- * - 현재는 평문 비밀번호 비교를 사용한다.
- * - 실무에서는 NoOpPasswordEncoder를 사용하면 안 된다.
- * - 지금은 부트캠프 팀프로젝트의 최소 로그인 동작 확인용이다.
+ * 를 담당한다.
  */
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    // 사용자 인증 시 DB 조회를 담당하는 서비스이다.
+    /**
+     * 로그인 시 사용자 인증 정보를 조회하는 서비스
+     */
     private final AuthUserDetailsService authUserDetailsService;
+
+    /**
+     * 로그인 성공 후 권한별 이동 경로를 분기하는 핸들러
+     */
     private final AuthSuccessHandler authSuccessHandler;
 
     /*
-     * 평문 비밀번호 비교용 PasswordEncoder이다.
+     * 현재 프로젝트는 평문 비밀번호 비교 방식으로 테스트 중이다.
      *
-     * 현재 DB에 비밀번호가 평문으로 저장되어 있으므로
-     * 입력값과 DB값을 그대로 비교하기 위해 사용한다.
-     *
-     * @return NoOpPasswordEncoder 인스턴스
+     * 주의:
+     * 실무에서는 사용하면 안 되고,
+     * 현재는 부트캠프 팀 프로젝트 진행 단계에 맞춘 임시 설정이다.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -45,13 +52,18 @@ public class SecurityConfig {
     }
 
     /*
-     * Security 필터 체인 설정이다.
+     * 정적 리소스에 대한 요청은 Security 인증 대상에서 제외한다.
      *
-     * 핵심 포인트:
-     * - /main 은 인증 없이 접근 가능해야 한다.
-     * - /auth/login 도 인증 없이 접근 가능해야 한다.
-     * - 로그인 페이지는 /auth/login 을 사용한다.
-     * - 로그인 성공 후 /main 으로 이동한다.
+     * PathRequest.toStaticResources().atCommonLocations() 는
+     * /static 하위의 css, js, images 등의 공통 정적 리소스를 대상으로 한다.
+     */
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
+    /**
+     * Security 필터 체인 설정
      *
      * @param http HttpSecurity 객체
      * @return SecurityFilterChain
@@ -60,66 +72,51 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-
         http
-                /*
-                 * 사용자 조회 서비스 등록
+                /**
+                 * 사용자 인증 정보 조회 서비스 등록
                  */
                 .userDetailsService(authUserDetailsService)
 
                 /**
-                 * URL별 인가 정책 설정
+                 * URL별 접근 권한 설정
+                 *
+                 * 주의:
+                 * css/js/image는 위 WebSecurityCustomizer에서 제외했으므로
+                 * 여기서는 따로 permitAll로 작성하지 않는다.
                  */
                 .authorizeHttpRequests(auth -> auth
-                        // 첫 화면, 로그인/회원가입 화면, 정적 리소스는 모두 허용
                         .requestMatchers(
                                 "/",
                                 "/main",
                                 "/auth/login",
                                 "/auth/signup1",
-                                "/css/**",
-                                "/js/**",
+                                "/auth/find",
+                                "/auth/findid",
+                                "/auth/findid2",
+                                "/auth/findpw1",
+                                "/auth/findpw2",
                                 "/image/**"
+                                // 이미지를 넣은 이유는 정적 리스소 경로 처리하는데 images는 처리하지만 image는 예외처리에서 빠질 수 있다함
+                                // 그래서 js, css는 뺐지만 image만 따로 넣어줌
                         ).permitAll()
-
-                        // 그 외 요청은 인증 필요
                         .anyRequest().authenticated()
                 )
 
-                // 로그인 설정
+                /**
+                 * 로그인 설정
+                 */
                 .formLogin(login -> login
-                        // 커스텀 로그인 페이지 경로
                         .loginPage("/auth/login")
-
-                        // 실제 로그인 처리 URL
                         .loginProcessingUrl("/auth/login")
-
-                        // username 파라미터명
                         .usernameParameter("loginId")
-
-                        // password 파라미터명
                         .passwordParameter("password")
-
-                        // 로그인 성공 시 이동 경로
                         .successHandler(authSuccessHandler)
-
-                        // 로그인 실패 시 다시 로그인 화면으로 이동
                         .failureUrl("/auth/login?error=true")
                 )
+
                 /**
                  * 로그아웃 설정
-                 *
-                 * logoutUrl("/auth/logout")
-                 * - 사용자가 이 URL로 요청하면 로그아웃 처리한다.
-                 *
-                 * logoutSuccessUrl("/main")
-                 * - 로그아웃 완료 후 첫 화면으로 이동한다.
-                 *
-                 * invalidateHttpSession(true)
-                 * - 현재 세션을 완전히 무효화한다.
-                 *
-                 * deleteCookies("JSESSIONID")
-                 * - 세션 식별 쿠키를 제거한다.
                  */
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
@@ -128,11 +125,8 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                 )
 
-                // 현재 단계에서는 로그아웃 기능을 구현하지 않으므로 별도 설정하지 않는다.
-
-                /*
-                 * 학습 단계에서는 CSRF를 잠시 비활성화한다.
-                 * 나중에 POST 폼이 늘어나면 CSRF 토큰 적용을 고려해야 한다.
+                /**
+                 * 학습 단계에서는 CSRF를 임시 비활성화한다.
                  */
                 .csrf(csrf -> csrf.disable());
 
