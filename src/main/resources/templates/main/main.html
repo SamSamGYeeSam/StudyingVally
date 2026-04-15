@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>강의 마을 - 첫 화면</title>
+  <link rel="stylesheet" href="/css/main.css">
+
+</head>
+<body>
+<div class="game-screen">
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+
+  <div class="mountains"></div>
+  <div class="far-trees"></div>
+
+  <div class="ground"></div>
+  <div class="path"></div>
+  <div class="fence"></div>
+
+  <div class="house">
+    <div class="roof"></div>
+    <div class="body"></div>
+    <div class="window left"></div>
+    <div class="window right"></div>
+    <div class="door"></div>
+  </div>
+
+  <div class="panel-wrap">
+    <div class="panel">
+      <!-- 첫 화면 -->
+      <section id="menuScreen" class="menu-screen active">
+        <!-- Studying Valley Title -->
+        <div class="title-container">
+          <img th:src="@{/image/studying_valley_title.svg}"
+               alt="STUDYING VALLEY"
+               class="main-title-img">
+        </div>
+
+        <!-- Subtitle -->
+        <div class="subtitle-container">
+          <img th:src="@{/image/subtitle.svg}"
+               alt="Game-based Learning System"
+               class="subtitle-img">
+        </div>
+
+        <div class="button-row">
+          <!-- 로그인을 눌렀을 시 로그인 페이지로 이동-->
+          <form  th:action="@{/auth/login}" method="get">
+            <button type="submit" class="pixel-btn" id="goLoginBtn">로그인</button>
+          </form>
+          <form th:action="@{/auth/signup1}" method="get">
+            <button type="submit" class="pixel-btn" id="goSignupBtn">회원가입</button>
+          </form>
+        </div>
+        <div class="find-account-link-wrap">
+          <a th:href="@{/auth/find}" class="find-account-link">
+            아이디 / 비밀번호를 잊으셨나요?
+          </a>
+        </div>
+
+      </section>
+    </div>
+  </div>
+</div>
+
+
+<!--<script src="main.js" defer></script>-->
+</body>
+</html>

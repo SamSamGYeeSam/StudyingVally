@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        #courseTable tbody tr {
+            cursor: pointer;
+        }
+
+        /* 선택창 */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+            width: 300px;
+        }
+
+        .popup.active {
+            display: block;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .popup-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .popup-menu li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .popup-menu li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .popup-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<h3>전체 강의 목록</h3>
+<table id="courseTable">
+    <thead>
+    <tr>
+        <th>강의명</th>
+        <th>상태</th>
+        <th>개설일</th>
+        <th>승인요청</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div id="emptyMessage" class="empty-message" style="display:none;">
+    등록된 강의가 없습니다.
+</div>
+
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
+
+<div class="popup" id="popup">
+    <h4 id="popupTitle">강의 메뉴</h4>
+    <ul class="popup-menu">
+        <li onclick="submitForm('chapter')">강의 상세 챕터 보기</li>
+        <li onclick="submitForm('review')">강의평 보기</li>
+        <li onclick="submitForm('studentlist')">수강생 보기</li>
+        <li onclick="submitForm('update')">강의 수정하기</li>
+        <li onclick="submitForm('deletecheck')">강의 삭제하기</li>
+        <li onclick="submitForm('quiz')">퀴즈 보기</li>
+        <li onclick="closePopup()">이전으로</li>
+    </ul>
+</div>
+
+<!-- Form들 -->
+<form id="chapterForm" action="/teacher/course/chapter" method="post">
+    <input type="hidden" name="courseId" id="chapterCourseId">
+</form>
+<form id="reviewForm" action="/teacher/course/review" method="post">
+    <input type="hidden" name="courseId" id="reviewCourseId">
+</form>
+<form id="studentlistForm" action="/teacher/course/studentlist" method="post">
+    <input type="hidden" name="courseId" id="studentlistCourseId">
+</form>
+<form id="updateForm" action="/teacher/course/update" method="post">
+    <input type="hidden" name="courseId" id="updateCourseId">
+</form>
+<form id="deletecheckForm" action="/teacher/course/deletecheck" method="post">
+    <input type="hidden" name="courseId" id="deletecheckCourseId">
+</form>
+<form id="quizForm" action="/teacher/course/quiz" method="post">
+    <input type="hidden" name="courseId" id="quizCourseId">
+</form>
+
+<!-- 이전으로 버튼 -->
+<form action="/teacher/teachermain" method="post">
+    <button type="submit">이전으로</button>
+</form>
+
+<script>
+    let selectedCourseId = null;
+
+    window.onload = function() {
+        fetchCourseList();
+    };
+
+    function fetchCourseList() {
+        fetch('/teacher/course/list')
+            .then(response => response.json())
+            .then(data => {
+                displayCourseList(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('강의 목록을 불러오는데 실패했습니다.');
+            });
+    }
+
+    function displayCourseList(courses) {
+        const tbody = document.querySelector('#courseTable tbody');
+        const table = document.getElementById('courseTable');
+        const emptyMessage = document.getElementById('emptyMessage');
+
+        tbody.innerHTML = '';
+
+        if (!courses || courses.length === 0) {
+            table.style.display = 'none';
+            emptyMessage.style.display = 'block';
+            return;
+        }
+
+        table.style.display = 'table';
+        emptyMessage.style.display = 'none';
+
+        courses.forEach(course => {
+            const tr = document.createElement('tr');
+            tr.onclick = function() {
+                showPopup(course.courseId, course.courseTitle);
+            };
+
+            const createdAt = new Date(course.courseCreatedAt).toLocaleDateString('ko-KR');
+            const statusText = course.courseStatus === 'OPEN' ? '개설' : '미개설';
+
+            tr.innerHTML = `
+                <td>${course.courseTitle}</td>
+                <td>${statusText}</td>
+                <td>${createdAt}</td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    function showPopup(courseId, courseTitle) {
+        selectedCourseId = courseId;
+        document.getElementById('popupTitle').textContent = courseTitle;
+        document.getElementById('popup').classList.add('active');
+        document.getElementById('overlay').classList.add('active');
+    }
+
+    function closePopup() {
+        document.getElementById('popup').classList.remove('active');
+        document.getElementById('overlay').classList.remove('active');
+        selectedCourseId = null;
+    }
+
+    function submitForm(type) {
+        document.getElementById(type + 'CourseId').value = selectedCourseId;
+        document.getElementById(type + 'Form').submit();
+    }
+</script>
+
+</body>
+</html>
