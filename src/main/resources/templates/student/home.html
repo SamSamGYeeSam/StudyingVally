@@ -2,25 +2,209 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>우리 집 - 마이페이지</title>
+  <title>Studying Valley - home</title>
+  <style>
+    body {
+      background-color: #2c3e50;
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; margin: 0; font-family: 'Arial', sans-serif;
+      overflow: hidden;
+    }
+
+    .room-container {
+      position: relative;
+      width: 800px;
+      height: 600px;
+      background: #f0f0f0;
+      border: 6px solid #5d4037;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+      background-image: url('/image/home_bg.png'); /* 마이페이지 전용 배경 */
+      background-position: center;
+      background-size: cover;
+      overflow: hidden;
+    }
+
+    #player-character {
+      position: absolute;
+      width: 100px;  /* 원하는 크기로 조절 (예: 64px) */
+      height: auto; /* 높이는 비율에 맞게 */
+      z-index: 5;
+      transition: left 2s linear, top 2s linear;
+      text-align: center;
+      image-rendering: pixelated;
+    }
+
+    #player-character .char-image {
+      width: 80%;  /* 부모인 #player-character의 너비(64px)를 꽉 채우게 함 */
+      height: auto;
+      display: block;
+    }
+
+    .char-image { width: 100px; height: auto; }
+    .char-label {
+      font-size: 11px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    .main-content {
+      position: absolute;
+      left: 50%; top: 45%;
+      transform: translate(-50%, -50%);
+      width: 500px; /* 컨테이너에 맞춰 너비 조정 */
+      display: none;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      border: 4px solid #5d4037;
+      padding: 20px;
+      z-index: 100;
+      color: #fff;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    .menu-container {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .pixel-btn {
+      padding: 10px 16px;
+      background: #8d6e63;
+      color: white;
+      border: 2px solid #000;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 4px;
+      display: block;
+      box-shadow: 2px 2px 0 #000;
+    }
+    .pixel-btn:hover { background: #6d4c41; transform: translateY(-2px); }
+    .pixel-btn.active { background: #ffca28; color: #000; }
+    .pixel-btn.danger { background: #e74c3c; }
+
+    .course-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+    .course-table th { border-bottom: 2px solid #fff; padding: 8px; }
+    .course-table td { padding: 8px; text-align: center; }
+
+    #welcome-msg {
+      position: absolute;
+      top: 20px; left: 20px;
+      color: white;
+      text-shadow: 2px 2px 4px #000;
+      z-index: 10;
+    }
+  </style>
 </head>
 <body>
-<h1>마이페이지 (우리 집)</h1>
 
-<div class="menu-container">
-  <ul>
-    <li>
-      <a th:href="@{/student/home/password}">내 정보 보기</a>
-    </li>
+<div class="room-container" id="homeRoom">
 
-    <li>
-      <a th:href="@{/student/finddetail}">수강 중인 강의 조회</a>
-    </li>
+  <div id="welcome-msg">
+    <h3 style="margin:0;">👨‍🌾 <span th:text="${student.userNickname}">학생</span>님의 방</h3>
+  </div>
 
-    <li>
-      <a th:href="@{/student/main}">광장으로 돌아가기</a>
-    </li>
-  </ul>
+  <div id="player-character">
+    <img src="/image/character1.png" class="char-image" alt="My Character">
+    <div class="char-label">나</div>
+  </div>
+
+  <div id="course-section" class="main-content">
+    <h3 style="text-align: center; margin-top:0;">📚 나의 수강 현황</h3>
+    <table class="course-table">
+      <thead>
+      <tr>
+        <th>강의명</th>
+        <th>진행률</th>
+        <th>성적</th>
+        <th>평가</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="course : ${courseList}">
+        <td th:text="${course.courseName}">자바 기초</td>
+        <td th:text="${course.progress} + '%'">80%</td>
+        <td th:text="${course.score != null ? course.score : '-'}">A+</td>
+        <td>
+          <button th:if="${course.progress == 100 and (course.score == null or course.score == '')}"
+                  class="pixel-btn"
+                  style="padding: 5px 10px; font-size: 11px; width: auto; background-color: #ffca28; color: #000;"
+                  th:onclick="|location.href='/student/evaluation/write?courseId=' + ${course.courseId}|">
+            📝 강의평 작성
+          </button>
+
+          <span th:if="${course.progress < 100}" style="font-size: 11px; opacity: 0.6;">열공 중!</span>
+          <span th:if="${course.progress == 100 and course.score != null}" style="font-size: 11px; color: #ffca28;">평가완료</span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <button class="pixel-btn" style="margin-top:20px; width:100%;" onclick="hideSection()">닫기</button>
+  </div>
+
+  <div class="menu-container">
+    <button class="pixel-btn" id="course-btn" onclick="showSection('course-section', this)">📚 수강 강의 조회</button>
+    <button class="pixel-btn" onclick="location.href='/student/profile'">👤 정보 수정</button>
+    <button class="pixel-btn danger" onclick="confirmWithdraw()">🚪 회원 탈퇴</button>
+    <button class="pixel-btn" style="background: #607d8b; margin-top: 10px;" onclick="location.href='/main'">
+      🏠 메인으로
+    </button>
+  </div>
+
 </div>
+
+<script>
+  const char = document.getElementById('player-character');
+  const room = document.getElementById('homeRoom');
+
+  const roomWidth = 800;
+  const roomHeight = 600;
+  const charWidth = 100;
+  const charHeight = 120;
+
+  function showSection(id, btn) {
+    document.getElementById(id).style.display = 'block';
+    document.querySelectorAll('.pixel-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function hideSection() {
+    document.getElementById('course-section').style.display = 'none';
+    document.getElementById('course-btn').classList.remove('active');
+  }
+
+  function moveCharRandomly() {
+    const minX = 50;
+    const maxX = roomWidth - charWidth - 50;
+    const minY = 50;
+    const maxY = roomHeight - charHeight - 50;
+
+    const randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+    const randomY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+
+    char.style.left = randomX + 'px';
+    char.style.top = randomY + 'px';
+  }
+
+  setInterval(moveCharRandomly, 3000);
+  moveCharRandomly();
+
+  function confirmWithdraw() {
+    if(confirm("정말 탈퇴하시겠습니까? 모든 정보가 사라집니다.")) {
+      location.href = "/student/withdraw";
+    }
+  }
+</script>
+
 </body>
 </html>

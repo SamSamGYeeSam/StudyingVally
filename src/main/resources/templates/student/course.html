@@ -1,240 +1,160 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>강의실 - 스타잉밸리</title>
+    <title>스터딩밸리 공지사항</title>
     <style>
-        /* 기본 레이아웃 - 강의실 상자 */
-        body { background-color: #2c3e50; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Arial', sans-serif; overflow: hidden; }
-
-        .room-container {
-            position: relative;
-            width: 800px;
-            height: 600px;
-            background: #f0f0f0;
-            border: 6px solid #5d4037;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            /* 배경 이미지를 넣으면 더 게임 같아집니다! */
-             background-image: url('/image/room-bg.png');
-            /* 배경 이미지 좌표 고정 */
-            background-position: center;
-            background-size: cover;
-        }
-
-        /* 진행률 바 */
-        .progress-container { position: absolute; top: 20px; left: 20px; width: 300px; z-index: 10; }
-        .progress-bar-background { background-color: #e0e0e0; border: 2px solid #000; height: 20px; width: 100%; border-radius: 10px; overflow: hidden; }
-        .progress-bar-fill { background-color: #4caf50; height: 100%; transition: width 0.5s ease; }
-
-        /* 메뉴 버튼 상자 (오른쪽 하단) */
-        .menu-container {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            z-index: 10;
-        }
-
-        .pixel-btn {
-            padding: 8px 16px;
-            background: #8d6e63;
-            color: white;
-            border: 2px solid #000;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: bold;
-            text-align: center;
-            border-radius: 4px;
-            display: block; /* 세로 정렬 보장 */
-        }
-        .pixel-btn:hover { background: #6d4c41; transform: translateY(-2px); }
-
-        /* [수정됨] NPC (자유 이동을 위해 초기 중앙 배치 제거) */
-        #npc-character {
-            position: absolute;
-            /* 초기 위치는 자바스크립트에서 설정합니다 */
-            cursor: pointer;
-            z-index: 5;
-            /* [중요] 이동 애니메이션 속도 및 방식 설정 */
-            transition: left 2s linear, top 2s linear, transform 0.2s ease;
-            text-align: center;
-            /* 이미지 호버 시 살짝 들리는 효과 예방 */
-            will-change: left, top;
-        }
-
-        /* NPC 이미지 스타일 */
-        .npc-image {
-            width: 100px; /* 이미지 크기 조절 */
-            height: auto;
-            /* 도트 이미지가 흐려지지 않게 하는 속성 */
-            image-rendering: pixelated;
-        }
-
-        .npc-label {
-            font-size: 12px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            margin-top: 5px;
-            display: inline-block;
-            /* 이동 중 글자 깨짐 방지 */
-            backface-visibility: hidden;
-        }
-
-        /* 대화창 모달 */
-        #npcModal {
-            display: none;
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: #4e342e;
-            border: 4px solid #795548;
-            border-radius: 10px;
-            color: white;
+        body {
+            font-family: 'NanumSquareRound', sans-serif;
+            background-color: #F5F5F0;
+            color: #333;
+            margin: 0;
             padding: 20px;
-            z-index: 100;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            color: #4A6F5A;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* 탭 스타일 */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #A3C18D;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: #4A6F5A;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+            transition: background-color 0.3s;
+        }
+
+        .tab-btn.active {
+            background-color: #4A6F5A;
+            color: #fff;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background-color: #E6EFEC;
+        }
+
+        /* 공지사항 목록 스타일 */
+        .notice-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .notice-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .notice-item:hover {
+            background-color: #F9FCFB;
+        }
+
+        .notice-icon {
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .notice-title {
+            flex-grow: 1;
+            font-weight: bold;
+        }
+
+        .notice-date {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .new-icon {
+            color: #A3C18D;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        /* 테이블 스타일 (필요시 사용) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background-color: #A3C18D;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background-color: #F9FCFB;
+        }
+
+        .clickable-title {
+            cursor: pointer;
+            color: #4A6F5A;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-<div class="room-container" id="room">
-    <div class="progress-container">
-        <p style="margin: 0 0 5px 0; font-weight: bold;">학습 진행률: <span th:text="${progress}">0</span>%</p>
-        <div class="progress-bar-background">
-            <div class="progress-bar-fill" th:style="'width: ' + ${progress} + '%;'"></div>
-        </div>
+<div class="container">
+    <h1>🌱 스터딩밸리 소식통</h1>
+
+    <div class="tabs">
+        <button class="tab-btn active">전체 공지</button>
+        <button class="tab-btn">강의 공지</button>
     </div>
 
-    <div id="npc-character" onclick="talkToNpc()">
-        <img src="/image/npc1.png" alt="NPC" class="npc-image">
-        <br>
-        <div class="npc-label">대화하기</div>
-    </div>
+    <ul class="notice-list">
+        <li class="notice-item">
+            <span class="notice-icon">🌿</span>
+            <span class="notice-title">스터딩밸리 이용 가이드 (필독!)</span>
+            <span class="notice-date">2026.04.16</span>
+        </li>
+        <li class="notice-item">
+            <span class="notice-icon">📢</span>
+            <span class="notice-title">자바 프로그래밍 입문 강의 개설 안내</span>
+            <span class="notice-date">2026.04.15</span>
+            <span class="new-icon">N</span>
+        </li>
+        <li class="notice-item">
+            <span class="notice-icon">🔧</span>
+            <span class="notice-title">시스템 점검 안내 (4/20 새벽 2시~6시)</span>
+            <span class="notice-date">2026.04.14</span>
+        </li>
+    </ul>
 
-    <div id="npcModal">
-        <div style="display: flex; align-items: center;">
-            <img src="/images/npc.png" alt="NPC" style="width: 50px; height: 50px; margin-right: 20px; image-rendering: pixelated;">
-            <div>
-                <strong style="color: #ffca28; font-size: 1.1em;">스프링클 선생님</strong>
-                <p id="npcMessage" style="margin: 10px 0; line-height: 1.5;">반가워요! 오늘도 열공 중이시군요?</p>
-            </div>
-        </div>
-        <div style="text-align: right;">
-            <button onclick="closeNpc()" style="background: #8d6e63; color: white; border: none; padding: 5px 15px; cursor: pointer; border-radius: 3px; font-weight: bold;">다음 [Space]</button>
-        </div>
-    </div>
-
-    <div class="menu-container">
-        <a th:href="@{/student/chapter(courseId=${courseId})}" class="pixel-btn">📜 챕터 목록</a>
-        <a th:href="@{/student/evaluation/write(courseId=${courseId})}" class="pixel-btn">⭐ 강의평 쓰기</a>
-        <button class="pixel-btn" style="background: #607d8b;" onclick="location.href='/main'">
-            🚪 강의실 나가기
-        </button>
-    </div>
 </div>
-
-<script th:inline="javascript">
-    // NPC 이동 관련 변수
-    const npc = document.getElementById('npc-character');
-    const room = document.getElementById('room');
-    const npcModal = document.getElementById('npcModal');
-
-    // 강의실 크기 및 NPC 크기 (이동 제한 구역 설정용)
-    const roomWidth = 800;
-    const roomHeight = 600;
-    const npcWidth = 80; // .npc-image width와 동일하게 설정
-    const npcHeight = 110; // 이미지 + 라벨 높이 대략 계산
-
-    // 메뉴 바 및 진행률 바 영역 (이곳으로는 이동하지 않도록 여백 설정)
-    const paddingLeft = 40;
-    const paddingTop = 80; // 진행률 바 아래
-    const paddingRight = 180; // 메뉴 버튼 왼쪽
-    const paddingBottom = 120; // 메뉴 버튼 위
-
-    let moveInterval; // 이동 타이머
-    let isTalking = false; // 대화 중인지 여부
-
-    // NPC 초기 위치 설정 (중앙 부근)
-    npc.style.left = (roomWidth / 2 - npcWidth / 2) + 'px';
-    npc.style.top = (roomHeight / 2 - npcHeight / 2) + 'px';
-
-    // 랜덤 이동 함수
-    function moveNpcRandomly() {
-        if (isTalking) return; // 대화 중이면 이동 안 함
-
-        // 이동 가능한 랜덤 좌표 계산
-        const minX = paddingLeft;
-        const maxX = roomWidth - npcWidth - paddingRight;
-        const minY = paddingTop;
-        const maxY = roomHeight - npcHeight - paddingBottom;
-
-        const randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
-        const randomY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
-
-        // CSS Transition에 의해 부드럽게 이동
-        npc.style.left = randomX + 'px';
-        npc.style.top = randomY + 'px';
-    }
-
-    // NPC 클릭 시 대화 함수
-    function talkToNpc() {
-        if (isTalking) return; // 이미 대화 중이면 무시
-
-        isTalking = true; // 대화 상태로 변경 (이동 멈춤)
-
-        // 클릭한 순간의 위치 고정 (CSS transition 일시 정지 효과)
-        const computedStyle = window.getComputedStyle(npc);
-        npc.style.left = computedStyle.left;
-        npc.style.top = computedStyle.top;
-
-        const messages = [
-            "백엔드 개발의 핵심은 역시 데이터베이스죠! 🥦",
-            "오늘도 코딩하느라 고생이 많아요. 잠시 쉬어가는 건 어때요?",
-            "스타잉밸리에 오신 걸 환영합니다! 끝까지 완주해봐요.",
-            "혹시 자바(Java) 하다가 막히는 건 없나요? 무엇이든 물어보세요!",
-            "코드를 깔끔하게 짜는 습관, 아주 중요합니다. 화이팅!",
-            "움직이니까 좀 더 건강해진 기분이에요!"
-        ];
-        const randomIndex = Math.floor(Math.random() * messages.length);
-        document.getElementById('npcMessage').innerText = messages[randomIndex];
-        npcModal.style.display = 'block';
-
-        // 클릭 시 커지는 효과 (Wandering 중에도 적용되도록 translate 값 유지)
-        npc.style.transform = "scale(1.1)";
-    }
-
-    // 대화창 닫기 함수
-    function closeNpc() {
-        npcModal.style.display = 'none';
-
-        // 크기 복구
-        npc.style.transform = "scale(1)";
-
-        isTalking = false; // 대화 종료 (다시 이동 시작)
-    }
-
-    // 키보드 이벤트 (스페이스바나 ESC 누르면 닫기)
-    window.addEventListener('keydown', function(event) {
-        if (npcModal.style.display === 'block') {
-            if (event.code === 'Space' || event.code === 'Escape') {
-                closeNpc();
-            }
-        }
-    });
-
-    // 페이지 로드 시 이동 시작
-    // 3초마다 새로운 위치로 이동 계산 (CSS transition은 2초로 설정하여 1초 대기 효과)
-    moveInterval = setInterval(moveNpcRandomly, 3000);
-    // 로드 즉시 한 번 이동
-    setTimeout(moveNpcRandomly, 100);
-
-</script>
 
 </body>
 </html>

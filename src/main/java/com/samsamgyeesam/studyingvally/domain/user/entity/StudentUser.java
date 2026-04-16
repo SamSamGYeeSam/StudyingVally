@@ -13,7 +13,7 @@ public class StudentUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_no") // SQL의 user_no 컬럼
+    @Column(name = "user_no")
     private Long userNo;
 
     @Column(name = "user_id", nullable = false)
