@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+
+<th:block th:fragment="modalCss">
+  <style>
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 1001;
+    }
+
+    .modal-overlay.active {
+        display: block;
+    }
+
+    .common-modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 1002;
+        width: 400px;
+        text-align: center;
+    }
+
+    .common-modal.active {
+        display: block;
+    }
+
+    .common-modal h3 {
+        margin-bottom: 20px;
+    }
+
+    .common-modal.success h3 {
+        color: #4CAF50;
+    }
+
+    .common-modal.error h3 {
+        color: #f44336;
+    }
+
+    .common-modal.info h3 {
+        color: #2196F3;
+    }
+
+    .common-modal p {
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+
+    .common-modal button {
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        color: white;
+    }
+
+    .common-modal.success button {
+        background-color: #4CAF50;
+    }
+
+    .common-modal.success button:hover {
+        background-color: #45a049;
+    }
+
+    .common-modal.error button {
+        background-color: #f44336;
+    }
+
+    .common-modal.error button:hover {
+        background-color: #da190b;
+    }
+
+    .common-modal.info button {
+        background-color: #2196F3;
+    }
+
+    .common-modal.info button:hover {
+        background-color: #0b7dda;
+    }
+  </style>
+</th:block>
+
+<div th:fragment="modalHtml">
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+  <div class="common-modal" id="commonModal">
+    <h3 id="modalTitle">알림</h3>
+    <p id="modalMessage"></p>
+    <button onclick="closeModal()">확인</button>
+  </div>
+</div>
+
+<script th:fragment="modalScript" th:inline="javascript">    function showModal(message, type) {
+        const modal = document.getElementById('commonModal');
+        const overlay = document.getElementById('modalOverlay');
+        const title = document.getElementById('modalTitle');
+        const messageEl = document.getElementById('modalMessage');
+
+        modal.classList.remove('success', 'error', 'info');
+        modal.classList.add(type || 'info');
+
+        if (type === 'success') {
+            title.textContent = '✓ 완료';
+        } else if (type === 'error') {
+            title.textContent = '✗ 오류';
+        } else {
+            title.textContent = 'ℹ 알림';
+        }
+
+        messageEl.textContent = message;
+        modal.classList.add('active');
+        overlay.classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('commonModal').classList.remove('active');
+        document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        const successMessage = /*[[${successMessage}]]*/ null;
+        const errorMessage = /*[[${errorMessage}]]*/ null;
+        const infoMessage = /*[[${infoMessage}]]*/ null;
+
+        if (successMessage) {
+            showModal(successMessage, 'success');
+        } else if (errorMessage) {
+            showModal(errorMessage, 'error');
+        } else if (infoMessage) {
+            showModal(infoMessage, 'info');
+        }
+    });
+
+</script>
+
+</body>
+</html>
