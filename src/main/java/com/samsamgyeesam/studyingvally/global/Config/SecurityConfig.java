@@ -51,7 +51,7 @@ public class SecurityConfig {
                                 "/auth/signup1",
                                 "/auth/signup2",
                                 "/auth/signup",
-                                "auth/signuptype",
+                                "/auth/signuptype",
                                 "/auth/find",
                                 "/auth/findid",
                                 "/auth/findid2",
@@ -74,8 +74,8 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .successHandler(authSuccessHandler)
                         .failureUrl("/auth/login?error=true")
-                )
-                .formLogin(form -> form.disable());
+                );
+//                .formLogin(form -> form.disable());
 
         return http.build();
     }
