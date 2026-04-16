@@ -64,7 +64,7 @@ public class CourseRegistController {
 
     // 챕터 등록 페이지로 이동
     @PostMapping("/course/registchapterPage")
-    public String registChapter(@RequestParam Long courseId,
+    public String registChapterPage(@RequestParam Long courseId,
                                 Model model) {
 
         CourseDTO course = courseService.findCourseById(courseId);
@@ -116,7 +116,6 @@ public class CourseRegistController {
         model.addAttribute("chapterList", chapterList);
         model.addAttribute("course", course);
         model.addAttribute("courseId", courseId);
-        model.addAttribute("successMessage", "챕터가 등록되었습니다.");
 
         redirectAttributes.addFlashAttribute("successMessage", "챕터가 등록되었습니다.");
 

@@ -20,7 +20,9 @@
     <textarea rows="10" cols="50" name="chapDesc" th:text="${chapter.chapDesc}" required></textarea><br><br>
 
     <label>영상 URL</label><br>
-    <input type="text" name="chapUrl" th:value="${chapter.chapUrl}" placeholder="영상 URL (선택)"><br><br>
+    <input type="file" name="videoFile" accept="video/*"><br>
+    <p style="color: #999; font-size: 12px;">* 영상을 변경하지 않으려면 파일을 선택하지 마세요</p>
+    <br>
 
     <button type="submit">수정하기</button>
 </form>
