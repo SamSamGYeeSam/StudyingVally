@@ -133,5 +133,13 @@ public class UserUser {
         return this;
     }
 
+    /*
+     * 학생 / 강사 공통 정보 수정 메서드
+     */
+    public void updateInformation(String userPhoneNumber, String userEmail, String userPassword) {
+        this.userPhoneNumber = userPhoneNumber;
+        this.userEmail = userEmail;
+        this.userPassword = userPassword;
+    }
 
 }

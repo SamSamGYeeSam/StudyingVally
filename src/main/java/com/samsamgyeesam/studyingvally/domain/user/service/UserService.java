@@ -1,6 +1,8 @@
 package com.samsamgyeesam.studyingvally.domain.user.service;
 
 import com.samsamgyeesam.studyingvally.domain.user.dto.SignupDTO;
+import com.samsamgyeesam.studyingvally.domain.user.dto.UserInformationResponseDTO;
+import com.samsamgyeesam.studyingvally.domain.user.dto.UserInformationUpdateDTO;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserRole;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserUser;
 import com.samsamgyeesam.studyingvally.domain.user.repository.UserRepository;
@@ -109,5 +111,43 @@ public class UserService {
                 .userStatus("ACTIVE");
 
         userRepository.save(newUser);
+    }
+
+    /**
+     * 현재 로그인한 사용자 정보 조회
+     */
+    public UserInformationResponseDTO getUserInformation(String loginUserId) {
+
+        UserUser user = userRepository.findByUserId(loginUserId)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        return new UserInformationResponseDTO(
+                user.getUserName(),
+                user.getUserPhoneNumber(),
+                user.getUserEmail(),
+                user.getUserPassword()
+        );
+    }
+
+    /*
+     * 현재 로그인한 사용자 정보 수정
+     */
+    @Transactional
+    public void updateUserInformation(String loginUserId, UserInformationUpdateDTO updateDTO) {
+
+        UserUser user = userRepository.findByUserId(loginUserId)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        if (updateDTO.getUserPhoneNumber() == null || updateDTO.getUserPhoneNumber().isBlank()
+                || updateDTO.getUserEmail() == null || updateDTO.getUserEmail().isBlank()
+                || updateDTO.getUserPassword() == null || updateDTO.getUserPassword().isBlank()) {
+            throw new IllegalArgumentException("수정할 정보를 모두 입력해주세요.");
+        }
+
+        user.updateInformation(
+                updateDTO.getUserPhoneNumber(),
+                updateDTO.getUserEmail(),
+                updateDTO.getUserPassword()
+        );
     }
 }
