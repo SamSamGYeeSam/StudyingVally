@@ -1,11 +1,13 @@
 package com.samsamgyeesam.studyingvally.domain.course.service;
 
+import com.samsamgyeesam.studyingvally.domain.course.dto.StudentCourseNoticeDTO;
 import com.samsamgyeesam.studyingvally.domain.course.entity.*;
 import com.samsamgyeesam.studyingvally.domain.course.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +24,16 @@ public class StudentCourseService {
     private final StudentEvaluationRepository studentEvaluationRepository;
 
     public List<StudentCourse> getOpenCourses() {
-        return studentCourseRepository.findAll().stream()
-                .filter(course -> "open".equalsIgnoreCase(course.getCourseStatus()))
+        // 에러 지점 해결: studentEnrollmentRepository를 사용하여 Enrollment 객체를 가져옴
+        return studentEnrollmentRepository.findAll().stream()
+                .filter(enrollment -> enrollment.getCourse() != null &&
+                        "open".equalsIgnoreCase(enrollment.getCourse().getCourseStatus()))
+                .map(StudentEnrollment::getCourse)
+                .distinct()
                 .collect(Collectors.toList());
     }
+
+
 
 //    ==================================================================================================
 
@@ -59,17 +67,15 @@ public class StudentCourseService {
     public Map<String, Object> getCourseRoomData(Long userNo, Long courseId) {
         Map<String, Object> data = new HashMap<>();
 
-        // 1. 코스 기본 정보
-        StudentCourse course = studentCourseRepository.findById(courseId)
+        // 에러 지점 해결: Repository를 Enrollment로 변경하여 타입 일치
+        StudentCourse course = studentEnrollmentRepository.findByUserNo(userNo).stream()
+                .filter(e -> e.getCourse().getCourseId().equals(courseId))
+                .map(StudentEnrollment::getCourse)
+                .findFirst()
                 .orElseThrow(() -> new RuntimeException("강의를 찾을 수 없습니다."));
 
-        // 2. 전체 챕터 목록 조회 (이미지 2의 리스트 출력용)
         List<StudentChapter> chapters = studentChapterRepository.findByCourseId(courseId);
-
-        // 3. 현재 유저의 챕터 완료 상태 목록 (어떤 챕터를 완료했는지 체크용)
         List<Long> completedChapNos = studentChapterAttemptRepository.findCompletedChapNosByUser(userNo, courseId);
-
-        // 4. 진행률 (이미 만들어두신 메서드 활용)
         double progress = updateAndGetProgress(userNo, courseId);
 
         data.put("course", course);
@@ -92,4 +98,44 @@ public class StudentCourseService {
         studentEvaluationRepository.save(studentEvaluation);
     }
 
+    @Transactional
+    public List<Map<String, Object>> getStudentCourseStatus(Long userNo) {
+        List<StudentEnrollment> enrollments = studentEnrollmentRepository.findByUserNo(userNo);
+
+        return enrollments.stream().map(enrollment -> {
+            Map<String, Object> map = new HashMap<>();
+
+            StudentCourse course = enrollment.getCourse();
+
+            map.put("courseId", (course != null) ? course.getCourseId() : null);
+            map.put("courseName", (course != null) ? course.getCourseTitle() : "알 수 없는 강의");
+
+            String professorName = (course != null && course.getUser() != null)
+                    ? course.getUser().getUserNickname() : "미지정";
+            map.put("professorName", professorName);
+
+            map.put("startDate", "2023-01-01");
+            map.put("progress", enrollment.getEnrollmentProcess());
+
+            map.put("quizYn", enrollment.getEnrollmentProcess() > 0 ? "Y" : "N");
+            map.put("score", enrollment.getEnrollmentProcess() >= 100 ? "A+" : "진행중");
+
+            return map;
+        }).collect(Collectors.toList());
+    }
+
+    public List<StudentCourseNoticeDTO> getCourseNoticesForStudent(Long userNo) {
+        List<StudentEnrollment> enrollments = studentEnrollmentRepository.findByUserNo(userNo);
+
+        List<Long> courseIds = enrollments.stream()
+                .map(e -> e.getCourse().getCourseId())
+                .collect(Collectors.toList());
+
+        if (courseIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return studentCourseRepository.findNoticesByCourseIds(courseIds);
+    }
 }
+
