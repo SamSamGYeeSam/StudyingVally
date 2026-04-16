@@ -30,14 +30,10 @@ public class TeacherInformationController {
         UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
         model.addAttribute("userInfo", userInfo);
 
-        UserInformationUpdateDTO updateDTO = new UserInformationUpdateDTO();
-        updateDTO.setUserPhoneNumber(userInfo.getUserPhoneNumber());
-        updateDTO.setUserEmail(userInfo.getUserEmail());
-        updateDTO.setUserPassword(userInfo.getUserPassword());
+        /* 조회 화면에서 수정 버튼 클릭 시 이동할 주소 */
+        model.addAttribute("updatePageUrl", "/updateinformation");
 
-        model.addAttribute("updateDTO", updateDTO);
-
-        return "mypage/showinformation";
+        return "auth/showinformation";
     }
 
     /**
@@ -45,6 +41,30 @@ public class TeacherInformationController {
      *
      * URL: POST /updateinformation
      */
+    @GetMapping("/updateinformation")
+    public String updateTeacherInformationPage(Authentication authentication, Model model) {
+
+        String loginUserId = authentication.getName();
+
+        UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
+
+        UserInformationUpdateDTO updateDTO = new UserInformationUpdateDTO();
+        updateDTO.setUserPhoneNumber(userInfo.getUserPhoneNumber());
+        updateDTO.setUserEmail(userInfo.getUserEmail());
+        updateDTO.setUserPassword(userInfo.getUserPassword());
+
+        model.addAttribute("userInfo", userInfo);
+        model.addAttribute("updateDTO", updateDTO);
+
+        /* 수정 form submit 주소 */
+        model.addAttribute("formActionUrl", "/updateinformation");
+
+        /* 뒤로가기 시 조회 화면 주소 */
+        model.addAttribute("showPageUrl", "/showinformation");
+
+        return "auth/updateinformation";
+    }
+
     @PostMapping("/updateinformation")
     public String updateTeacherInformation(Authentication authentication,
                                            @ModelAttribute UserInformationUpdateDTO updateDTO,
@@ -63,7 +83,10 @@ public class TeacherInformationController {
             model.addAttribute("updateDTO", updateDTO);
             model.addAttribute("updateError", exception.getMessage());
 
-            return "mypage/showinformation";
+            model.addAttribute("formActionUrl", "/updateinformation");
+            model.addAttribute("showPageUrl", "/showinformation");
+
+            return "auth/updateinformation";
         }
     }
 }
