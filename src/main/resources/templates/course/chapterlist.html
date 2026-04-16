@@ -18,6 +18,7 @@
         <th>상세 설명</th>
         <th>퀴즈 등록하기</th>
         <th>챕터 수정하기</th>
+        <th>챕터 삭제하기</th>
     </tr>
     </thead>
     <tbody>
@@ -40,6 +41,13 @@
                 </button>
             </form>
         </td>
+        <td>
+            <form action="/teacher/course/deletechaptercheck" method="post" style="display:inline;">
+                <input type="hidden" name="chapNo" th:value="${chapter.chapNo}">
+                <input type="hidden" name="courseId" th:value="${courseId}">
+                <button type="submit">삭제하기</button>
+            </form>
+        </td>
     </tr>
 
     </tbody>
@@ -58,13 +66,6 @@
 <div th:replace="~{modal/modal :: modalHtml}"></div>
 
 <script th:replace="~{modal/modal :: modalScript}"></script>
-<script th:inline="javascript">
-    const successMessage = /*[[${successMessage}]]*/ null;
-    if (successMessage) {
-        showModal(successMessage, 'success');
-    }
-</script>
-
 
 </body>
 </html>
