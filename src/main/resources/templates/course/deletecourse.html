@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>강의 삭제 확인</title>
@@ -92,13 +92,9 @@
 <body>
 
 <div class="container">
-    <h2>⚠️ 강의 삭제 확인</h2>
+    <h2>강의 삭제 확인</h2>
 
     <div class="course-info">
-        <div class="info-row">
-            <span class="label">강의 번호:</span>
-            <span th:text="${course.courseId}"></span>
-        </div>
         <div class="info-row">
             <span class="label">강의명:</span>
             <span th:text="${course.courseTitle}"></span>
@@ -114,26 +110,23 @@
     </div>
 
     <div class="warning">
-        <strong>⚠️ 경고:</strong> 이 작업은 되돌릴 수 없습니다.<br>
-        강의와 관련된 모든 데이터가 삭제될 수 있습니다.
+        <strong>⚠ 경고:</strong> 이 작업은 되돌릴 수 없습니다.<br>
+        강의와 관련된 모든 데이터 함께 삭제됩니다.
     </div>
 
     <div>
-        <!-- 삭제 버튼  -->
+
         <form th:action="@{/teacher/course/delete}" method="post" style="display:inline;">
             <input type="hidden" name="courseId" th:value="${course.courseId}">
             <button type="submit">삭제하기</button>
         </form>
 
-        <!-- 취소 버튼 -->
+
         <form action="/teacher/course" method="get" style="display:inline;">
             <button type="submit">취소</button>
         </form>
     </div>
-
-
 </div>
-
 
 </body>
 </html>
