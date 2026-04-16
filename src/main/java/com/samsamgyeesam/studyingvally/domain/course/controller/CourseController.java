@@ -2,8 +2,10 @@ package com.samsamgyeesam.studyingvally.domain.course.controller;
 
 import com.samsamgyeesam.studyingvally.domain.course.dto.ChapterDTO;
 import com.samsamgyeesam.studyingvally.domain.course.dto.CourseDTO;
+import com.samsamgyeesam.studyingvally.domain.course.dto.EnrollmentDTO;
 import com.samsamgyeesam.studyingvally.domain.course.service.ChapterService;
 import com.samsamgyeesam.studyingvally.domain.course.service.CourseService;
+import com.samsamgyeesam.studyingvally.domain.course.service.EnrollmentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ public class CourseController {
 
     private final CourseService courseService;
     private final ChapterService chapterService;
+    private final EnrollmentService enrollmentService;
 
     // url에 입력해서 경로 이동하는 경우 get방식
     @GetMapping("/teachermain")
@@ -46,11 +49,11 @@ public class CourseController {
     @GetMapping("/course/list")
     @ResponseBody
     public List<CourseDTO> getCourseList(HttpSession session) {
-        Long userNo = (Long) session.getAttribute("userNo");
+//        Long userNo = (Long) session.getAttribute("userNo");
 //
 //        return courseService.findAllCoursesByUserNo(userNo);
         // 임시로 userNo = 1
-//        Long userNo = 1L;
+        Long userNo = 1L;
 
         List<CourseDTO> result = courseService.findAllCoursesByUserNo(userNo);
 
@@ -80,10 +83,19 @@ public class CourseController {
         return "course/reviewlist";
     }
 
-    // 수강생 보기
+
+    // 수강생 보기 
     @PostMapping("/course/studentlist")
-    public String viewStudents(@RequestParam Long courseId, Model model) {
+    public String viewStudentList(@RequestParam Long courseId, Model model) {
+
+        List<EnrollmentDTO> studentList = enrollmentService.findStudentsByCourseId(courseId);
+
+        CourseDTO course = courseService.findCourseById(courseId);
+
+        model.addAttribute("studentList", studentList);
+        model.addAttribute("course", course);
         model.addAttribute("courseId", courseId);
+
         return "course/studentlist";
     }
 

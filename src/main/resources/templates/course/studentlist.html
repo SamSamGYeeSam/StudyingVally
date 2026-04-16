@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>수강생 조회</title>
 </head>
 <body>
+
+<h2 th:text="|${course.courseTitle} 강의의 수강생 조회 페이지|"></h2>
+
+<br>
+
+<table>
+    <thead>
+    <tr>
+        <th>이름</th>
+        <th>닉네임</th>
+        <th>강의 진척도</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="student : ${studentList}">
+        <td th:text="${student.userName}"></td>
+        <td th:text="${student.userNickname}"></td>
+        <td th:text="${student.enrollmentProcess} + '%'"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if="${#lists.isEmpty(studentList)}">
+    <p>수강생이 없습니다.</p>
+</div>
+
+<br>
+
+<form action="/teacher/course" method="get">
+    <button type="submit">이전으로</button>
+</form>
 
 </body>
 </html>

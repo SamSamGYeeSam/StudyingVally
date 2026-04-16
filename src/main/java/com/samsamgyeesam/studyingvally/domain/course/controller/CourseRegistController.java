@@ -70,8 +70,8 @@ public class CourseRegistController {
                                 @RequestParam(value = "videoFile", required = false) List<MultipartFile> videoFiles,
                                 HttpSession session) {
 
-//        Long userNo = 1L;
-        Long userNo = (Long) session.getAttribute("userNo");
+        Long userNo = 1L;
+//        Long userNo = (Long) session.getAttribute("userNo");
 
         // 강의 등록
         CourseDTO courseDTO = new CourseDTO();
