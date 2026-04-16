@@ -3,3 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <title>고객센터 관리 페이지</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #efefef;
+        }
+
+        .header {
+            background-color: #c9ef7a;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 40px auto;
+        }
+
+        .menu-card {
+            display: flex;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .menu-left {
+            width: 320px;
+            background-color: #e6d36f;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .menu-path {
+            font-size: 20px;
+            color: #444;
+            margin-bottom: 16px;
+        }
+
+        .menu-title {
+            font-size: 42px;
+            font-weight: bold;
+        }
+
+        .menu-right {
+            flex: 1;
+            background-color: white;
+            border: 4px solid black;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .menu-text h2 {
+            margin: 0 0 10px 0;
+            font-size: 30px;
+        }
+
+        .menu-text p {
+            margin: 0;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .move-btn {
+            border: none;
+            background-color: black;
+            color: white;
+            padding: 14px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .bottom-text {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1 th:text="${pageTitle}">고객센터 관리 페이지</h1>
+</div>
+
+<div class="container">
+
+    <div class="menu-card" th:each="menu : ${menuList}">
+        <div class="menu-left">
+            <div class="menu-path" th:text="${menu.moveUrl}">
+                /admin/callcenter/notice
+            </div>
+            <div class="menu-title" th:text="${menu.menuNo + '. ' + menu.title}">
+                1. 공지사항
+            </div>
+        </div>
+
+        <div class="menu-right">
+            <div class="menu-text">
+                <h2 th:text="${menu.title}">공지사항</h2>
+                <p th:text="${menu.description}">
+                    공지사항 목록이 뜨며 공지를 추가할 수 있음
+                </p>
+            </div>
+
+            <form th:action="@{${menu.moveUrl}}" method="get">
+                <button type="submit" class="move-btn">이동</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="bottom-text">
+        고객센터에 들어가면 공지사항, 문의함, 신고함을 볼 수 있고 누를 수 있다.
+    </div>
+</div>
+
+</body>
+</html>
