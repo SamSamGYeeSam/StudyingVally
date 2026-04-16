@@ -10,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/*
- * 사용자 관련 비즈니스 로직을 담당하는 서비스이다.
- */
+// 사용자 관련 비즈니스 로직을 담당하는 서비스이다.
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -32,22 +30,16 @@ public class UserService {
      */
     public String findUserId(String userName, String phoneNumber) {
 
-        /**
-         * 이름 또는 전화번호가 비어 있는 경우 예외 처리
-         */
+        // 이름 또는 전화번호가 비어 있는 경우 예외 처리
         if (userName == null || userName.isBlank() || phoneNumber == null || phoneNumber.isBlank()) {
             throw new IllegalArgumentException("회원가입 정보를 모두 입력해주세요");
         }
 
-        /**
-         * 이름 + 전화번호가 일치하는 사용자를 조회한다.
-         */
+        // 이름 + 전화번호가 일치하는 사용자를 조회한다.
         UserUser foundUser = userRepository.findByUserNameAndUserPhoneNumber(userName, phoneNumber)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원 정보를 찾을 수 없습니다."));
 
-        /**
-         * 조회된 사용자의 아이디를 반환한다.
-         */
+        // 조회된 사용자의 아이디를 반환한다.
         return foundUser.getUserId();
     }
 
@@ -67,7 +59,7 @@ public class UserService {
     @Transactional
     public void signup(SignupDTO signupDTO) {
 
-        /* 필수값 검증 */
+        // 필수값 검증
         if (signupDTO.getUserName() == null || signupDTO.getUserName().isBlank()
                 || signupDTO.getUserId() == null || signupDTO.getUserId().isBlank()
                 || signupDTO.getUserPassword() == null || signupDTO.getUserPassword().isBlank()
@@ -79,7 +71,7 @@ public class UserService {
             throw new IllegalArgumentException("회원가입 정보를 모두 입력해주세요.");
         }
 
-        /* 아이디 중복 검사 */
+        // 아이디 중복 검사
         if (userRepository.existsByUserId(signupDTO.getUserId())) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
@@ -113,9 +105,7 @@ public class UserService {
         userRepository.save(newUser);
     }
 
-    /**
-     * 현재 로그인한 사용자 정보 조회
-     */
+    // 현재 로그인한 사용자 정보 조회
     public UserInformationResponseDTO getUserInformation(String loginUserId) {
 
         UserUser user = userRepository.findByUserId(loginUserId)
@@ -129,9 +119,7 @@ public class UserService {
         );
     }
 
-    /*
-     * 현재 로그인한 사용자 정보 수정
-     */
+    // 현재 로그인한 사용자 정보 수정
     @Transactional
     public void updateUserInformation(String loginUserId, UserInformationUpdateDTO updateDTO) {
 
