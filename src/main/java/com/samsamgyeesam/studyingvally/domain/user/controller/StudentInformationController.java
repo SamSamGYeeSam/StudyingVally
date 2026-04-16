@@ -29,14 +29,10 @@ public class StudentInformationController {
         UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
         model.addAttribute("userInfo", userInfo);
 
-        UserInformationUpdateDTO updateDTO = new UserInformationUpdateDTO();
-        updateDTO.setUserPhoneNumber(userInfo.getUserPhoneNumber());
-        updateDTO.setUserEmail(userInfo.getUserEmail());
-        updateDTO.setUserPassword(userInfo.getUserPassword());
+        /* 조회 화면에서 수정 버튼 클릭 시 이동할 주소 */
+        model.addAttribute("updatePageUrl", "/student/home/update-info");
 
-        model.addAttribute("updateDTO", updateDTO);
-
-        return "student/home/info";
+        return "auth/showinformation";
     }
 
     /**
@@ -44,6 +40,30 @@ public class StudentInformationController {
      *
      * URL: POST /student/home/update-info
      */
+    @GetMapping("/update-info")
+    public String updateStudentInformationPage(Authentication authentication, Model model) {
+
+        String loginUserId = authentication.getName();
+
+        UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
+
+        UserInformationUpdateDTO updateDTO = new UserInformationUpdateDTO();
+        updateDTO.setUserPhoneNumber(userInfo.getUserPhoneNumber());
+        updateDTO.setUserEmail(userInfo.getUserEmail());
+        updateDTO.setUserPassword(userInfo.getUserPassword());
+
+        model.addAttribute("userInfo", userInfo);
+        model.addAttribute("updateDTO", updateDTO);
+
+        /* 수정 form submit 주소 */
+        model.addAttribute("formActionUrl", "/student/home/update-info");
+
+        /* 뒤로가기 시 조회 화면 주소 */
+        model.addAttribute("showPageUrl", "/student/home/info");
+
+        return "auth/updateinformation";
+    }
+
     @PostMapping("/update-info")
     public String updateStudentInformation(Authentication authentication,
                                            @ModelAttribute UserInformationUpdateDTO updateDTO,
@@ -62,7 +82,10 @@ public class StudentInformationController {
             model.addAttribute("updateDTO", updateDTO);
             model.addAttribute("updateError", exception.getMessage());
 
-            return "student/home/info";
+            model.addAttribute("formActionUrl", "/student/home/update-info");
+            model.addAttribute("showPageUrl", "/student/home/info");
+
+            return "auth/updateinformation";
         }
     }
 }
