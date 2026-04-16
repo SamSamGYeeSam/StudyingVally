@@ -8,6 +8,7 @@ public class SignupDTO {
     private String userEmail;
     private String userNickname;
     private String userGender;
+    private String userRole;
 
     public String getUserName() {
         return userName;
@@ -63,5 +64,13 @@ public class SignupDTO {
 
     public void setUserGender(String userGender) {
         this.userGender = userGender;
+    }
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
     }
 }

@@ -8,11 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
+/*
  * 사용자 관련 비즈니스 로직을 담당하는 서비스이다.
- *
- * 현재는 아이디 찾기 기능을 먼저 담당하고,
- * 추후 회원가입 / 비밀번호 찾기 / 회원정보 수정 등도 이 서비스에서 처리할 수 있다.
  */
 @Service
 @RequiredArgsConstructor
@@ -66,35 +63,49 @@ public class UserService {
     }
 
     @Transactional
-    public void signup(SignupDTO requestDTO) {
+    public void signup(SignupDTO signupDTO) {
 
         /* 필수값 검증 */
-        if (requestDTO.getUserName() == null || requestDTO.getUserName().isBlank()
-                || requestDTO.getUserId() == null || requestDTO.getUserId().isBlank()
-                || requestDTO.getUserPassword() == null || requestDTO.getUserPassword().isBlank()
-                || requestDTO.getUserPhoneNumber() == null || requestDTO.getUserPhoneNumber().isBlank()
-                || requestDTO.getUserEmail() == null || requestDTO.getUserEmail().isBlank()
-                || requestDTO.getUserNickname() == null || requestDTO.getUserNickname().isBlank()
-                || requestDTO.getUserGender() == null || requestDTO.getUserGender().isBlank()) {
+        if (signupDTO.getUserName() == null || signupDTO.getUserName().isBlank()
+                || signupDTO.getUserId() == null || signupDTO.getUserId().isBlank()
+                || signupDTO.getUserPassword() == null || signupDTO.getUserPassword().isBlank()
+                || signupDTO.getUserPhoneNumber() == null || signupDTO.getUserPhoneNumber().isBlank()
+                || signupDTO.getUserEmail() == null || signupDTO.getUserEmail().isBlank()
+                || signupDTO.getUserNickname() == null || signupDTO.getUserNickname().isBlank()
+                || signupDTO.getUserGender() == null || signupDTO.getUserGender().isBlank()) {
 
             throw new IllegalArgumentException("회원가입 정보를 모두 입력해주세요.");
         }
 
         /* 아이디 중복 검사 */
-        if (userRepository.existsByUserId(requestDTO.getUserId())) {
+        if (userRepository.existsByUserId(signupDTO.getUserId())) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+        }
+
+        /*
+         * 회원가입 시작 화면에서 선택한 역할값을
+         * String -> Enum 으로 변환한다.
+         */
+        UserRole selectedRole;
+
+        if ("STUDENT".equals(signupDTO.getUserRole())) {
+            selectedRole = UserRole.STUDENT;
+        } else if ("TEACHER".equals(signupDTO.getUserRole())) {
+            selectedRole = UserRole.TEACHER;
+        } else {
+            throw new IllegalArgumentException("회원가입 유형을 선택해주세요.");
         }
 
         /* DTO -> Entity 변환 */
         UserUser newUser = UserUser.builder()
-                .userName(requestDTO.getUserName())
-                .userId(requestDTO.getUserId())
-                .userPassword(requestDTO.getUserPassword())
-                .userPhoneNumber(requestDTO.getUserPhoneNumber())
-                .userEmail(requestDTO.getUserEmail())
-                .userNickname(requestDTO.getUserNickname())
-                .userGender(requestDTO.getUserGender())
-                .userRole(UserRole.STUDENT)
+                .userName(signupDTO.getUserName())
+                .userId(signupDTO.getUserId())
+                .userPassword(signupDTO.getUserPassword())
+                .userPhoneNumber(signupDTO.getUserPhoneNumber())
+                .userEmail(signupDTO.getUserEmail())
+                .userNickname(signupDTO.getUserNickname())
+                .userGender(signupDTO.getUserGender())
+                .userRole(selectedRole)
                 .userStatus("ACTIVE");
 
         userRepository.save(newUser);
