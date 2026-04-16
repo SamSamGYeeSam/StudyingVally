@@ -48,7 +48,11 @@ public class AuthController {
      * @return auth/signup1
      */
     @GetMapping("/signup1")
-    public String signup1() {
+    public String signup1(@RequestParam(required = false) String userRole,
+                          Model model) {
+
+        model.addAttribute("userRole", userRole);
+
         return "auth/signup1";
     }
 
@@ -114,6 +118,13 @@ public class AuthController {
         }
     }
 
+    // 회원가입 유형 선택 화면 출력
+    @GetMapping("/signuptype")
+    public String signupType() {
+        return "auth/signuptype";
+    }
+
+
     /*
      * 회원가입 2단계 화면 반환
      *
@@ -151,5 +162,48 @@ public class AuthController {
         model.addAttribute("signupDTO", signupDTO);
 
         return "auth/signup2";
+    }
+
+    /**
+     * 회원가입 최종 저장 처리
+     *
+     * signup2.html 에서 전달된 회원가입 정보를 받아
+     * 서비스 계층에서 실제 DB 저장을 수행한다.
+     *
+     * 저장 성공 시 첫 화면(/main)으로 리다이렉트한다.
+     *
+     * @param signupDTO 회원가입 입력값 DTO
+     * @param model View에 전달할 모델 객체
+     * @return 성공 시 redirect:/main, 실패 시 auth/signup2
+     */
+    @PostMapping("/signup")
+    public String signup(@ModelAttribute SignupDTO signupDTO,
+                         Model model) {
+
+        System.out.println("=== AuthController.signup 진입 ===");
+        System.out.println("userId = " + signupDTO.getUserId());
+
+        try {
+            userService.signup(signupDTO);
+
+            System.out.println("=== 회원가입 성공 후 /main 이동 ===");
+            return "redirect:/main";
+
+        } catch (IllegalArgumentException exception) {
+            System.out.println("=== IllegalArgumentException 발생 ===");
+            exception.printStackTrace();
+
+            model.addAttribute("signup2Error", exception.getMessage());
+            model.addAttribute("signupDTO", signupDTO);
+            return "auth/signup2";
+
+        } catch (Exception exception) {
+            System.out.println("=== 기타 예외 발생 ===");
+            exception.printStackTrace();
+
+            model.addAttribute("signup2Error", "회원가입 저장 중 오류가 발생했습니다.");
+            model.addAttribute("signupDTO", signupDTO);
+            return "auth/signup2";
+        }
     }
 }

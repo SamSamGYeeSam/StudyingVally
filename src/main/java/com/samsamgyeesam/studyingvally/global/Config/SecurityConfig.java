@@ -157,6 +157,7 @@ public class SecurityConfig {
                                 "/auth/login",
                                 "/auth/signup1",
                                 "/auth/signup2",
+                                "auth/signup",
                                 "/auth/find",
                                 "/auth/findid",
                                 "/auth/findid2",
