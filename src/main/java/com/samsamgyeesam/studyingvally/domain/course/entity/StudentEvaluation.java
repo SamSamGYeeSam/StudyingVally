@@ -1,14 +1,15 @@
 package com.samsamgyeesam.studyingvally.domain.course.entity;
 
+import com.samsamgyeesam.studyingvally.domain.user.entity.StudentUser;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "evaluations")
 public class StudentEvaluation {
 
@@ -23,11 +24,17 @@ public class StudentEvaluation {
     @Column(name = "evaluation_desc", columnDefinition = "TEXT")
     private String evaluationDesc;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id")
-    private StudentCourse course;
-
     @Column(name = "user_no")
     private Long userNo;
 
+    @Column(name = "course_id")
+    private Long courseId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", insertable = false, updatable = false)
+    private StudentCourse studentCourse;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_no", insertable = false, updatable = false)
+    private StudentUser user;
 }

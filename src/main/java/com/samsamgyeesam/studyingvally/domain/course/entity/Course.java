@@ -49,25 +49,11 @@ public class Course {
         this.courseCreatedAt = LocalDateTime.now();
     }
 
-//
-//    public Course changeCourseTitle(String newTitle) {
-//        this.courseTitle = newTitle;
-//        return this;
-//    }
-//
-//    public Course changeCourseDescription(String newDescription) {
-//        this.courseDescription = newDescription;
-//        return this;
-//    }
-//
-//    public Course changeCourseStatus(String newStatus) {
-//        this.courseStatus = newStatus;
-//        return this;
-//    }
-//
-//    public Course builder() {
-//        return new Course(courseId, courseTitle, courseDescription,
-//                courseCreatedAt, courseStatus, courseSendApprove, userNo);
-//    }
+    // 강의 수정
+    public void updateCourseInfo(String courseTitle, String courseDescription) {
+        this.courseTitle = courseTitle;
+        this.courseDescription = courseDescription;
+    }
+
 
 }

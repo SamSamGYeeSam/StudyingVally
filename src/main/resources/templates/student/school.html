@@ -159,6 +159,8 @@
         openModal('설명', title, content, false);
     }
 
+    // HTML 하단 <script> 내 openReviewModal 함수 수정
+
     function openReviewModal(element) {
         const courseId = element.getAttribute('data-id');
         const title = element.getAttribute('data-title');
@@ -168,7 +170,8 @@
             return;
         }
 
-        fetch(`/student/reviews/${courseId}`)
+        // 경로 수정: /student/reviews/ -> /student/evaluation/
+        fetch(`/student/evaluation/${courseId}`)
             .then(response => {
                 if (!response.ok) throw new Error("404 혹은 서버 에러");
                 return response.json();
@@ -180,19 +183,19 @@
                 } else {
                     data.forEach(rev => {
                         reviewHtml += `
-                            <div style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #ccc;">
-                                <div style="color: #fbc02d; font-weight: bold;">⭐ ${rev.score} / 5.0</div>
-                                <div style="margin-top: 5px; color: #333;">${rev.content}</div>
-                                <div style="text-align: right; font-size: 0.8em; color: #888;">${rev.nickname || '익명'}</div>
-                            </div>`;
+                        <div style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #ccc;">
+                            <div style="color: #fbc02d; font-weight: bold;">⭐ ${rev.score} / 5.0</div>
+                            <div style="margin-top: 5px; color: #333;">${rev.content}</div>
+                            <div style="text-align: right; font-size: 0.8em; color: #888;">${rev.nickname || '익명'}</div>
+                        </div>`;
                     });
                 }
-                // 강의평 리스트는 HTML 구조이므로 true 전달
                 openModal('리뷰', title, reviewHtml, true);
             })
             .catch(err => {
                 console.error(err);
-                openModal('에러', title, '데이터를 불러오는 중 오류가 발생했습니다. (경로 확인 필요)', false);
+                // 에러 시 경로 확인을 돕기 위한 메시지
+                openModal('에러', title, '데이터를 불러오는 중 오류가 발생했습니다. (URL: /student/evaluation/' + courseId + ')', false);
             });
     }
 

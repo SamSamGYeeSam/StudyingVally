@@ -22,9 +22,8 @@ public class StudentSchoolService {
     private final StudentCourseRepository studentCourseRepository;
     private final StudentEnrollmentRepository studentEnrollmentRepository;
 
-    public List<StudentEvaluationResponseDTO> getCourseReviews(Long courseId) {
-        List<StudentEvaluation> studentEvaluations = studentEvaluationRepository.findByCourse_CourseId(courseId);
-
+    public List<StudentEvaluationResponseDTO> getCourseEvaluations(Long courseId) {
+        List<StudentEvaluation> studentEvaluations = studentEvaluationRepository.findByStudentCourse_CourseId(courseId);
         return studentEvaluations.stream()
                 .map(eval -> StudentEvaluationResponseDTO.builder()
                         .score(eval.getEvaluationScore())
@@ -32,7 +31,6 @@ public class StudentSchoolService {
                         .nickname("익명")
                         .build())
                 .collect(Collectors.toList());
-
 
     }
 

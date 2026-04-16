@@ -1,8 +1,6 @@
 package com.samsamgyeesam.studyingvally.domain.quiz.controller;
 
-import com.samsamgyeesam.studyingvally.domain.quiz.dto.QuizChapterDTO;
-import com.samsamgyeesam.studyingvally.domain.quiz.dto.QuizDTO;
-import com.samsamgyeesam.studyingvally.domain.quiz.dto.QuizEnrolledCourseDTO;
+import com.samsamgyeesam.studyingvally.domain.quiz.dto.*;
 import com.samsamgyeesam.studyingvally.domain.quiz.service.QuizService;
 import com.samsamgyeesam.studyingvally.domain.quiz.service.QuizStudentService;
 import com.samsamgyeesam.studyingvally.domain.user.service.AuthUserDetails;
@@ -16,12 +14,12 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-// 챕터 번호(chapNo)도 세션에 유지하도록 추가
-@SessionAttributes({"courseId", "chapNo"})
+// 👇 세션 유지 항목에 quizNo 추가
+@SessionAttributes({"courseId", "chapNo", "quizNo"})
 public class QuizStudentController {
 
     private final QuizStudentService quizStudentService;
-    private final QuizService quizService; // 강사용에서 만든 서비스를 재사용하여 챕터/퀴즈 조회!
+    private final QuizService quizService;
 
     // ==========================================
     // 1. 퀴즈방 입장하기
@@ -46,7 +44,7 @@ public class QuizStudentController {
     @PostMapping("/student/quiz/course-post")
     public String selectCoursePost(@RequestParam("courseId") Long courseId, Model model) {
         model.addAttribute("courseId", courseId);
-        return "redirect:/student/quiz/select"; // 강의 선택 후 챕터 목록으로 이동
+        return "redirect:/student/quiz/select";
     }
 
     // ==========================================
@@ -54,7 +52,6 @@ public class QuizStudentController {
     // ==========================================
     @GetMapping("/student/quiz/select")
     public String findQuizSelect(@ModelAttribute("courseId") Long courseId, Model model) {
-        // 이미 만들어둔 QuizService를 활용하여 챕터 목록 조회
         List<QuizChapterDTO> chapterList = quizService.getQuizChapterListByCourseId(courseId);
         model.addAttribute("chapterList", chapterList);
         return "quiz/student-quiz/student_chapter_list";
@@ -62,8 +59,8 @@ public class QuizStudentController {
 
     @PostMapping("/student/quiz/chapter-post")
     public String selectChapterPost(@RequestParam("chapNo") Long chapNo, Model model) {
-        model.addAttribute("chapNo", chapNo); // 챕터 번호 세션 저장
-        return "redirect:/student/quiz/list"; // 챕터 선택 후 퀴즈 목록으로 이동
+        model.addAttribute("chapNo", chapNo);
+        return "redirect:/student/quiz/list";
     }
 
     // ==========================================
@@ -71,9 +68,41 @@ public class QuizStudentController {
     // ==========================================
     @GetMapping("/student/quiz/list")
     public String findQuizList(@ModelAttribute("chapNo") Long chapNo, Model model) {
-        // QuizService를 활용하여 퀴즈 목록 조회
         List<QuizDTO> quizList = quizService.getQuizListByChapNo(chapNo);
         model.addAttribute("quizList", quizList);
         return "quiz/student-quiz/student_quiz_list";
+    }
+
+    // ==========================================
+    // 5. 퀴즈 선택 및 실제 문제 풀기 화면 출력 (새로 추가)
+    // ==========================================
+    @PostMapping("/student/quiz/solve-post")
+    public String selectQuizPost(@RequestParam("quizNo") String quizNo, Model model) {
+        model.addAttribute("quizNo", quizNo); // 퀴즈 번호 세션 저장
+        return "redirect:/student/quiz/solve"; // 문제 풀기 화면으로 리다이렉트
+    }
+
+    @GetMapping("/student/quiz/solve")
+    public String solveQuiz(@ModelAttribute("quizNo") String quizNo, Model model) {
+        // 해당 퀴즈의 상세 문제 리스트 조회
+        List<QuizListDTO> quizItems = quizService.getQuizListItemsByQuizNo(quizNo);
+        model.addAttribute("quizItems", quizItems);
+        return "quiz/student-quiz/student_quiz_solve";
+    }
+
+    // 6. 퀴즈 완료 시 점수 저장 (AJAX용 API)
+    // ==========================================
+    @PostMapping("/student/quiz/submit-score")
+    @ResponseBody // 화면을 반환하지 않고 데이터(문자열)만 반환
+    public String submitScore(@RequestBody QuizAttemptDTO attemptDTO,
+                              @AuthenticationPrincipal AuthUserDetails userDetails) {
+
+        // Security 세션에서 현재 로그인한 학생의 PK를 꺼내 세팅
+        attemptDTO.setUserNo(userDetails.getUserNo());
+
+        // DB에 저장
+        quizStudentService.saveQuizAttempt(attemptDTO);
+
+        return "SUCCESS";
     }
 }

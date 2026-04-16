@@ -56,16 +56,16 @@ public class StudentController {
         return "student/notice";
     }
 
-    @GetMapping("/home/course")
+    @GetMapping("/home/courses")
     public String studentFindDetail(Model model) throws IllegalAccessException {
         StudentDTO student = studentService.getStudentMainData(1L);
         model.addAttribute("student", student);
-        return "student/home-course";
+        return "student/home-courses";
     }
 
-    @GetMapping("/course")
-    public String findCourse() {
-        return "student/course";
-    }
+//    @GetMapping("/course")
+//    public String findCourse() {
+//        return "student/course";
+//    }
 
 }
