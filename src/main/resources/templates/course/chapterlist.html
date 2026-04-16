@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>챕터 목록</title>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+
 </head>
 <body>
 
 <h1>강의 상세 챕터 페이지</h1>
 <h3 th:if="${courseTitle}" th:text="|${courseTitle}|"></h3>
 
-<table>
+<table th:if="${chapterList != null and !chapterList.isEmpty()}">
     <thead>
     <tr>
         <th>챕터명</th>
@@ -23,7 +25,7 @@
         <td th:text="${chapter.chapTitle}"></td>
         <td th:text="${chapter.chapDesc}"></td>
         <td>
-            <form action="/teacher/quiz/create-quiz" method="post" style="display:inline;">
+            <form action="/teacher/quiz/course-post" method="post" style="display:inline;">
                 <input type="hidden" name="courseId" th:value="${courseId}">
                 <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">
                     퀴즈 등록하기
@@ -43,11 +45,26 @@
     </tbody>
 </table>
 
+<div th:if="${chapterList == null or chapterList.isEmpty()}">
+    <p>등록된 챕터가 없습니다.</p>
+</div>
+
 <br>
 
 <form action="/teacher/course" method="get" style="display:inline;">
     <button type="submit">이전으로</button>
 </form>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+
+<script th:replace="~{modal/modal :: modalScript}"></script>
+<script th:inline="javascript">
+    const successMessage = /*[[${successMessage}]]*/ null;
+    if (successMessage) {
+        showModal(successMessage, 'success');
+    }
+</script>
+
 
 </body>
 </html>
