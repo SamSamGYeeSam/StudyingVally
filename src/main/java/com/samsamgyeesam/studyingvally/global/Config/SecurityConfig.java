@@ -5,10 +5,12 @@ package com.samsamgyeesam.studyingvally.global.Config;
 import com.samsamgyeesam.studyingvally.domain.user.service.AuthSuccessHandler;
 import com.samsamgyeesam.studyingvally.domain.user.service.AuthUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,13 +30,11 @@ public class SecurityConfig {
      */
     private final AuthSuccessHandler authSuccessHandler;
 
-    /*
-     * 현재 프로젝트는 평문 비밀번호 비교 방식으로 테스트 중이다.
-     *
-     * 주의:
-     * 실무에서는 사용하면 안 되고,
-     * 현재는 부트캠프 팀 프로젝트 진행 단계에 맞춘 임시 설정이다.
-     */
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
@@ -50,7 +50,8 @@ public class SecurityConfig {
                                 "/auth/login",
                                 "/auth/signup1",
                                 "/auth/signup2",
-                                "auth/signup",
+                                "/auth/signup",
+                                "auth/signuptype",
                                 "/auth/find",
                                 "/auth/findid",
                                 "/auth/findid2",
