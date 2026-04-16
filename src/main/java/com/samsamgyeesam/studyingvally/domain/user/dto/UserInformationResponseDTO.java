@@ -1,20 +1,18 @@
 package com.samsamgyeesam.studyingvally.domain.user.dto;
 
-/**
- * 학생 / 강사 공통 정보 조회 DTO
- */
+//학생 , 강사 공통 정보 조회 DTO
 public class UserInformationResponseDTO {
 
-    /* 이름 */
+    // 이름
     private String userName;
 
-    /* 전화번호 */
+    // 전화번호
     private String userPhoneNumber;
 
-    /* 이메일 */
+    // 이메일
     private String userEmail;
 
-    /* 비밀번호 */
+    // 비밀번호
     private String userPassword;
 
     public UserInformationResponseDTO() {

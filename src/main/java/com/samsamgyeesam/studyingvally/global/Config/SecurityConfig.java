@@ -1,5 +1,3 @@
-
-
 package com.samsamgyeesam.studyingvally.global.Config;
 
 import com.samsamgyeesam.studyingvally.domain.user.service.AuthSuccessHandler;
@@ -20,14 +18,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    /**
-          * 로그인 시 사용자 인증 정보를 조회하는 서비스
-          */
+    //로그인 시 사용자 인증 정보를 조회하는 서비스
     private final AuthUserDetailsService authUserDetailsService;
 
-    /**
-     * 로그인 성공 후 권한별 이동 경로를 분기하는 핸들러
-     */
+    //로그인 성공 후 권한별 이동 경로를 분기하는 핸들러
     private final AuthSuccessHandler authSuccessHandler;
 
     @Bean
@@ -64,9 +58,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                /**
-                 * 로그인 설정
-                 */
+
+                // 로그인 설정
                 .formLogin(login -> login
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
@@ -75,7 +68,6 @@ public class SecurityConfig {
                         .successHandler(authSuccessHandler)
                         .failureUrl("/auth/login?error=true")
                 );
-//                .formLogin(form -> form.disable());
 
         return http.build();
     }
