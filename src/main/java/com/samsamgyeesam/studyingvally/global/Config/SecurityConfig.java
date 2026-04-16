@@ -177,7 +177,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/auth/login")
                         .usernameParameter("loginId")
                         .passwordParameter("password")
-                        .successHandler(authSuccessHandler)
+//                        .successHandler(authSuccessHandler)
                         .failureUrl("/auth/login?error=true")
                 )
                 .formLogin(form -> form.disable());
