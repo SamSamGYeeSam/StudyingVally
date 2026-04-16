@@ -53,25 +53,19 @@ public class CourseController {
         return "course/courselist";
     }
 
-//   강의 목록 보기 누른 경우
 
 
-    // 강의소식 페이지로 이동 -> 전체 강의 소식 목록 나오는 화면으로
-    @GetMapping("/notice")
-    public String gotoNoticePage(){
-        return "course/noticelist";
-    }
-//    강의소식 누른 경우
+//   위에는 강의 목록 보기 누른 경우
 
 
     @GetMapping("/mypage")
     public String gotoMypage(){
         return "course/mypage";
     }
-//    마이페이지 누른 경우
 
 
-//    강의 목록 보기에서 한 강의 선택한 경우 나온 선택창
+//    =================================
+//    아래는 하나의 강의 눌렀을 때 창 뜨고 그 창에서 하고자는 것 선택하는 경우
 
 
     // 강의평 보기
