@@ -1,14 +1,15 @@
-package com.samsamgyeesam.studyingvally.domain.admin.dto;
+package com.samsamgyeesam.studyingvally.domain.admin.dto.notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
 public class AdminNoticeListDTO {
 
-    private Integer displayNo;
     private Long noticeNo;
     private String noticeTitle;
-    private String noticeDesc;
+    private LocalDateTime createdAt;
 }
