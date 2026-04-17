@@ -4,24 +4,45 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/* comment.
- * 관리자 사용자 상세 조회에서 문의 내역을 조회하기 위한 엔티티 클래스
- */
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "question_tech")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class AdminQuestionTech {
 
     @Id
     @Column(name = "question_tech_no")
     private Long questionTechNo;
 
+    @Column(name = "question_title", nullable = false)
+    private String questionTitle;
+
+    @Column(name = "question_desc", nullable = false)
+    private String questionDesc;
+
+    @Column(name = "course_id")
+    private Long courseId;
+
     @Column(name = "user_no")
     private Long userNo;
+
+    @Column(name = "question_status", nullable = false)
+    private String questionStatus;
+
+    @Column(name = "question_answer")
+    private String questionAnswer;
+
+    @Column(name = "answered_admin_no")
+    private Long answeredAdminNo;
+
+    @Column(name = "question_answered_at")
+    private LocalDateTime questionAnsweredAt;
+
+    @Column(name = "question_answer_updated_at")
+    private LocalDateTime questionAnswerUpdatedAt;
 }
