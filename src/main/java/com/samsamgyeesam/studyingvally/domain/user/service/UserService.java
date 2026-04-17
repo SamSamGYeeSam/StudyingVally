@@ -1,5 +1,6 @@
 package com.samsamgyeesam.studyingvally.domain.user.service;
 
+import com.samsamgyeesam.studyingvally.domain.user.dto.DeleteUserDTO;
 import com.samsamgyeesam.studyingvally.domain.user.dto.SignupDTO;
 import com.samsamgyeesam.studyingvally.domain.user.dto.UserInformationResponseDTO;
 import com.samsamgyeesam.studyingvally.domain.user.dto.UserInformationUpdateDTO;
@@ -137,5 +138,34 @@ public class UserService {
                 updateDTO.getUserEmail(),
                 updateDTO.getUserPassword()
         );
+    }
+    /**
+     * 현재 로그인한 사용자의 계정을 삭제한다.
+     *
+     * 탈퇴 전 입력한 비밀번호와
+     * 현재 로그인한 사용자 비밀번호가 일치해야 탈퇴 가능하다.
+     *
+     * @param loginUserId 현재 로그인한 사용자 아이디
+     * @param deleteAccountDTO 탈퇴 확인용 비밀번호 DTO
+     */
+    @Transactional
+    public void deleteAccount(String loginUserId, DeleteUserDTO deleteUserDTO) {
+
+        /* 현재 로그인한 사용자 조회 */
+        UserUser user = userRepository.findByUserId(loginUserId)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        /* 입력 비밀번호 검증 */
+        if (deleteUserDTO.getUserPassword() == null || deleteUserDTO.getUserPassword().isBlank()) {
+            throw new IllegalArgumentException("비밀번호를 입력해주세요.");
+        }
+
+        /* 현재 프로젝트는 평문 비교 방식 기준 */
+        if (!user.getUserPassword().equals(deleteUserDTO.getUserPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        /* 사용자 삭제 */
+        userRepository.delete(user);
     }
 }

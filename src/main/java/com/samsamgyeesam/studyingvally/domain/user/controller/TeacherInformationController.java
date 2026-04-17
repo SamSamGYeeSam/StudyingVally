@@ -1,8 +1,12 @@
 package com.samsamgyeesam.studyingvally.domain.user.controller;
 
+import com.samsamgyeesam.studyingvally.domain.user.dto.DeleteUserDTO;
 import com.samsamgyeesam.studyingvally.domain.user.dto.UserInformationResponseDTO;
 import com.samsamgyeesam.studyingvally.domain.user.dto.UserInformationUpdateDTO;
 import com.samsamgyeesam.studyingvally.domain.user.service.UserService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.Authentication;
@@ -115,6 +119,58 @@ public class TeacherInformationController {
             model.addAttribute("showPageUrl", "/showinformation");
 
             return "auth/updateinformation";
+        }
+    }
+
+    /**
+     * 강사 탈퇴 화면 이동
+     *
+     * URL: GET /deleteaccount
+     */
+    @GetMapping("/deleteaccount")
+    public String deleteTeacherAccountPage(Model model) {
+
+        /* 탈퇴 폼 바인딩용 DTO */
+        model.addAttribute("deleteUserDTO", new DeleteUserDTO());
+
+        /* 공통 탈퇴 화면에서 사용할 form action 주소 */
+        model.addAttribute("formActionUrl", "/deleteaccount");
+
+        return "auth/deleteaccount";
+    }
+
+    /**
+     * 강사 탈퇴 처리
+     *
+     * URL: POST /deleteaccount
+     */
+    @PostMapping("/deleteaccount")
+    public String deleteTeacherAccount(Authentication authentication,
+                                       @ModelAttribute DeleteUserDTO deleteUserDTO,
+                                       Model model,
+                                       HttpServletRequest request,
+                                       HttpServletResponse response) throws ServletException {
+
+        try {
+            /* 현재 로그인한 사용자 아이디 추출 */
+            String loginUserId = authentication.getName();
+
+            /* 탈퇴 처리 */
+            userService.deleteAccount(loginUserId, deleteUserDTO);
+
+            /* 탈퇴 성공 후 로그아웃 처리 */
+            request.logout();
+
+            /* 메인 화면으로 이동 */
+            return "redirect:/main";
+
+        } catch (IllegalArgumentException exception) {
+            /* 실패 시 에러 메시지와 기존 입력값 유지 */
+            model.addAttribute("deleteError", exception.getMessage());
+            model.addAttribute("deleteUserDTO", deleteUserDTO);
+            model.addAttribute("formActionUrl", "/deleteaccount");
+
+            return "auth/deleteaccount";
         }
     }
 }
