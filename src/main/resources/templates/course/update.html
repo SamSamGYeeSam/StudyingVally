@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<h1>강의 수정 </h1>
+<h1> 수정하기 </h1>
 
 <!-- 강의 -->
 <div style="border: 2px solid black; padding: 20px; margin-bottom: 20px;">
@@ -21,7 +21,9 @@
 
 <!-- 챕터 -->
 <div style="border: 2px solid black; padding: 20px;">
-    <ul>
+
+<!--  챕터 있는 경우  -->
+    <ul th:if="${chapterList != null and !chapterList.isEmpty()}">
         <li th:each="chapter : ${chapterList}">
             <span th:text="${chapter.chapTitle}"></span>
             <form action="/teacher/course/chapterupdate" method="post" style="display:inline; margin-left: 10px;">
@@ -31,13 +33,15 @@
             </form>
         </li>
 
-
     </ul>
+<!--없을 때-->
+    <div th:if="${chapterList == null or chapterList.isEmpty()}">
+        <p>등록된 챕터가 없습니다.</p>
+    </div>
 </div>
 
 <br>
 
-<!-- 이전으로 버튼 -->
 <form action="/teacher/course" method="get" style="display:inline;">
     <button type="submit">이전으로</button>
 </form>

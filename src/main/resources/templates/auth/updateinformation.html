@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 정보 수정</title>
+</head>
+<body>
+
+<h1>내 정보 수정</h1>
+
+<div th:if="${updateError != null}" th:text="${updateError}">
+    수정 에러 메시지
+</div>
+
+<form th:if="${formActionUrl != null}" th:action="${formActionUrl}" method="post">
+
+    <div>
+        <label>이름</label>
+        <input type="text" th:value="${userInfo != null ? userInfo.userName : ''}" readonly>
+    </div>
+
+    <div>
+        <label for="userPhoneNumber">전화번호</label>
+        <input type="text"
+               id="userPhoneNumber"
+               name="userPhoneNumber"
+               th:value="${updateDTO != null ? updateDTO.userPhoneNumber : ''}"
+               required>
+    </div>
+
+    <div>
+        <label for="userEmail">이메일</label>
+        <input type="text"
+               id="userEmail"
+               name="userEmail"
+               th:value="${updateDTO != null ? updateDTO.userEmail : ''}"
+               required>
+    </div>
+
+    <div>
+        <label for="userPassword">비밀번호</label>
+        <input type="password"
+               id="userPassword"
+               name="userPassword"
+               th:value="${updateDTO != null ? updateDTO.userPassword : ''}"
+               required>
+    </div>
+
+    <div>
+        <a th:if="${showPageUrl != null}"
+           th:href="${showPageUrl}">
+            뒤로가기
+        </a>
+
+        <button type="submit">
+            확인
+        </button>
+    </div>
+
+</form>
+
+</body>
+</html>

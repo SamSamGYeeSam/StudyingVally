@@ -1,5 +1,6 @@
 package com.samsamgyeesam.studyingvally.domain.quiz.entity;
 
+import com.samsamgyeesam.studyingvally.baseentity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "quiz")
-public class QuizQuiz {
+public class QuizQuiz extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

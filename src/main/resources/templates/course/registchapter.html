@@ -7,22 +7,23 @@
 <body>
 
 <h1>챕터 등록 페이지</h1>
-<p><strong>강의명:</strong> <span th:text="${courseTitle}"></span></p>
+<p><strong>강의명: <span th:text="${course.courseTitle}"></span></strong></p>
 
-<form action="/teacher/registchapter" method="post" enctype="multipart/form-data">
+<form th:action="@{/teacher/course/registchapter}" method="post" enctype="multipart/form-data">
 
+    <input type="hidden" name="courseId" th:value="${courseId}" th:if="${courseId != null}">
     <input type="hidden" name="courseTitle" th:value="${courseTitle}">
     <input type="hidden" name="courseDescription" th:value="${courseDescription}">
 
     <div id="chaptersContainer">
         <div class="chapter-section">
-            <h3>챕터 1</h3>
+            <h3 th:text="'챕터 ' + ${startChapterNumber}">챕터 1</h3>
             <label>챕터 제목</label><br>
             <input type="text" name="chapTitle" placeholder="제목을 입력하십시오" required><br>
             <label>챕터 설명</label><br>
             <textarea rows="10" name="chapDesc" cols="50" placeholder="챕터 설명을 입력하십시오" required></textarea><br>
             <label>강의 영상</label><br>
-            <input type="file" name="videoFile" accept="video/*"><br><br>
+            <input type="file" name="videoFile" accept="video/*" required><br><br>
         </div>
     </div>
 
@@ -30,70 +31,53 @@
     <button type="submit">등록 완료하기</button>
 </form>
 
-<!--챕터 등록하다가 이전으로 버튼 누르면 강의 등록 페이지로 가는데
-그때 빈칸이 아니라 사용자가 앞서 입력해둔 강의 내용들이 뜨게 하기 위해서 -->
-<form action="/teacher/registcourse/back" method="post" style="display:inline;">
-    <input type="hidden" name="courseTitle" th:value="${courseTitle}">
-    <input type="hidden" name="courseDescription" th:value="${courseDescription}">
+<form action="/teacher/course" method="get" style="display:inline;">
     <button type="submit">이전으로</button>
 </form>
 
-
-<script>
+<script th:inline="javascript">
     // 챕터 갯수 세기 -> 챕터 추가하기 전 기본적으로 1개는 작석ㅇ
-    let chapterCount = 1;
+    let chapterCount = /*[[${startChapterNumber}]]*/ 1;
 
-    // 챕터 추가 -> 화면 생성
-    function addChapter() {
-        const container = document.getElementById('chaptersContainer');
-        const newIndex = chapterCount;
 
-        const chapterHtml = `
-            <div class="chapter-section">
-                <h3>챕터 ${chapterCount + 1}</h3>
-                <button type="button" onclick="removeChapter(this)">삭제</button><br>
-                <label>챕터 제목</label><br>
-                <input type="text" name="chapTitle" placeholder="제목을 입력하십시오" required><br>
-                <label>챕터 설명</label><br>
-                <textarea rows="10" name="chapDesc" cols="50" placeholder="챕터 설명을 입력하십시오" required></textarea><br>
-                <label>강의 영상</label><br>
-                <input type="file" name="videoFile" accept="video/*"><br><br>
-            </div>
-        `;
+  // 챕터 추가
+  function addChapter() {
+      const container = document.getElementById('chaptersContainer');
+      const newIndex = chapterCount;
 
-        container.insertAdjacentHTML('beforeend', chapterHtml);
-        chapterCount++;
-    }
+      const chapterHtml = `
+          <div class="chapter-section">
+              <h3>챕터 ${chapterCount + 1}</h3>
+              <button type="button" onclick="removeChapter(this)">삭제</button><br>
+              <label>챕터 제목</label><br>
+              <input type="text" name="chapTitle" placeholder="제목을 입력하십시오" required><br>
+              <label>챕터 설명</label><br>
+              <textarea rows="10" name="chapDesc" cols="50" placeholder="챕터 설명을 입력하십시오" required></textarea><br>
+              <label>강의 영상</label><br>
+              <input type="file" name="videoFile" accept="video/*" required><br><br>
+          </div>
+      `;
 
-    function removeChapter(button) {
-        const chapterSection = button.closest('.chapter-section');
-        const container = document.getElementById('chaptersContainer');
+      container.insertAdjacentHTML('beforeend', chapterHtml);
+      chapterCount++;
+  }
 
-        if (container.children.length <= 1) {
-            alert('최소 1개의 챕터는 필요합니다.');
-            return;
-        }
+  function removeChapter(button) {
+      const chapterSection = button.closest('.chapter-section');
+      const container = document.getElementById('chaptersContainer');
 
-        chapterSection.remove();
-        updateChapterNumbers();
-    }
+      chapterSection.remove();
+      updateChapterNumbers();
+  }
 
-    function updateChapterNumbers() {
+  function updateChapterNumbers() {
+        const startNum = /*[[${startChapterNumber}]]*/ 1;
         const chapters = document.querySelectorAll('.chapter-section');
         chapters.forEach((chapter, index) => {
             const h3 = chapter.querySelector('h3');
-            h3.textContent = `챕터 ${index + 1}`;
-            chapter.setAttribute('data-chapter-index', index);
-
-            const inputs = chapter.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                const name = input.getAttribute('name');
-                if (name && name.includes('chapters[')) {
-                    const newName = name.replace(/chapters\[\d+\]/, `chapters[${index}]`);
-                    input.setAttribute('name', newName);
-                }
-            });
+            h3.textContent = `챕터 ${startNum + index}`;
         });
+        chapterCount = startNum + chapters.length - 1;
     }
 </script>
 

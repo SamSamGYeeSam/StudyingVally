@@ -24,6 +24,7 @@ public class SecurityConfig {
     //로그인 성공 후 권한별 이동 경로를 분기하는 핸들러
     private final AuthSuccessHandler authSuccessHandler;
 
+    // 정적 리소스 예외 처리 (js, css, images 등)
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
@@ -68,6 +69,7 @@ public class SecurityConfig {
                         .successHandler(authSuccessHandler)
                         .failureUrl("/auth/login?error=true")
                 );
+        // 히히
 
         return http.build();
     }

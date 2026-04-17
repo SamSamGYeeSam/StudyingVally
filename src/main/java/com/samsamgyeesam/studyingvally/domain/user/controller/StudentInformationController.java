@@ -18,29 +18,72 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class StudentInformationController {
     private final UserService userService;
 
-    /*
+    /**
      * 학생 정보 조회
+     *
+     * URL: GET /student/home/info
      */
     @GetMapping("/info")
     public String showStudentInformation(Authentication authentication, Model model) {
 
-        String loginUserId = authentication.getName();
+        try {
+            String loginUserId = authentication.getName();
 
-        UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
-        model.addAttribute("userInfo", userInfo);
+            UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
+            model.addAttribute("userInfo", userInfo);
 
-        UserInformationUpdateDTO updateDTO = new UserInformationUpdateDTO();
-        updateDTO.setUserPhoneNumber(userInfo.getUserPhoneNumber());
-        updateDTO.setUserEmail(userInfo.getUserEmail());
-        updateDTO.setUserPassword(userInfo.getUserPassword());
+            /* 조회 화면에서 수정 버튼 클릭 시 이동할 주소 */
+            model.addAttribute("updatePageUrl", "/student/home/update-info");
 
-        model.addAttribute("updateDTO", updateDTO);
+            return "auth/showinformation";
 
-        return "student/home/info";
+        } catch (IllegalArgumentException exception) {
+            model.addAttribute("infoError", exception.getMessage());
+
+            return "auth/showinformation";
+        }
     }
 
     /**
-     * 학생 정보 수정
+     * 학생 정보 수정 화면 이동
+     *
+     * URL: GET /student/home/update-info
+     */
+    @GetMapping("/update-info")
+    public String updateStudentInformationPage(Authentication authentication, Model model) {
+
+        try {
+            String loginUserId = authentication.getName();
+
+            UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
+
+            UserInformationUpdateDTO updateDTO = new UserInformationUpdateDTO();
+            updateDTO.setUserPhoneNumber(userInfo.getUserPhoneNumber());
+            updateDTO.setUserEmail(userInfo.getUserEmail());
+            updateDTO.setUserPassword(userInfo.getUserPassword());
+
+            model.addAttribute("userInfo", userInfo);
+            model.addAttribute("updateDTO", updateDTO);
+
+            /* 수정 form submit 주소 */
+            model.addAttribute("formActionUrl", "/student/home/update-info");
+
+            /* 뒤로가기 시 조회 화면 주소 */
+            model.addAttribute("showPageUrl", "/student/home/info");
+
+            return "auth/updateinformation";
+
+        } catch (IllegalArgumentException exception) {
+            model.addAttribute("updateError", exception.getMessage());
+            model.addAttribute("formActionUrl", "/student/home/update-info");
+            model.addAttribute("showPageUrl", "/student/home/info");
+
+            return "auth/updateinformation";
+        }
+    }
+
+    /**
+     * 학생 정보 수정 처리
      *
      * URL: POST /student/home/update-info
      */
@@ -49,20 +92,26 @@ public class StudentInformationController {
                                            @ModelAttribute UserInformationUpdateDTO updateDTO,
                                            Model model) {
 
-        String loginUserId = authentication.getName();
-
         try {
+            String loginUserId = authentication.getName();
+
             userService.updateUserInformation(loginUserId, updateDTO);
+
             return "redirect:/student/home/info";
 
         } catch (IllegalArgumentException exception) {
+            String loginUserId = authentication.getName();
+
             UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
 
             model.addAttribute("userInfo", userInfo);
             model.addAttribute("updateDTO", updateDTO);
             model.addAttribute("updateError", exception.getMessage());
 
-            return "student/home/info";
+            model.addAttribute("formActionUrl", "/student/home/update-info");
+            model.addAttribute("showPageUrl", "/student/home/info");
+
+            return "auth/updateinformation";
         }
     }
 }

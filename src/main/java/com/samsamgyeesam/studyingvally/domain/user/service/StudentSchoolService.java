@@ -36,7 +36,10 @@ public class StudentSchoolService {
 
     @Transactional
     public void registerCourse(Long userNo, Long courseId) {
-        StudentCourse course = studentCourseRepository.findById(courseId)
+        StudentCourse course = studentEnrollmentRepository.findAll().stream()
+                .map(StudentEnrollment::getCourse)
+                .filter(c -> c.getCourseId().equals(courseId))
+                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 강의가 없습니다."));
 
         StudentEnrollment studentEnrollment = new StudentEnrollment();

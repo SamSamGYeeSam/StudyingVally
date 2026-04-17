@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Valley - Board</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --grass-color: #A3E487;
+            --dirt-color: #B37D2E;
+            --border-purple: #9B5DE5;
+        }
+        body { background-color: var(--grass-color); margin: 0; padding: 0; font-family: 'DungGeunMo', sans-serif; }
+        .header-area { padding: 20px 40px; display: flex; align-items: flex-end; position: relative; }
+        .tab-group { display: flex; gap: 5px; }
+        .tab {
+            width: 130px; height: 45px; background: white; border: 3px solid black;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; font-weight: bold; border-radius: 10px 10px 0 0; font-size: 14px;
+        }
+        .tab.active { background-color: var(--border-purple); color: white; border-bottom: none; }
+        .main-title { position: absolute; left: 50%; transform: translateX(-50%); font-size: 28px; font-weight: bold; color: #2D4A22; }
+        .content-area { background-color: var(--dirt-color); min-height: 85vh; padding: 40px 0; display: flex; flex-direction: column; align-items: center; }
+        .board-container { width: 95%; max-width: 1000px; background: white; border: 6px solid var(--border-purple); box-shadow: 10px 10px 0px rgba(0,0,0,0.2); border-radius: 5px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: #f8f9fa; border-bottom: 3px solid black; padding: 15px; font-size: 15px; }
+        td { border-bottom: 1px solid #ddd; padding: 15px; text-align: center; font-size: 14px; }
+        .clickable-title { text-align: left; padding-left: 20px; cursor: pointer; transition: 0.2s; font-weight: bold; }
+        .clickable-title:hover { color: var(--border-purple); text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="header-area">
+    <div class="tab-group">
+        <div id="tab-admin" class="tab active" onclick="switchTab('admin')">공지사항</div>
+        <div id="tab-course" class="tab" onclick="switchTab('course')">강의 소식</div>
+    </div>
+    <div class="main-title">게시판</div>
+</div>
+
+<div class="content-area">
+    <div id="admin-section" class="board-container">
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 25%;">작성일</th>
+                <th style="width: 75%;">공지사항</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="notice : ${adminNotices}">
+                <td th:text="${notice.formattedDate}">2026-04-16</td>
+                <td class="clickable-title"
+                    th:text="${notice.title}"
+                    th:onclick="openDetail([[${notice.title}]], [[${notice.desc}]])">
+                    공지 제목
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(adminNotices)}">
+                <td colspan="2">등록된 공지사항이 없습니다.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="course-section" class="board-container" style="display: none;">
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 15%;">작성일</th>
+                <th style="width: 15%;">강사</th>
+                <th style="width: 25%;">강의명</th>
+                <th style="width: 45%;">강의 소식</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="note : ${courseNotices}">
+                <td th:text="${note.createdAt}">2026-04-16</td>
+                <td th:text="${note.userName}">강사명</td>
+                <td th:text="${note.courseTitle}">강의명</td>
+                <td class="clickable-title"
+                    th:text="${note.courseNoticeTitle}"
+                    th:onclick="openDetail([[${note.courseNoticeTitle}]], [[${note.courseNoticeDesc}]])">
+                    소식 제목
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(courseNotices)}">
+                <td colspan="4">참여 중인 강의 소식이 없습니다.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function switchTab(type) {
+        const adminSec = document.getElementById('admin-section');
+        const courseSec = document.getElementById('course-section');
+        const tabAdmin = document.getElementById('tab-admin');
+        const tabCourse = document.getElementById('tab-course');
+
+        if (type === 'admin') {
+            adminSec.style.display = 'block';
+            courseSec.style.display = 'none';
+            tabAdmin.classList.add('active');
+            tabCourse.classList.remove('active');
+        } else {
+            adminSec.style.display = 'none';
+            courseSec.style.display = 'block';
+            tabAdmin.classList.remove('active');
+            tabCourse.classList.add('active');
+        }
+    }
+
+    function openDetail(title, content) {
+        Swal.fire({
+            title: `<div style="font-family:'DungGeunMo';">${title}</div>`,
+            html: `<div style="text-align: left; padding: 10px; font-family:'DungGeunMo'; line-height: 1.6;">${content}</div>`,
+            icon: 'info',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#9B5DE5',
+            background: '#fff8e1'
+        });
+    }
+</script>
+
+</body>
+</html>

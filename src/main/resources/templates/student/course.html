@@ -1,53 +1,159 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>강의실 - 스타잉밸리</title>
+    <title>스터딩밸리 공지사항</title>
     <style>
-        /* 기본 레이아웃 */
-        .room-container { position: relative; width: 800px; height: 600px; margin: 0 auto; background: #f0f0f0; border: 4px solid #5d4037; }
+        body {
+            font-family: 'NanumSquareRound', sans-serif;
+            background-color: #F5F5F0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
 
-        /* 진행률 바 스타일 */
-        .progress-container { position: absolute; top: 20px; left: 20px; width: 300px; z-index: 10; }
-        .progress-bar-background { background-color: #e0e0e0; border: 2px solid #000; height: 20px; width: 100%; }
-        .progress-bar-fill { background-color: #4caf50; height: 100%; transition: width 0.5s ease-in-out; }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
 
-        /* 메뉴 버튼들 */
-        .menu-container { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; }
-        .pixel-btn { padding: 10px 20px; background: #8d6e63; color: white; border: 2px solid #000; cursor: pointer; text-decoration: none; font-size: 14px; }
-        .pixel-btn:hover { background: #6d4c41; }
+        h1 {
+            color: #4A6F5A;
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-        /* NPC 대화창 영역 (이미지의 브로콜리 NPC 자리) */
-        .npc-section { position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%); text-align: center; }
-        .npc-dialog { background: white; border: 3px solid #000; padding: 15px; border-radius: 10px; margin-bottom: 10px; min-width: 200px; }
+        /* 탭 스타일 */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #A3C18D;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: #4A6F5A;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+            transition: background-color 0.3s;
+        }
+
+        .tab-btn.active {
+            background-color: #4A6F5A;
+            color: #fff;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background-color: #E6EFEC;
+        }
+
+        /* 공지사항 목록 스타일 */
+        .notice-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .notice-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .notice-item:hover {
+            background-color: #F9FCFB;
+        }
+
+        .notice-icon {
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .notice-title {
+            flex-grow: 1;
+            font-weight: bold;
+        }
+
+        .notice-date {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .new-icon {
+            color: #A3C18D;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        /* 테이블 스타일 (필요시 사용) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background-color: #A3C18D;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background-color: #F9FCFB;
+        }
+
+        .clickable-title {
+            cursor: pointer;
+            color: #4A6F5A;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-<div class="room-container">
-    <div class="progress-container">
-        <p>학습 진행률: <span th:text="${progress}">0</span>%</p>
-        <div class="progress-bar-background">
-            <div class="progress-bar-fill" th:style="'width: ' + ${progress} + '%;'"></div>
-        </div>
+<div class="container">
+    <h1>🌱 스터딩밸리 소식통</h1>
+
+    <div class="tabs">
+        <button class="tab-btn active">전체 공지</button>
+        <button class="tab-btn">강의 공지</button>
     </div>
 
-    <div class="npc-section">
-        <div class="npc-dialog">
-            <p>안녕하세요! 오늘 공부는 어디까지 하실 건가요?</p>
-        </div>
-        <div class="npc-sprite">🥦</div>
-    </div>
+    <ul class="notice-list">
+        <li class="notice-item">
+            <span class="notice-icon">🌿</span>
+            <span class="notice-title">스터딩밸리 이용 가이드 (필독!)</span>
+            <span class="notice-date">2026.04.16</span>
+        </li>
+        <li class="notice-item">
+            <span class="notice-icon">📢</span>
+            <span class="notice-title">자바 프로그래밍 입문 강의 개설 안내</span>
+            <span class="notice-date">2026.04.15</span>
+            <span class="new-icon">N</span>
+        </li>
+        <li class="notice-item">
+            <span class="notice-icon">🔧</span>
+            <span class="notice-title">시스템 점검 안내 (4/20 새벽 2시~6시)</span>
+            <span class="notice-date">2026.04.14</span>
+        </li>
+    </ul>
 
-    <div class="menu-container">
-        <a th:href="@{/student/chapter(courseId=${courseId})}" class="pixel-btn">챕터 목록</a>
-
-        <a th:href="@{/student/createreview(courseId=${courseId})}" class="pixel-btn">강의평 쓰기</a>
-
-        <button class="btn-back" onclick="location.href='/student/main'">
-            🚪 강의실 나가기
-        </button>
-    </div>
 </div>
 
 </body>

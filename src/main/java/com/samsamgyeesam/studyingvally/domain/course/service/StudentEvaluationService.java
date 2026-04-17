@@ -20,12 +20,12 @@ public class StudentEvaluationService {
 
     public List<StudentEvaluationResponseDTO> getEvaluationsByCourseId(Long courseId) {
         List<StudentEvaluation> list = studentEvaluationRepository.findByStudentCourse_CourseId(courseId);
-    return list.stream().map(evaluation -> { // 매개변수 이름을 evaluation으로 통일
+    return list.stream().map(evaluation -> {
         String nickname = (evaluation.getUser() != null) ? evaluation.getUser().getUserNickname() : "익명";
 
         return StudentEvaluationResponseDTO.builder()
-                .content(evaluation.getEvaluationDesc())   // getEvaluationDesc() 사용
-                .score(evaluation.getEvaluationScore())    // getEvaluationScore() 사용
+                .content(evaluation.getEvaluationDesc())
+                .score(evaluation.getEvaluationScore())
                 .nickname(nickname)
                 .build();
     }).collect(Collectors.toList());

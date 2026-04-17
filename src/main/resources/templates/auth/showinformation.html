@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 정보 조회</title>
+</head>
+<body>
+
+<h1>내 정보 조회</h1>
+
+<!-- 조회 실패 메시지 -->
+<div th:if="${infoError != null}" th:text="${infoError}">
+    조회 에러 메시지
+</div>
+
+<!-- 이름 -->
+<div>
+    <label>이름</label>
+    <input type="text"
+           th:value="${userInfo != null ? userInfo.userName : ''}"
+           readonly>
+</div>
+
+<!-- 전화번호 -->
+<div>
+    <label>전화번호</label>
+    <input type="text"
+           th:value="${userInfo != null ? userInfo.userPhoneNumber : ''}"
+           readonly>
+</div>
+
+<!-- 이메일 -->
+<div>
+    <label>이메일</label>
+    <input type="text"
+           th:value="${userInfo != null ? userInfo.userEmail : ''}"
+           readonly>
+</div>
+
+<!-- 비밀번호 -->
+<div>
+    <label>비밀번호</label>
+    <input type="password"
+           th:value="${userInfo != null ? userInfo.userPassword : ''}"
+           readonly>
+</div>
+
+<!-- 수정 버튼 -->
+<div th:if="${updatePageUrl != null}">
+    <a th:href="${updatePageUrl}">
+        수정
+    </a>
+</div>
+
+</body>
+</html>
