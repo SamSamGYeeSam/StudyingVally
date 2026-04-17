@@ -47,6 +47,8 @@ public class TeacherInformationController {
 
             /* 조회 화면에서 수정 버튼 클릭 시 이동할 주소 */
             model.addAttribute("updatePageUrl", "/updateinformation");
+            /* 확인 누를 시 마이페이지로 이동*/
+            model.addAttribute("confirmPageUrl", "/teacher/mypage");
 
             return "auth/showinformation";
 
@@ -133,6 +135,7 @@ public class TeacherInformationController {
 
             model.addAttribute("formActionUrl", "/updateinformation");
             model.addAttribute("showPageUrl", "/showinformation");
+
 
             return "auth/updateinformation";
         }
