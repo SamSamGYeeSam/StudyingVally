@@ -63,5 +63,9 @@ public class ChapterService {
         foundChapter.updateChapterInfo(chapTitle, chapDesc, chapUrl);
     }
 
-
+    // 챕터 삭제
+    @Transactional
+    public void deleteChapter(Long chapNo) {
+        chapterRepository.deleteById(chapNo);
+    }
 }

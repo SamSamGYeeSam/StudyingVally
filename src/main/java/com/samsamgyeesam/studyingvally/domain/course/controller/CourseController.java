@@ -53,34 +53,25 @@ public class CourseController {
         return "course/courselist";
     }
 
+//   강의 목록 보기 누른 경우
 
 
-//   위에는 강의 목록 보기 누른 경우
+    // 강의소식 페이지로 이동 -> 전체 강의 소식 목록 나오는 화면으로
+    @GetMapping("/notice")
+    public String gotoNoticePage(){
+        return "course/noticelist";
+    }
+//    강의소식 누른 경우
 
 
     @GetMapping("/mypage")
     public String gotoMypage(){
         return "course/mypage";
     }
+//    마이페이지 누른 경우
 
 
-//    =================================
-//    아래는 하나의 강의 눌렀을 때 창 뜨고 그 창에서 하고자는 것 선택하는 경우
-
-
-    // 상세 챕터 보기
-    // 선택창에서 오는 경우 -> post 방식
-    // 챕터 등록 후 넘어오는 경우 -> get
-    @RequestMapping(value = "/course/chapter", method = {RequestMethod.GET, RequestMethod.POST})
-    public String viewChapters(@RequestParam Long courseId, Model model) {
-        List<ChapterDTO> chapterList = chapterService.findChaptersByCourseId(courseId);
-        CourseDTO course = courseService.findCourseById(courseId);
-
-        model.addAttribute("chapterList", chapterList);
-        model.addAttribute("course", course);
-        model.addAttribute("courseId", courseId);
-        return "course/chapterlist";
-    }
+//    강의 목록 보기에서 한 강의 선택한 경우 나온 선택창
 
 
     // 강의평 보기
@@ -137,32 +128,6 @@ public class CourseController {
         return "redirect:/teacher/course";
     }
 
-    // 챕터랑 해당 챕터가 속한 강의 정보 가지고 경로롤 이동
-    @PostMapping("/course/chapterupdate")
-    public String updateChapterPage(@RequestParam Long courseId,
-                                    @RequestParam Long chapNo,
-                                    Model model) {
-        ChapterDTO chapter = chapterService.findChapterByChapNo(chapNo);
-
-        model.addAttribute("chapter", chapter);
-        model.addAttribute("courseId", courseId);
-
-        return "course/updatechapter";
-    }
-
-    // 챕터 수정 처리
-    @PostMapping("/course/updatechapter")
-    public String updateChapter(@RequestParam Long chapNo,
-                                @RequestParam Long courseId,
-                                @RequestParam String chapTitle,
-                                @RequestParam String chapDesc,
-                                @RequestParam String chapUrl) {
-
-        chapterService.modifyChapter(chapNo, chapTitle, chapDesc, chapUrl);
-
-        return "redirect:/teacher/course";
-    }
-
     // 강의 삭제 확인 페이지
     @PostMapping("/course/deletecheck")
     public String deleteCheck(@RequestParam Long courseId, Model model) {
@@ -186,4 +151,5 @@ public class CourseController {
 
         return "redirect:/teacher/course";
     }
+
 }
