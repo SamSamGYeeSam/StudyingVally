@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+<h1>전체 공지사항</h1>
+
+<div class="notice-list">
+    <div th:if="${!notices.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>날짜</th>
+                <th>공지 제목</th>
+                <th>공지 내용</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="notice : ${notices}">
+                <td th:text="${#temporals.format(notice.createdDate, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                <td th:text="${notice.noticeTitle}">공지사항 제목</td>
+                <td th:text="${notice.noticeDesc}">공지사항 내용</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 공지사항이 없을 때 -->
+    <div th:if="${notices.isEmpty()}" class="no-data">
+        등록된 공지사항이 없습니다.
+    </div>
+</div>
+
+</body>
+
+</html>
