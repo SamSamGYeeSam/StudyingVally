@@ -7,6 +7,7 @@ import com.samsamgyeesam.studyingvally.domain.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.Authentication;
@@ -27,9 +28,16 @@ public class TeacherInformationController {
      * URL: GET /showinformation
      */
     @GetMapping("/showinformation")
-    public String showTeacherInformation(Authentication authentication, Model model) {
+    public String showTeacherInformation(Authentication authentication, HttpSession session  ,Model model) {
 
         try {
+            /* 비밀번호 확인 없이 직접 접근하는 경우 차단 */
+            Boolean verified = (Boolean) session.getAttribute("teacherInfoVerified");
+
+            if (verified == null || !verified) {
+                model.addAttribute("passwordCheckError", "비밀번호 확인 후 접근할 수 있습니다.");
+                return "course/mypage";
+            }
             /* 현재 로그인한 사용자 아이디 추출 */
             String loginUserId = authentication.getName();
 
@@ -56,9 +64,17 @@ public class TeacherInformationController {
      * URL: GET /updateinformation
      */
     @GetMapping("/updateinformation")
-    public String updateTeacherInformationPage(Authentication authentication, Model model) {
+    public String updateTeacherInformationPage(Authentication authentication, HttpSession session, Model model) {
 
         try {
+            /* 비밀번호 확인 없이 직접 접근하는 경우 차단 */
+            Boolean verified = (Boolean) session.getAttribute("teacherInfoVerified");
+
+            if (verified == null || !verified) {
+                model.addAttribute("passwordCheckError", "비밀번호 확인 후 접근할 수 있습니다.");
+                return "course/mypage";
+            }
+
             String loginUserId = authentication.getName();
 
             UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
@@ -171,6 +187,38 @@ public class TeacherInformationController {
             model.addAttribute("formActionUrl", "/deleteaccount");
 
             return "auth/deleteaccount";
+        }
+    }
+
+    /**
+     * 강사 내 정보 조회 전 비밀번호 확인 처리
+     * 비밀번호 검증이 성공하면 세션에 확인 완료 상태를 저장한 뒤
+     * 실제 조회 화면(/showinformation)으로 리다이렉트한다.
+     */
+    @PostMapping("/showinformation/check-password")
+    public String checkTeacherInfoPassword(Authentication authentication,
+                                           @ModelAttribute DeleteUserDTO deleteUserDTO,
+                                           HttpSession session,
+                                           Model model) {
+
+        try {
+            /* 현재 로그인한 사용자 아이디 */
+            String loginUserId = authentication.getName();
+
+            /* 비밀번호 검증 */
+            userService.verifyUserPassword(loginUserId, deleteUserDTO.getUserPassword());
+
+            /* 검증 성공 시 세션에 인증 완료 상태 저장 */
+            session.setAttribute("teacherInfoVerified", true);
+
+            /* 실제 조회 페이지로 이동 */
+            return "redirect:/showinformation";
+
+        } catch (IllegalArgumentException exception) {
+            /* 실패 시 마이페이지로 다시 이동하면서 에러 메시지 전달 */
+            model.addAttribute("passwordCheckError", exception.getMessage());
+
+            return "course/mypage";
         }
     }
 }

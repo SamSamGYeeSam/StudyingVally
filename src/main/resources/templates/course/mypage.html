@@ -7,7 +7,8 @@
 <body>
 
 <!-- 내 정보 보기 -->
-<form action="/showinformation" method="post" style="display:inline;">
+<!--<form action="/showinformation" method="post" style="display:inline;">-->
+    <form onsubmit="openInfoPasswordPopup(); return false;">
     <button type="submit">내 정보 보기</button>
 </form>
 
@@ -20,6 +21,36 @@
 <form action="/teacher/teachermain" method="get">
     <button type="submit">이전으로</button>
 </form>
+
+<!-- 비밀번호 확인용 숨은 form -->
+<form id="infoPasswordForm" action="/showinformation/check-password" method="post" style="display:none;">
+    <input type="hidden" name="userPassword" id="infoPasswordInput">
+</form>
+
+<script>
+    /*
+     * 내 정보 보기 클릭 시 비밀번호를 입력받고
+     * 입력값을 숨은 form으로 서버에 전송한다.
+     */
+    function openInfoPasswordPopup() {
+        const password = prompt("내 정보 조회를 위해 비밀번호를 입력해주세요.");
+
+        /* 취소를 누른 경우 */
+        if (password === null) {
+            return;
+        }
+
+        /* 공백 입력 방지 */
+        if (password.trim() === "") {
+            alert("비밀번호를 입력해주세요.");
+            return;
+        }
+
+        /* 숨은 input에 비밀번호 세팅 후 form 제출 */
+        document.getElementById("infoPasswordInput").value = password;
+        document.getElementById("infoPasswordForm").submit();
+    }
+</script>
 
 
 </body>

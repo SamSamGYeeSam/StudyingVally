@@ -1,5 +1,6 @@
 package com.samsamgyeesam.studyingvally.domain.user.entity;
 
+import com.samsamgyeesam.studyingvally.baseentity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import jakarta.persistence.GenerationType;
 @Entity
 @Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserUser {
+public class UserUser extends BaseTimeEntity {
 
     /**
      * 사용자 PK

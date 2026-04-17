@@ -141,12 +141,8 @@ public class UserService {
     }
     /**
      * 현재 로그인한 사용자의 계정을 삭제한다.
-     *
      * 탈퇴 전 입력한 비밀번호와
      * 현재 로그인한 사용자 비밀번호가 일치해야 탈퇴 가능하다.
-     *
-     * @param loginUserId 현재 로그인한 사용자 아이디
-     * @param deleteAccountDTO 탈퇴 확인용 비밀번호 DTO
      */
     @Transactional
     public void deleteAccount(String loginUserId, DeleteUserDTO deleteUserDTO) {
@@ -167,5 +163,27 @@ public class UserService {
 
         /* 사용자 삭제 */
         userRepository.delete(user);
+    }
+
+    /*
+     * 현재 로그인한 사용자의 비밀번호를 확인한다.
+     * 내 정보 조회/수정 진입 전에
+     * 비밀번호 재확인을 위한 메서드이다.
+     */
+    public void verifyUserPassword(String loginUserId, String userPassword) {
+
+        /* 현재 로그인한 사용자 조회 */
+        UserUser user = userRepository.findByUserId(loginUserId)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        /* 비밀번호 입력 여부 확인 */
+        if (userPassword == null || userPassword.isBlank()) {
+            throw new IllegalArgumentException("비밀번호를 입력해주세요.");
+        }
+
+        /* 현재 프로젝트는 평문 비교 기준 */
+        if (!user.getUserPassword().equals(userPassword)) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
     }
 }
