@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>문의 상세</title>
+    <title>신고 상세</title>
     <style>
         * { box-sizing: border-box; }
 
@@ -62,6 +62,11 @@
             cursor: pointer;
         }
 
+        .submit-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .form-table {
             width: 100%;
             border-collapse: collapse;
@@ -101,6 +106,10 @@
             resize: vertical;
         }
 
+        .disabled-textarea {
+            background-color: #f1f1f1;
+        }
+
         .bottom-button-area {
             display: flex;
             justify-content: flex-end;
@@ -113,38 +122,45 @@
             font-weight: bold;
             margin-bottom: 14px;
         }
+
+        .guide-text {
+            margin-top: 12px;
+            color: #444;
+            font-size: 14px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 th:text="${pageTitle}">문의 상세</h1>
+    <h1 th:text="${pageTitle}">신고 상세</h1>
 </div>
 
 <div class="container">
     <div class="content-box">
         <div class="content-header">
-            <h2 class="content-title">문의 상세</h2>
-            <a th:href="@{/admin/callcenter/contact}" class="top-button">목록으로</a>
+            <h2 class="content-title">신고 상세</h2>
+            <a th:href="@{/admin/callcenter/report}" class="top-button">목록으로</a>
         </div>
 
         <div th:if="${errorMessage}" class="error-text" th:text="${errorMessage}"></div>
 
-        <form th:action="@{/admin/callcenter/contactdetail}" method="post">
-            <input type="hidden" name="questionTechNo" th:value="${contactDetail.questionTechNo}">
+        <form th:action="@{/admin/callcenter/reportdetail}" method="post">
+            <input type="hidden" name="reportNo" th:value="${reportDetail.reportNo}">
 
             <table class="form-table">
                 <tr>
-                    <th>문의 제목</th>
+                    <th>신고 제목</th>
                     <td>
-                        <div class="readonly-box" th:text="${contactDetail.questionTitle}">문의 제목</div>
+                        <div class="readonly-box" th:text="${reportDetail.reportTitle}">신고 제목</div>
                     </td>
                 </tr>
                 <tr>
                     <th>작성자</th>
                     <td>
                         <div class="readonly-box"
-                             th:text="${contactDetail.userName + ' / ' + contactDetail.userNickname}">
+                             th:text="${reportDetail.userName + ' / ' + reportDetail.userNickname}">
                             홍길동 / 길동이
                         </div>
                     </td>
@@ -152,40 +168,44 @@
                 <tr>
                     <th>처리 상태</th>
                     <td>
-                        <div class="readonly-box" th:text="${contactDetail.questionStatusLabel}">대기</div>
+                        <div class="readonly-box" th:text="${reportDetail.reportStatusLabel}">대기</div>
                     </td>
                 </tr>
                 <tr>
-                    <th>문의 내용</th>
+                    <th>신고 내용</th>
                     <td>
-                        <div class="readonly-box" th:text="${contactDetail.questionDesc}">문의 상세 내용</div>
+                        <div class="readonly-box" th:text="${reportDetail.reportDesc}">신고 상세 내용</div>
                     </td>
                 </tr>
-
-                <!-- 답변이 이미 있는 경우: 읽기 전용 답변만 표시 -->
-                <tr th:if="${contactDetail.questionAnswer != null and !#strings.isEmpty(contactDetail.questionAnswer)}">
-                    <th>답변 내용</th>
+                <tr>
+                    <th>기존 답변</th>
                     <td>
-                        <div class="readonly-box" th:text="${contactDetail.questionAnswer}">
-                            등록된 답변
+                        <div class="readonly-box"
+                             th:text="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer) ? reportDetail.reportAnswer : '아직 등록된 답변이 없습니다.'}">
+                            아직 등록된 답변이 없습니다.
                         </div>
                     </td>
                 </tr>
-
-                <!-- 답변이 없는 경우: 작성 영역 표시 -->
-                <tr th:if="${contactDetail.questionAnswer == null or #strings.isEmpty(contactDetail.questionAnswer)}">
+                <tr>
                     <th>답변 작성</th>
                     <td>
-                        <textarea name="questionAnswer"
+                        <textarea name="reportAnswer"
                                   class="form-textarea"
-                                  placeholder="문의에 대한 답변을 입력하세요."></textarea>
+                                  th:classappend="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)} ? ' disabled-textarea' : ''"
+                                  th:disabled="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)}"
+                                  th:text="${reportDetail.reportAnswer}"
+                                  placeholder="신고에 대한 처리 답변을 입력하세요."></textarea>
+
+                        <div class="guide-text"
+                             th:if="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)}">
+                            이미 답변이 완료된 신고입니다. 답변은 수정할 수 없습니다.
+                        </div>
                     </td>
                 </tr>
             </table>
 
-            <!-- 답변이 없는 경우에만 완료 버튼 표시 -->
             <div class="bottom-button-area"
-                 th:if="${contactDetail.questionAnswer == null or #strings.isEmpty(contactDetail.questionAnswer)}">
+                 th:if="${reportDetail.reportAnswer == null or #strings.isEmpty(reportDetail.reportAnswer)}">
                 <button type="submit" class="submit-button">완료</button>
             </div>
         </form>

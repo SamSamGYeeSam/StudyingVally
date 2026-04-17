@@ -1,4 +1,4 @@
-package com.samsamgyeesam.studyingvally.domain.admin.dto;
+package com.samsamgyeesam.studyingvally.domain.admin.dto.contact;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

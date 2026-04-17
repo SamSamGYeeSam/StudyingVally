@@ -1,11 +1,15 @@
 package com.samsamgyeesam.studyingvally.domain.admin.service;
 
-import com.samsamgyeesam.studyingvally.domain.admin.dto.AdminContactListDTO;
+import com.samsamgyeesam.studyingvally.domain.admin.dto.contact.AdminContactAnswerRequestDTO;
+import com.samsamgyeesam.studyingvally.domain.admin.dto.contact.AdminContactDetailDTO;
+import com.samsamgyeesam.studyingvally.domain.admin.dto.contact.AdminContactListDTO;
 import com.samsamgyeesam.studyingvally.domain.admin.dto.notice.AdminNoticeDetailDTO;
 import com.samsamgyeesam.studyingvally.domain.admin.dto.notice.AdminNoticeListDTO;
 import com.samsamgyeesam.studyingvally.domain.admin.dto.notice.AdminNoticeRegistRequestDTO;
 import com.samsamgyeesam.studyingvally.domain.admin.dto.notice.AdminNoticeUpdateRequestDTO;
-import com.samsamgyeesam.studyingvally.domain.admin.dto.AdminReportListDTO;
+import com.samsamgyeesam.studyingvally.domain.admin.dto.report.AdminReportAnswerRequestDTO;
+import com.samsamgyeesam.studyingvally.domain.admin.dto.report.AdminReportDetailDTO;
+import com.samsamgyeesam.studyingvally.domain.admin.dto.report.AdminReportListDTO;
 import com.samsamgyeesam.studyingvally.domain.admin.entity.AdminNotice;
 import com.samsamgyeesam.studyingvally.domain.admin.entity.AdminQuestionTech;
 import com.samsamgyeesam.studyingvally.domain.admin.entity.AdminReport;
@@ -20,12 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 관리자 고객센터 서비스 클래스
+/* comment.
+ * 관리자 고객센터 서비스
  *
  * 왜 필요한가:
- * - Controller와 Repository 사이에서 비즈니스 로직을 담당한다.
- * - 단순 조회뿐 아니라 등록/수정/검증/예외 처리까지 여기서 수행한다.
+ * - 공지사항, 문의함, 신고함 관련 비즈니스 로직을 처리한다.
+ * - 기존 공지사항 기능을 유지하면서 문의함 기능을 확장한다.
  */
 @Service
 @RequiredArgsConstructor
@@ -36,13 +40,12 @@ public class AdminCallCenterService {
     private final AdminQuestionTechRepository adminQuestionTechRepository;
     private final AdminReportRepository adminReportRepository;
 
-    /**
+    /* =========================
+     * 공지사항
+     * ========================= */
+
+    /* comment.
      * 공지사항 목록 조회
-     *
-     * 동작 순서:
-     * 1. DB에서 공지사항 전체를 번호 내림차순으로 조회한다.
-     * 2. 화면용 DTO 리스트로 변환한다.
-     * 3. 목록 번호(displayNo)를 별도로 계산하여 내려준다.
      */
     public List<AdminNoticeListDTO> findAllNoticeList() {
         List<AdminNotice> noticeList = adminNoticeRepository.findAllByOrderByNoticeNoDesc();
@@ -61,11 +64,8 @@ public class AdminCallCenterService {
         return result;
     }
 
-    /**
+    /* comment.
      * 공지사항 상세 조회
-     *
-     * 주의할 점:
-     * - 존재하지 않는 번호가 들어오면 예외를 발생시킨다.
      */
     public AdminNoticeDetailDTO findNoticeDetail(Long noticeNo) {
         AdminNotice notice = adminNoticeRepository.findById(noticeNo)
@@ -80,13 +80,8 @@ public class AdminCallCenterService {
         );
     }
 
-    /**
+    /* comment.
      * 공지사항 등록
-     *
-     * 동작 순서:
-     * 1. 제목/내용 유효성 검사를 수행한다.
-     * 2. 엔티티를 생성한다.
-     * 3. 저장한다.
      */
     @Transactional
     public void registNotice(AdminNoticeRegistRequestDTO requestDTO) {
@@ -100,14 +95,8 @@ public class AdminCallCenterService {
         adminNoticeRepository.save(adminNotice);
     }
 
-    /**
+    /* comment.
      * 공지사항 수정
-     *
-     * 동작 순서:
-     * 1. 입력값 유효성 검사를 수행한다.
-     * 2. 수정 대상 공지사항을 조회한다.
-     * 3. 엔티티 내부 수정 메서드를 호출한다.
-     * 4. 트랜잭션 종료 시 dirty checking으로 update SQL이 반영된다.
      */
     @Transactional
     public void updateNotice(AdminNoticeUpdateRequestDTO requestDTO) {
@@ -126,12 +115,8 @@ public class AdminCallCenterService {
         );
     }
 
-    /**
+    /* comment.
      * 공지사항 입력값 검증
-     *
-     * 왜 필요한가:
-     * - 제목/내용이 비어있는 상태로 저장되는 것을 막기 위함이다.
-     * - Controller가 아니라 Service에서도 한 번 더 막아야 안전하다.
      */
     private void validateNoticeInput(String noticeTitle, String noticeDesc) {
         if (noticeTitle == null || noticeTitle.trim().isEmpty()) {
@@ -147,60 +132,164 @@ public class AdminCallCenterService {
         }
     }
 
-    /**
+    /* =========================
+     * 문의함
+     * ========================= */
+
+    /* comment.
      * 문의함 목록 조회
      */
     public List<AdminContactListDTO> findAllContactList() {
-        List<AdminQuestionTech> contactList = adminQuestionTechRepository.findAllByOrderByQuestionTechNoDesc();
+        List<AdminQuestionTech> contactList = adminQuestionTechRepository.findAllWithUserOrderByQuestionTechNoDesc();
         List<AdminContactListDTO> result = new ArrayList<>();
-
-        int displayNo = contactList.size();
 
         for (AdminQuestionTech contact : contactList) {
             result.add(new AdminContactListDTO(
-                    displayNo,
                     contact.getQuestionTechNo(),
                     contact.getQuestionTitle(),
-                    contact.getQuestionDesc(),
-                    contact.getCourseId(),
-                    contact.getUserNo(),
-                    contact.getQuestionStatus(),
-                    contact.getQuestionAnswer(),
-                    contact.getAnsweredAdminNo(),
-                    contact.getQuestionAnsweredAt(),
-                    contact.getQuestionAnswerUpdatedAt()
+                    contact.getUser().getUserName(),
+                    contact.getUser().getUserNickname(),
+                    convertQuestionStatusToKorean(contact.getQuestionStatus()),
+                    contact.getQuestionAnsweredAt()
             ));
-            displayNo--;
         }
 
         return result;
     }
 
-    /**
+    /* comment.
+     * 문의 상세 조회
+     */
+    public AdminContactDetailDTO findContactDetail(Long questionTechNo) {
+        AdminQuestionTech contact = adminQuestionTechRepository.findDetailByQuestionTechNo(questionTechNo)
+                .orElseThrow(() -> new EntityNotFoundException("해당 문의가 존재하지 않습니다. questionTechNo=" + questionTechNo));
+
+        return new AdminContactDetailDTO(
+                contact.getQuestionTechNo(),
+                contact.getQuestionTitle(),
+                contact.getQuestionDesc(),
+                contact.getUser().getUserName(),
+                contact.getUser().getUserNickname(),
+                convertQuestionStatusToKorean(contact.getQuestionStatus()),
+                contact.getQuestionAnswer(),
+                contact.getQuestionAnsweredAt(),
+                contact.getQuestionAnswerUpdatedAt()
+        );
+    }
+
+    /* comment.
+     * 문의 답변 처리
+     */
+    @Transactional
+    public void answerContact(AdminContactAnswerRequestDTO requestDTO) {
+        if (requestDTO.getQuestionTechNo() == null) {
+            throw new IllegalArgumentException("문의 번호는 필수입니다.");
+        }
+
+        AdminQuestionTech contact = adminQuestionTechRepository.findById(requestDTO.getQuestionTechNo())
+                .orElseThrow(() -> new EntityNotFoundException("답변할 문의가 존재하지 않습니다. questionTechNo=" + requestDTO.getQuestionTechNo()));
+
+        Long adminNo = 1L;
+        contact.answerQuestion(requestDTO.getQuestionAnswer(), adminNo);
+    }
+
+    /* comment.
+     * 상태 한글 변환
+     */
+    private String convertQuestionStatusToKorean(String questionStatus) {
+        if ("RESOLVED".equals(questionStatus)) {
+            return "완료";
+        }
+        return "대기";
+    }
+
+    /* =========================
+     * 신고함
+     * ========================= */
+
+    /* comment.
      * 신고함 목록 조회
      */
     public List<AdminReportListDTO> findAllReportList() {
-        List<AdminReport> reportList = adminReportRepository.findAllByOrderByReportNoDesc();
+        List<AdminReport> reportList = adminReportRepository.findAllWithUserOrderByReportNoDesc();
         List<AdminReportListDTO> result = new ArrayList<>();
-
-        int displayNo = reportList.size();
 
         for (AdminReport report : reportList) {
             result.add(new AdminReportListDTO(
-                    displayNo,
                     report.getReportNo(),
                     report.getReportTitle(),
-                    report.getReportDesc(),
-                    report.getUserNo(),
-                    report.getReportStatus(),
-                    report.getReportAnswer(),
-                    report.getProcessedAdminNo(),
-                    report.getReportProcessedAt(),
-                    report.getReportAnswerUpdatedAt()
+                    report.getUser().getUserName(),
+                    report.getUser().getUserNickname(),
+                    convertReportStatusToKorean(report.getReportStatus()),
+                    report.getReportProcessedAt()
             ));
-            displayNo--;
         }
 
         return result;
+    }
+
+    /* comment.
+     * 신고 상세 조회
+     *
+     * 동작 순서:
+     * 1. 신고와 사용자 정보를 함께 조회한다.
+     * 2. 없으면 예외를 발생시킨다.
+     * 3. 상세 DTO로 변환한다.
+     */
+    public AdminReportDetailDTO findReportDetail(Long reportNo) {
+        AdminReport report = adminReportRepository.findDetailByReportNo(reportNo)
+                .orElseThrow(() -> new EntityNotFoundException("해당 신고가 존재하지 않습니다. reportNo=" + reportNo));
+
+        return new AdminReportDetailDTO(
+                report.getReportNo(),
+                report.getReportTitle(),
+                report.getReportDesc(),
+                report.getUser().getUserName(),
+                report.getUser().getUserNickname(),
+                convertReportStatusToKorean(report.getReportStatus()),
+                report.getReportAnswer(),
+                report.getReportProcessedAt(),
+                report.getReportAnswerUpdatedAt()
+        );
+    }
+
+    /* comment.
+     * 신고 답변 처리
+     *
+     * 동작 순서:
+     * 1. 신고 번호 유효성 검증
+     * 2. 수정 대상 조회
+     * 3. 엔티티 내부 메서드로 답변 처리
+     *
+     * 주의할 점:
+     * - 현재는 관리자 번호를 1L로 고정한다.
+     * - 추후 로그인 관리자 세션에서 실제 관리자 번호를 받아오도록 교체하면 된다.
+     */
+    @Transactional
+    public void answerReport(AdminReportAnswerRequestDTO requestDTO) {
+        if (requestDTO.getReportNo() == null) {
+            throw new IllegalArgumentException("신고 번호는 필수입니다.");
+        }
+
+        AdminReport report = adminReportRepository.findById(requestDTO.getReportNo())
+                .orElseThrow(() -> new EntityNotFoundException("답변할 신고가 존재하지 않습니다. reportNo=" + requestDTO.getReportNo()));
+
+        Long adminNo = 1L;
+        report.answerReport(requestDTO.getReportAnswer(), adminNo);
+    }
+
+    /* comment.
+     * 신고 상태 영문값을 화면용 한글로 변환
+     *
+     * 예:
+     * - PENDING  -> 대기
+     * - RESOLVED -> 완료
+     */
+    private String convertReportStatusToKorean(String reportStatus) {
+        if ("RESOLVED".equals(reportStatus)) {
+            return "완료";
+        }
+
+        return "대기";
     }
 }
