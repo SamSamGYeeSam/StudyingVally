@@ -5,8 +5,9 @@ import com.samsamgyeesam.studyingvally.domain.course.dto.CourseDTO;
 import com.samsamgyeesam.studyingvally.domain.course.service.ChapterService;
 import com.samsamgyeesam.studyingvally.domain.course.service.CourseService;
 import com.samsamgyeesam.studyingvally.domain.course.service.FileService;
-import jakarta.servlet.http.HttpSession;
+import com.samsamgyeesam.studyingvally.domain.user.service.AuthUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,10 +44,10 @@ public class CourseRegistController {
     @PostMapping("/registcourse")
     public String registCourse(@RequestParam String courseTitle,
                                @RequestParam String courseDescription,
+                               @AuthenticationPrincipal AuthUserDetails userDetails,
                                RedirectAttributes redirectAttributes) {
 
-        Long userNo = 2L;
-//        Long userNo = (Long) session.getAttribute("userNo");
+        Long userNo = userDetails.getUserNo();
 
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setCourseTitle(courseTitle);

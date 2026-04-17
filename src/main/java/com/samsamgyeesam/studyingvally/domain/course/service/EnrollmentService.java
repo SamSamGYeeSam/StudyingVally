@@ -30,7 +30,7 @@ public class EnrollmentService {
                 .map(enrollment -> {
                     EnrollmentDTO dto = modelMapper.map(enrollment, EnrollmentDTO.class);
 
-                    // User 정보 추가로 조회
+                    // 사용자 이름, 닉네임 가져오기
                     if (enrollment.getUserNo() != null) {
                         UserUser user = userRepository.findById(enrollment.getUserNo())
                                 .orElse(null);
