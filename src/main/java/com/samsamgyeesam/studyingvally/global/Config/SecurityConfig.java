@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/main",
-                                    "/auth/**",
+                                "/auth/**",
 //                                "/auth/login",
 //                                "/auth/signup1",
 //                                "/auth/signup2",
@@ -69,6 +69,10 @@ public class SecurityConfig {
                                 .passwordParameter("password")
                                 .successHandler(authSuccessHandler)
                                 .failureUrl("/auth/login?error=true")
+                )
+
+                .logout( logout -> logout
+                        .logoutSuccessUrl("/main")
                 );
         // 히히
 
