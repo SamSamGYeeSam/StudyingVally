@@ -42,7 +42,7 @@ public class CourseController {
 
     // 메인페이지에서 강의 목록 조회 눌렀을 때 넘어와서 화면 넘어가는 클래스
     @GetMapping("/course")
-    public String showCourseList(HttpSession session, Model model) {
+    public String gotoCourseListPage(HttpSession session, Model model) {
         //        Long userNo = (Long) session.getAttribute("userNo");
 
         Long userNo = 2L;
@@ -52,16 +52,7 @@ public class CourseController {
 
         return "course/courselist";
     }
-
 //   강의 목록 보기 누른 경우
-
-
-    // 강의소식 페이지로 이동 -> 전체 강의 소식 목록 나오는 화면으로
-    @GetMapping("/notice")
-    public String gotoNoticePage(){
-        return "course/noticelist";
-    }
-//    강의소식 누른 경우
 
 
     @GetMapping("/mypage")
@@ -71,7 +62,7 @@ public class CourseController {
 //    마이페이지 누른 경우
 
 
-//    강의 목록 보기에서 한 강의 선택한 경우 나온 선택창
+//  ↓ 강의 목록 보기에서 한 강의 선택한 경우 나온 선택창
 
 
     // 강의평 보기
