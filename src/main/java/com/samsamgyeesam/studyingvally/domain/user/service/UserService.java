@@ -17,18 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserService {
 
-    /**
-     * user 테이블 조회용 Repository
-     */
+    // user 테이블 조회용 Repository
     private final UserRepository userRepository;
 
-    /**
-     * 이름과 전화번호를 이용해 아이디를 찾는다.
-     *
-     * @param userName 사용자 이름
-     * @param phoneNumber 사용자 전화번호
-     * @return 찾은 사용자 아이디
-     */
+    // 이름과 전화번호를 사용해 아이디 찾기
     public String findUserId(String userName, String phoneNumber) {
 
         // 이름 또는 전화번호가 비어 있는 경우 예외 처리
@@ -75,6 +67,21 @@ public class UserService {
         // 아이디 중복 검사
         if (userRepository.existsByUserId(signupDTO.getUserId())) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+        }
+
+        // 이메일 중복 검사
+        if (userRepository.existsByUserEmail(signupDTO.getUserEmail())) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
+
+        // 전화번호 중복 검사
+        if (userRepository.existsByUserPhoneNumber(signupDTO.getUserPhoneNumber())) {
+            throw new IllegalArgumentException("이미 사용 중인 전화번호입니다.");
+        }
+
+        // 닉네임 중복 검사
+        if (userRepository.existsByUserNickname(signupDTO.getUserNickname())) {
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
         /*
