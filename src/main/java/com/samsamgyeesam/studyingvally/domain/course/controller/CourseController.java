@@ -3,11 +3,14 @@ package com.samsamgyeesam.studyingvally.domain.course.controller;
 import com.samsamgyeesam.studyingvally.domain.course.dto.ChapterDTO;
 import com.samsamgyeesam.studyingvally.domain.course.dto.CourseDTO;
 import com.samsamgyeesam.studyingvally.domain.course.dto.EnrollmentDTO;
+import com.samsamgyeesam.studyingvally.domain.course.dto.EvaluationDTO;
 import com.samsamgyeesam.studyingvally.domain.course.service.ChapterService;
 import com.samsamgyeesam.studyingvally.domain.course.service.CourseService;
 import com.samsamgyeesam.studyingvally.domain.course.service.EnrollmentService;
-import jakarta.servlet.http.HttpSession;
+import com.samsamgyeesam.studyingvally.domain.course.service.EvaluationService;
+import com.samsamgyeesam.studyingvally.domain.user.service.AuthUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +29,7 @@ public class CourseController {
     private final CourseService courseService;
     private final ChapterService chapterService;
     private final EnrollmentService enrollmentService;
+    private final EvaluationService evaluationService;
 
     // url에 입력해서 경로 이동하는 경우 get방식
     @GetMapping("/teachermain")
@@ -42,10 +46,11 @@ public class CourseController {
 
     // 메인페이지에서 강의 목록 조회 눌렀을 때 넘어와서 화면 넘어가는 클래스
     @GetMapping("/course")
-    public String gotoCourseListPage(HttpSession session, Model model) {
-        //        Long userNo = (Long) session.getAttribute("userNo");
+    public String gotoCourseListPage(@AuthenticationPrincipal AuthUserDetails userDetails, Model model) {
+        Long userNo = userDetails.getUserNo();
 
-        Long userNo = 2L;
+        System.out.println("Session userNo: " + userNo);
+
         List<CourseDTO> courseList = courseService.findAllCoursesByUserNo(userNo);
 
         model.addAttribute("courseList", courseList);
@@ -68,8 +73,11 @@ public class CourseController {
     // 강의평 보기
     @PostMapping("/course/review")
     public String viewReviews(@RequestParam Long courseId, Model model) {
+        List<EvaluationDTO> evaluations = evaluationService.findEvaluationsByCourseId(courseId);
+
+        model.addAttribute("evaluations", evaluations);
         model.addAttribute("courseId", courseId);
-        return "course/reviewlist";
+        return "course/evaluationlist";
     }
 
 
