@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "report")
-public class UserReport {
+public class UserReport extends UserNpcQuestionTech{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

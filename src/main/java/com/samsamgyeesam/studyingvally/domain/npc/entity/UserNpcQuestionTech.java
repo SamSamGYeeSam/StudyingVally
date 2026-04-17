@@ -1,5 +1,6 @@
 package com.samsamgyeesam.studyingvally.domain.npc.entity;
 
+import com.samsamgyeesam.studyingvally.baseentity.BaseOnlyCreateTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "question_tech")
-public class UserNpcQuestionTech {
+public class UserNpcQuestionTech extends BaseOnlyCreateTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
