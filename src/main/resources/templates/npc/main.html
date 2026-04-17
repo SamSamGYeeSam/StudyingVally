@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>NPC 센터</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; padding: 50px; text-align: center; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { margin-bottom: 10px; }
+        .npc-icon { font-size: 60px; margin-bottom: 20px; }
+
+        .btn-group { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
+        .btn { padding: 20px; font-size: 18px; font-weight: bold; border-radius: 8px; text-decoration: none; display: block; border: 2px solid #000; transition: all 0.3s; }
+
+        /* 문의하기 버튼: 기본적으로 검정색 바탕 */
+        .btn-inquire { background: #000; color: #fff; }
+        .btn-inquire:hover { background: #333; }
+
+        /* 신고하기 버튼: 흰색 바탕에 검정 글씨 */
+        .btn-report { background: #fff; color: #000; }
+        .btn-report:hover { background: #f0f0f0; }
+
+        .alert-msg { background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="npc-icon">🤖</div>
+    <h1>무엇을 도와드릴까요?</h1>
+    <p style="color:#666;">시스템 문의나 악성 유저 신고를 접수합니다.</p>
+
+    <div th:if="${message != null}" class="alert-msg" th:text="${message}"></div>
+
+    <div class="btn-group">
+        <a href="/npc/inquiry" class="btn btn-inquire">1:1 문의하기 ➔</a>
+
+        <a href="/npc/my-inquiries" class="btn" style="background:#f4f4f4; color:#333; border: 1px solid #ccc;">내 문의 및 답변 확인</a>
+
+        <a href="/npc/report" class="btn btn-report">⚠️ 불량 사용자 신고하기</a>
+        <a href="/npc/report/my-reports" class="btn" style="background:#f4f4f4; color:#333; border: 1px solid #ccc;">내 신고 및 처리 결과 확인</a>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <a href="/student/main" style="color: #999; text-decoration: underline;">메인 화면으로 돌아가기</a>
+    </div>
+</div>
+</body>
+</html>

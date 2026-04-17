@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>내 신고 내역</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; padding: 40px; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 5px solid #000; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+
+        .card { border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 15px; background: #fafafa; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .title { font-size: 18px; font-weight: bold; color: #d32f2f; }
+
+        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .status-waiting { background: #eee; color: #666; border: 1px solid #ccc; }
+        .status-done { background: #000; color: #fff; }
+
+        .desc { color: #555; font-size: 15px; line-height: 1.5; margin-bottom: 15px; white-space: pre-wrap; }
+
+        .answer-box { background: #fdf2f2; border-left: 4px solid #d32f2f; padding: 15px; margin-top: 15px; border-radius: 4px; }
+        .answer-title { font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #d32f2f; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2 style="margin: 0;">내 신고 내역</h2>
+        <a href="/npc" style="color: #666; text-decoration: underline;">돌아가기</a>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(reports)}">
+        <div class="card" th:each="report : ${reports}">
+            <div class="card-header">
+                <span class="title">🚨 <span th:text="${report.reportTitle}"></span></span>
+
+                <span th:if="${report.reportStatus == '처리 대기'}" class="status-badge status-waiting">처리 대기</span>
+                <span th:if="${report.reportStatus == '처리 완료'}" class="status-badge status-done">처리 완료</span>
+            </div>
+
+            <div class="desc" th:text="${report.reportDesc}"></div>
+
+            <div class="answer-box" th:if="${report.reportAnswer != null and report.reportAnswer != ''}">
+                <div class="answer-title">🤖 처리 결과</div>
+                <div th:text="${report.reportAnswer}" style="font-size: 14px; line-height: 1.5;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(reports)}" style="padding: 50px 0; text-align: center; color: #999;">
+        아직 작성하신 신고 내역이 없습니다.
+    </div>
+</div>
+</body>
+</html>
