@@ -38,6 +38,8 @@ public class StudentInformationController {
 
             /* 조회 화면에서 수정 버튼 클릭 시 이동할 주소 */
             model.addAttribute("updatePageUrl", "/student/home/update-info");
+            // 뒤로가기 누를 시 마이페이지로 이동
+            model.addAttribute("confirmPageUrl", "/student/home");
 
             return "auth/showinformation";
 

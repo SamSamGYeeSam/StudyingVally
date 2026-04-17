@@ -181,7 +181,7 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호를 입력해주세요.");
         }
 
-        /* 현재 프로젝트는 평문 비교 기준 */
+        // DB에 저장 된 비밀번호와 매칭 후 틀리면 문구 띄우기
         if (!user.getUserPassword().equals(userPassword)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
