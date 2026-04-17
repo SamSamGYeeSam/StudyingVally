@@ -16,127 +16,157 @@
 
         .header {
             background-color: #c9ef7a;
-            padding: 30px 40px;
+            padding: 40px 20px;
             text-align: center;
         }
 
-        .header h1 {
+        .header-inner {
+            position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-path {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 28px;
+        }
+
+        .header-title {
             margin: 0;
-            font-size: 48px;
+            font-size: 52px;
             font-weight: bold;
         }
 
         .container {
-            width: 90%;
+            width: 95%;
             max-width: 1400px;
-            margin: 40px auto;
-        }
-
-        .menu-card {
+            margin: 30px auto;
             display: flex;
-            margin-bottom: 30px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
+            flex-direction: column;
+            gap: 30px;
         }
 
-        .menu-card:hover {
-            transform: translateY(-4px);
+        .menu-link {
+            display: flex;
+            text-decoration: none;
+            color: black;
         }
 
         .menu-left {
-            width: 320px;
-            background-color: #e6d36f;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .menu-path {
-            font-size: 20px;
-            color: #444;
-            margin-bottom: 16px;
-        }
-
-        .menu-title {
-            font-size: 42px;
-            font-weight: bold;
+            width: 360px;
+            background-color: #e7d469;
+            min-height: 160px;
+            padding: 18px 24px;
         }
 
         .menu-right {
             flex: 1;
             background-color: white;
-            border: 4px solid black;
-            padding: 30px;
+            border: 4px solid #111;
+            min-height: 160px;
+            padding: 24px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .menu-text h2 {
-            margin: 0 0 10px 0;
-            font-size: 30px;
+        .menu-path {
+            font-size: 24px;
+            margin-bottom: 16px;
         }
 
-        .menu-text p {
-            margin: 0;
+        .menu-title {
+            font-size: 54px;
+            font-weight: bold;
+        }
+
+        .menu-desc-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .menu-desc {
             font-size: 20px;
             color: #333;
         }
 
-        .move-btn {
-            border: none;
-            background-color: black;
+        .move-button {
+            background-color: #111;
             color: white;
-            padding: 14px 24px;
-            font-size: 18px;
+            padding: 12px 20px;
+            font-size: 16px;
             font-weight: bold;
-            cursor: pointer;
+            display: inline-block;
         }
 
         .bottom-text {
-            margin-top: 40px;
             text-align: center;
             font-size: 28px;
-            font-weight: 500;
+            margin: 28px 0 20px;
         }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 th:text="${pageTitle}">고객센터 관리 페이지</h1>
+    <div class="header-inner">
+        <div class="header-path">/admin/callcenter</div>
+        <h1 class="header-title" th:text="${pageTitle}">고객센터 관리 페이지</h1>
+    </div>
 </div>
 
 <div class="container">
 
-    <div class="menu-card" th:each="menu : ${menuList}">
+    <a th:href="@{/admin/callcenter/notice}" class="menu-link">
         <div class="menu-left">
-            <div class="menu-path" th:text="${menu.moveUrl}">
-                /admin/callcenter/notice
-            </div>
-            <div class="menu-title" th:text="${menu.menuNo + '. ' + menu.title}">
-                1. 공지사항
-            </div>
+            <div class="menu-path">/admin/callcenter/notice</div>
+            <div class="menu-title">1. 공지사항</div>
         </div>
-
         <div class="menu-right">
-            <div class="menu-text">
-                <h2 th:text="${menu.title}">공지사항</h2>
-                <p th:text="${menu.description}">
-                    공지사항 목록이 뜨며 공지를 추가할 수 있음
-                </p>
+            <div>
+                <div class="menu-desc-title">공지사항</div>
+                <div class="menu-desc">공지사항 목록 조회 및 공지 등록 기능으로 이동</div>
             </div>
-
-            <form th:action="@{${menu.moveUrl}}" method="get">
-                <button type="submit" class="move-btn">이동</button>
-            </form>
+            <span class="move-button">이동</span>
         </div>
-    </div>
+    </a>
 
-    <div class="bottom-text">
-        고객센터에 들어가면 공지사항, 문의함, 신고함을 볼 수 있고 누를 수 있다.
-    </div>
+    <a th:href="@{/admin/callcenter/contact}" class="menu-link">
+        <div class="menu-left">
+            <div class="menu-path">/admin/callcenter/contact</div>
+            <div class="menu-title">2. 문의함</div>
+        </div>
+        <div class="menu-right">
+            <div>
+                <div class="menu-desc-title">문의함</div>
+                <div class="menu-desc">문의 목록 조회 페이지로 이동</div>
+            </div>
+            <span class="move-button">이동</span>
+        </div>
+    </a>
+
+    <a th:href="@{/admin/callcenter/report}" class="menu-link">
+        <div class="menu-left">
+            <div class="menu-path">/admin/callcenter/report</div>
+            <div class="menu-title">3. 신고함</div>
+        </div>
+        <div class="menu-right">
+            <div>
+                <div class="menu-desc-title">신고함</div>
+                <div class="menu-desc">신고 목록 조회 페이지로 이동</div>
+            </div>
+            <span class="move-button">이동</span>
+        </div>
+    </a>
+
+</div>
+
+<div class="bottom-text">
+    고객센터에 들어가면 공지사항, 문의함, 신고함으로 이동할 수 있다
 </div>
 
 </body>

@@ -62,12 +62,12 @@ public class SecurityConfig {
 
                 // 로그인 설정
                 .formLogin(login -> login
-                                .loginPage("/auth/login")
-                                .loginProcessingUrl("/auth/login")
-                                .usernameParameter("loginId")
-                                .passwordParameter("password")
-//                        .successHandler(authSuccessHandler)
-                                .failureUrl("/auth/login?error=true")
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/auth/login")
+                        .usernameParameter("loginId")
+                        .passwordParameter("password")
+                        .successHandler(authSuccessHandler)
+                        .failureUrl("/auth/login?error=true")
                 );
         // 히히
 
