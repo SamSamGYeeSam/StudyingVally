@@ -8,11 +8,15 @@
 
 <h1>내 정보 수정</h1>
 
-<form th:action="${formActionUrl}" method="post">
+<div th:if="${updateError != null}" th:text="${updateError}">
+    수정 에러 메시지
+</div>
+
+<form th:if="${formActionUrl != null}" th:action="${formActionUrl}" method="post">
 
     <div>
         <label>이름</label>
-        <input type="text" th:value="${userInfo.userName}" readonly>
+        <input type="text" th:value="${userInfo != null ? userInfo.userName : ''}" readonly>
     </div>
 
     <div>
@@ -20,7 +24,7 @@
         <input type="text"
                id="userPhoneNumber"
                name="userPhoneNumber"
-               th:value="${updateDTO.userPhoneNumber}"
+               th:value="${updateDTO != null ? updateDTO.userPhoneNumber : ''}"
                required>
     </div>
 
@@ -29,7 +33,7 @@
         <input type="text"
                id="userEmail"
                name="userEmail"
-               th:value="${updateDTO.userEmail}"
+               th:value="${updateDTO != null ? updateDTO.userEmail : ''}"
                required>
     </div>
 
@@ -38,19 +42,15 @@
         <input type="password"
                id="userPassword"
                name="userPassword"
-               th:value="${updateDTO.userPassword}"
+               th:value="${updateDTO != null ? updateDTO.userPassword : ''}"
                required>
     </div>
 
-    <div th:if="${updateError != null}" th:text="${updateError}">
-        수정 에러 메시지
-    </div>
-
     <div>
-        <button type="button"
-                th:onclick="|location.href='${showPageUrl}'|">
+        <a th:if="${showPageUrl != null}"
+           th:href="${showPageUrl}">
             뒤로가기
-        </button>
+        </a>
 
         <button type="submit">
             확인
