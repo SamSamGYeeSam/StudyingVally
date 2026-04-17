@@ -40,6 +40,35 @@
             font-weight: bold;
         }
 
+        /* 🔥 추가된 버튼 영역 */
+        .header-buttons {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .back-button {
+            background-color: #666;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .admin-main-button {
+            background-color: #111;
+            color: white;
+            text-decoration: none;
+            padding: 12px 18px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
         .container {
             width: 95%;
             max-width: 1400px;
@@ -100,7 +129,6 @@
             padding: 12px 20px;
             font-size: 16px;
             font-weight: bold;
-            display: inline-block;
         }
 
         .bottom-text {
@@ -114,8 +142,20 @@
 
 <div class="header">
     <div class="header-inner">
+
         <div class="header-path">/admin/callcenter</div>
-        <h1 class="header-title" th:text="${pageTitle}">고객센터 관리 페이지</h1>
+
+        <h1 class="header-title" th:text="${pageTitle}">
+            고객센터 관리 페이지
+        </h1>
+
+        <div class="header-buttons">
+            <a th:href="@{/admin/main}" class="back-button">
+                뒤로가기
+            </a>
+
+        </div>
+
     </div>
 </div>
 

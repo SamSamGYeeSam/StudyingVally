@@ -88,7 +88,7 @@ public class AdminUserService {
             courseSectionTitle = "신청한 강의";
         }
 
-        long inquiryCount = adminQuestionTechRepository.countByUserNo(userNo);
+        long inquiryCount = adminQuestionTechRepository.countByUser_UserNo(userNo);
 
         int reportCount = adminReportCountRepository.findByUserNo(userNo)
                 .map(AdminReportCount::getReportCount)

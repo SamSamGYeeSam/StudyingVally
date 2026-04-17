@@ -1,23 +1,22 @@
-package com.samsamgyeesam.studyingvally.domain.admin.dto;
+package com.samsamgyeesam.studyingvally.domain.admin.dto.contact;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+
 @Getter
 @AllArgsConstructor
-public class AdminContactListDTO {
+public class AdminContactDetailDTO {
 
-    private Integer displayNo;
     private Long questionTechNo;
     private String questionTitle;
     private String questionDesc;
-    private Long courseId;
-    private Long userNo;
-    private String questionStatus;
+    private String userName;
+    private String userNickname;
+    private String questionStatusLabel;
     private String questionAnswer;
-    private Long answeredAdminNo;
     private LocalDateTime questionAnsweredAt;
     private LocalDateTime questionAnswerUpdatedAt;
 }

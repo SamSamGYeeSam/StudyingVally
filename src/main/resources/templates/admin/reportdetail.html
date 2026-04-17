@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>신고 상세</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #efefef;
+        }
+
+        .header {
+            background-color: #c9ef7a;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 52px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .content-box {
+            border: 4px solid #111;
+            background-color: #fff;
+            padding: 32px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .content-title {
+            margin: 0;
+            font-size: 34px;
+            font-weight: bold;
+        }
+
+        .top-button,
+        .submit-button {
+            display: inline-block;
+            background-color: #111;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .submit-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .form-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .form-table th,
+        .form-table td {
+            border: 2px solid #222;
+            padding: 16px;
+            vertical-align: middle;
+        }
+
+        .form-table th {
+            width: 180px;
+            background-color: #f3f3f3;
+            text-align: center;
+        }
+
+        .readonly-box {
+            width: 100%;
+            min-height: 52px;
+            border: 2px solid #222;
+            background-color: #f7f7f7;
+            padding: 12px;
+            font-size: 16px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 260px;
+            border: 2px solid #222;
+            padding: 12px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            resize: vertical;
+        }
+
+        .disabled-textarea {
+            background-color: #f1f1f1;
+        }
+
+        .bottom-button-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .error-text {
+            color: #c62828;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 14px;
+        }
+
+        .guide-text {
+            margin-top: 12px;
+            color: #444;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1 th:text="${pageTitle}">신고 상세</h1>
+</div>
+
+<div class="container">
+    <div class="content-box">
+        <div class="content-header">
+            <h2 class="content-title">신고 상세</h2>
+            <a th:href="@{/admin/callcenter/report}" class="top-button">목록으로</a>
+        </div>
+
+        <div th:if="${errorMessage}" class="error-text" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/admin/callcenter/reportdetail}" method="post">
+            <input type="hidden" name="reportNo" th:value="${reportDetail.reportNo}">
+
+            <table class="form-table">
+                <tr>
+                    <th>신고 제목</th>
+                    <td>
+                        <div class="readonly-box" th:text="${reportDetail.reportTitle}">신고 제목</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>작성자</th>
+                    <td>
+                        <div class="readonly-box"
+                             th:text="${reportDetail.userName + ' / ' + reportDetail.userNickname}">
+                            홍길동 / 길동이
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>처리 상태</th>
+                    <td>
+                        <div class="readonly-box" th:text="${reportDetail.reportStatusLabel}">대기</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>신고 내용</th>
+                    <td>
+                        <div class="readonly-box" th:text="${reportDetail.reportDesc}">신고 상세 내용</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>기존 답변</th>
+                    <td>
+                        <div class="readonly-box"
+                             th:text="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer) ? reportDetail.reportAnswer : '아직 등록된 답변이 없습니다.'}">
+                            아직 등록된 답변이 없습니다.
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>답변 작성</th>
+                    <td>
+                        <textarea name="reportAnswer"
+                                  class="form-textarea"
+                                  th:classappend="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)} ? ' disabled-textarea' : ''"
+                                  th:disabled="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)}"
+                                  th:text="${reportDetail.reportAnswer}"
+                                  placeholder="신고에 대한 처리 답변을 입력하세요."></textarea>
+
+                        <div class="guide-text"
+                             th:if="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)}">
+                            이미 답변이 완료된 신고입니다. 답변은 수정할 수 없습니다.
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="bottom-button-area"
+                 th:if="${reportDetail.reportAnswer == null or #strings.isEmpty(reportDetail.reportAnswer)}">
+                <button type="submit" class="submit-button">완료</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
