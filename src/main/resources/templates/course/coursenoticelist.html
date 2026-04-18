@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>강의 소식 목록</title>
+</head>
+
+<body>
+<h1>강의 소식 목록</h1>
+
+<div class="course-notice-list">
+  <div th:if="${!courseNotices.isEmpty()}">
+    <table>
+      <thead>
+      <tr>
+        <th>강의명</th>
+        <th>강의 소식 제목</th>
+        <th>상세보기</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="notice : ${courseNotices}">
+        <td th:text="${notice.courseTitle}">강의명</td>
+        <td th:text="${notice.courseNoticeTitle}">강의 소식 제목</td>
+        <td>
+          <form th:action="@{/teacher/coursenotice/detail}" method="post" style="margin: 0;">
+            <input type="hidden" name="courseNoticeNo" th:value="${notice.courseNoticeNo}">
+            <button type="submit" class="detail-btn">상세보기</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 강의 소식이 없을 때 -->
+  <div th:if="${courseNotices.isEmpty()}" class="no-data">
+    등록된 강의 소식이 없습니다.
+  </div>
+</div>
+
+<form action="/teacher/teachermain" method="get">
+  <button type="submit">이전으로</button>
+</form>
+
+</body>
+
+</html>

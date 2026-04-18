@@ -15,7 +15,7 @@
     <thead>
     <tr>
         <th>챕터명</th>
-        <th>상세 설명</th>
+        <th>챕터 설명</th>
         <th>퀴즈 등록하기</th>
         <th>챕터 수정하기</th>
         <th>챕터 삭제하기</th>
@@ -28,17 +28,13 @@
         <td>
             <form action="/teacher/quiz/course-post" method="post" style="display:inline;">
                 <input type="hidden" name="courseId" th:value="${courseId}">
-                <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">
-                    퀴즈 등록하기
-                </button>
+                <button type="submit">퀴즈 등록하기</button>
             </form>
         </td>
         <td>
             <form action="/teacher/course/update" method="post" style="display:inline;">
                 <input type="hidden" name="courseId" th:value="${courseId}">
-                <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">
-                    수정하기
-                </button>
+                <button type="submit">수정하기</button>
             </form>
         </td>
         <td>
