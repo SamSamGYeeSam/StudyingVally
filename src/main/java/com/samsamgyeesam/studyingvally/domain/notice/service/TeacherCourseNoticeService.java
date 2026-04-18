@@ -10,6 +10,7 @@ import com.samsamgyeesam.studyingvally.domain.notice.repository.TeacherCourseNot
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +23,7 @@ public class TeacherCourseNoticeService {
     private final CourseRepository courseRepository;
     private final ModelMapper modelMapper;
 
-
+    // 강의소식 전체 조회
     public List<TeacherCourseNoticeDTO> findCourseNoticeByUserNo(Long userNo) {
         List<TeacherCourseNotice> courseNoticeList = teacherCourseNoticeRepository.findByUserNoOrderByCourseNoticeNoDesc(userNo);
 
@@ -41,7 +42,6 @@ public class TeacherCourseNoticeService {
                     return dto;
                 })
                 .collect(Collectors.toList());
-
     }
 
 
@@ -59,7 +59,20 @@ public class TeacherCourseNoticeService {
                 dto.setCourseTitle(course.getCourseTitle());
             }
         }
-
         return dto;
+    }
+
+    // 강의소식 등록
+    @Transactional
+    public void registCourseNotice(TeacherCourseNoticeDTO courseNoticeDTO) {
+        TeacherCourseNotice courseNotice = new TeacherCourseNotice(
+                null,
+                courseNoticeDTO.getCourseNoticeTitle(),
+                courseNoticeDTO.getCourseNoticeDesc(),
+                courseNoticeDTO.getUserNo(),
+                courseNoticeDTO.getCourseId()
+        );
+
+        teacherCourseNoticeRepository.save(courseNotice);
     }
 }

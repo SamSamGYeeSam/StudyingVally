@@ -110,7 +110,7 @@ public class CourseController {
 
     // 강의 정보 찾아서 강의 수정 페이지로 이동
     @PostMapping("/course/courseupdate")
-    public String updateCoursePage(@RequestParam Long courseId, Model model) {
+    public String gotoupdateCoursePage(@RequestParam Long courseId, Model model) {
         CourseDTO course = courseService.findCourseById(courseId);
         model.addAttribute("course", course);
         return "course/updatecourse";

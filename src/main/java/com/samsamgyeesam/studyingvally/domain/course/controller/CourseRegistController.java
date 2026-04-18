@@ -36,7 +36,7 @@ public class CourseRegistController {
 
     // 메인화면에서 강의등록 버튼 눌렀을 때 넘어와서 화면 넘어가는 클래스
     @GetMapping("/register")
-    public String registCourse() {
+    public String gotoregistCoursePage() {
         return "course/registcourse";
     }
 
@@ -65,7 +65,7 @@ public class CourseRegistController {
 
     // 챕터 등록 페이지로 이동
     @PostMapping("/course/registchapterPage")
-    public String registChapterPage(@RequestParam Long courseId,
+    public String gotoregistChapterPage(@RequestParam Long courseId,
                                 Model model) {
 
         CourseDTO course = courseService.findCourseById(courseId);
