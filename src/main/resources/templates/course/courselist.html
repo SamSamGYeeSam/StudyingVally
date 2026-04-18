@@ -86,7 +86,7 @@
         <th>강의설명</th>
         <th>상태</th>
         <th>개설일</th>
-        <th>승인요청</th>
+        <th>승인여부</th>
     </tr>
     </thead>
     <tbody>
@@ -98,7 +98,7 @@
         <td th:text="${course.courseDescription}"></td>
         <td th:text="${course.courseStatus == 'OPEN' ? '개설' : '미개설'}"></td>
         <td th:text="${#temporals.format(course.courseCreatedAt, 'yyyy. M. d')}"></td>
-        <td></td>
+        <td th:text="${course.courseSendApprove == 1 ? '승인' : '미승인'}"></td>
     </tr>
     </tbody>
 </table>
@@ -112,37 +112,19 @@
 <div class="popup" id="popup">
     <h4 id="popupTitle">강의 메뉴</h4>
     <ul class="popup-menu">
-        <li onclick="submitForm('chapter')">챕터 보기</li>
-        <li onclick="submitForm('registchapter')">챕터 추가하기</li>
-        <li onclick="submitForm('review')">강의평 보기</li>
-        <li onclick="submitForm('studentlist')">수강생 보기</li>
-        <li onclick="submitForm('update')">강의 수정하기</li>
-        <li onclick="submitForm('deletecheck')">강의 삭제하기</li>
-        <li onclick="submitForm('quiz')">퀴즈 보기</li>
+        <li onclick="submitTo('/teacher/course/chapter')">챕터 보기</li>
+        <li onclick="submitTo('/teacher/course/registchapterPage')">챕터 추가하기</li>
+        <li onclick="submitTo('/teacher/course/review')">강의평 보기</li>
+        <li onclick="submitTo('/teacher/course/studentlist')">수강생 보기</li>
+        <li onclick="submitTo('/teacher/course/update')">강의 수정하기</li>
+        <li onclick="submitTo('/teacher/course/deletecheck')">강의 삭제하기</li>
+        <li onclick="submitTo('/teacher/quiz/course-post')">퀴즈 보기</li>
         <li onclick="closePopup()">이전으로</li>
     </ul>
 </div>
 
-<form id="chapterForm" action="/teacher/course/chapter" method="post">
-    <input type="hidden" name="courseId" id="chapterCourseId">
-</form>
-<form id="registchapterForm" action="/teacher/course/registchapterPage" method="post">
-    <input type="hidden" name="courseId" id="registchapterCourseId">
-</form>
-<form id="reviewForm" action="/teacher/course/review" method="post">
-    <input type="hidden" name="courseId" id="reviewCourseId">
-</form>
-<form id="studentlistForm" action="/teacher/course/studentlist" method="post">
-    <input type="hidden" name="courseId" id="studentlistCourseId">
-</form>
-<form id="updateForm" action="/teacher/course/update" method="post">
-    <input type="hidden" name="courseId" id="updateCourseId">
-</form>
-<form id="deletecheckForm" action="/teacher/course/deletecheck" method="post">
-    <input type="hidden" name="courseId" id="deletecheckCourseId">
-</form>
-<form id="quizForm" action="/teacher/quiz/course-post" method="post">
-    <input type="hidden" name="courseId" id="quizCourseId">
+<form id="commonForm" method="post">
+    <input type="hidden" name="courseId" id="commonCourseId">
 </form>
 
 
@@ -174,9 +156,11 @@
           selectedCourseId = null;
       }
 
-      function submitForm(type) {
-          document.getElementById(type + 'CourseId').value = selectedCourseId;
-          document.getElementById(type + 'Form').submit();
+      function submitTo(action) {
+          const form = document.getElementById('commonForm');
+          form.action = action;
+          document.getElementById('commonCourseId').value = selectedCourseId;
+          form.submit();
       }
 </script>
 

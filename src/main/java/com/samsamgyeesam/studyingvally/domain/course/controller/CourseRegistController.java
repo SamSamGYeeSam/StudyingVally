@@ -56,7 +56,7 @@ public class CourseRegistController {
 
         courseService.registCourse(courseDTO);
 
-        redirectAttributes.addFlashAttribute("infoMessage", "강의 등록이 완료되었습니다. 강의 목록에서 챕터를 추가하고 '요청하기' 버튼을 눌러주세요. 관리자의 승인이 완료되면 학생들에게 강의가 제공됩니다.");
+        redirectAttributes.addFlashAttribute("successMessage", "강의 등록이 완료되었습니다.\n 강의 목록에서 챕터를 추가해주세요. \n관리자의 승인이 완료되면 학생들에게 강의가 제공됩니다.");
 
         // 챕터 쪽으로 보내기
         return "redirect:/teacher/course";
@@ -119,8 +119,9 @@ public class CourseRegistController {
         model.addAttribute("courseId", courseId);
 
         redirectAttributes.addFlashAttribute("successMessage", "챕터가 등록되었습니다.");
+        redirectAttributes.addAttribute("courseId", courseId);
 
-        return "course/chapterlist";
+        return "redirect:/teacher/course/chapter";
     }
 
 }
