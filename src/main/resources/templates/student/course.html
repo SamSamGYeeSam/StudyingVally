@@ -147,8 +147,14 @@
     </div>
 
     <div class="menu-container">
-        <a th:href="@{/student/chapter(courseId=${courseId})}" class="pixel-btn">📜 챕터 목록</a>
-        <a th:href="@{/student/evaluation/write(courseId=${courseId})}" class="pixel-btn">⭐ 강의평 쓰기</a>
+        <form th:action="@{/student/chapter}" method="post" style="margin:0;">
+            <button type="submit" class="pixel-btn" style="width:100%;">📜 챕터 목록</button>
+        </form>
+
+        <form th:action="@{/student/evaluation/write}" method="post" style="margin:0;">
+            <button type="submit" class="pixel-btn" style="width:100%;">⭐ 강의평 쓰기</button>
+        </form>
+
         <button class="pixel-btn" style="background: #607d8b;" onclick="location.href='/student/main'">
             🚪 강의실 나가기
         </button>
@@ -207,7 +213,7 @@
         document.getElementById('npcChoices').style.display = 'none';
         document.getElementById('modalFooter').style.display = 'block';
     }
-    function goToQuestionPage() { location.href = `/student/course/talk?courseId=${courseId}`; }
+    function goToQuestionPage() { location.href = "/student/course/talk"; }
 
     setInterval(moveNpcRandomly, 3000);
 </script>

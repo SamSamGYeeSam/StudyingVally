@@ -22,9 +22,13 @@ public class StudentEvaluationController {
         return studentEvaluationService.getEvaluationsByCourseId(courseId);
     }
 
-    @GetMapping("/write")
-    public String evaluationForm(@RequestParam("courseId") Long courseId, Model model) {
+    @PostMapping("/write")
+    public String evaluationForm(jakarta.servlet.http.HttpSession session, Model model) {
+        Long courseId = (Long) session.getAttribute("currentCourseId");
+        if (courseId == null) {
+            return "redirect:/student/main";
+        }
         model.addAttribute("courseId", courseId);
-        return "student/evaluation"; // templates/evaluation.html
+        return "student/evaluation"; 
     }
 }

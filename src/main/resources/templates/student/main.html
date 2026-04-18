@@ -73,10 +73,13 @@
         </div>
     </div>
 
+    <form id="enterCourseForm" th:action="@{/student/course/enter}" method="post" style="display:none;">
+        <input type="hidden" name="courseId" id="hiddenCourseId">
+    </form>
+
     <div id="course-zone" class="section">
         <div th:each="enroll : ${enrollments}" class="course-card">
-            <a th:href="@{/student/course(id=${enroll.course.courseId})}" style="text-align: center; text-decoration: none;">
-                <img src="/image/room-icon.png">
+            <div th:onclick="'submitCourseEntry(' + ${enroll.course.courseId} + ')'" style="text-align: center; cursor: pointer;">                <img src="/image/room-icon.png">
                 <p class="pixel-text" th:text="${enroll.course.courseTitle}">강의명</p>
             </a>
         </div>
@@ -185,6 +188,11 @@
         });
     }
 
+    function submitCourseEntry(courseId) {
+        document.getElementById('hiddenCourseId').value = courseId;
+        document.getElementById('enterCourseForm').submit();
+    }
+
     function checkCollision() {
         if (isRedirecting || isTransitioning) return;
         const charRect = character.getBoundingClientRect();
@@ -212,13 +220,13 @@
                 const centerX = rect.left + (rect.width / 2);
                 const centerY = rect.top + (rect.height / 2);
 
-                // 강의실 아이콘도 중앙 20% 영역만 인식
                 const thresholdX = rect.width * 0.2;
                 const thresholdY = rect.height * 0.2;
 
                 if (Math.abs(footX - centerX) < thresholdX && Math.abs(footY - centerY) < thresholdY) {
                     isRedirecting = true;
-                    window.location.href = card.querySelector('a').href;
+                    const courseId = card.querySelector('div').getAttribute('onclick').match(/\d+/)[0];
+                    submitCourseEntry(courseId);
                 }
             });
         }
