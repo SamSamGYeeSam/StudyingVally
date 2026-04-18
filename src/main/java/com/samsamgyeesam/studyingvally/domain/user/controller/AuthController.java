@@ -2,7 +2,6 @@ package com.samsamgyeesam.studyingvally.domain.user.controller;
 // 올리기
 import com.samsamgyeesam.studyingvally.domain.user.dto.SignupDTO;
 import com.samsamgyeesam.studyingvally.domain.user.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

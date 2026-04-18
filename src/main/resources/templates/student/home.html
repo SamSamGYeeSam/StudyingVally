@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Studying Valley - home</title>
+  <title>Studying Vally - home</title>
   <style>
     body {
       background-color: #2c3e50;
@@ -18,7 +18,7 @@
       background: #f0f0f0;
       border: 6px solid #5d4037;
       box-shadow: 0 0 30px rgba(0,0,0,0.5);
-      background-image: url('/image/home_bg.png'); /* 마이페이지 전용 배경 */
+      background-image: url('/image/home_bg.png');
       background-position: center;
       background-size: cover;
       overflow: hidden;
@@ -26,8 +26,8 @@
 
     #player-character {
       position: absolute;
-      width: 100px;  /* 원하는 크기로 조절 (예: 64px) */
-      height: auto; /* 높이는 비율에 맞게 */
+      width: 100px;
+      height: auto;
       z-index: 5;
       transition: left 2s linear, top 2s linear;
       text-align: center;
@@ -35,7 +35,7 @@
     }
 
     #player-character .char-image {
-      width: 80%;  /* 부모인 #player-character의 너비(64px)를 꽉 채우게 함 */
+      width: 70%;
       height: auto;
       display: block;
     }
@@ -54,7 +54,7 @@
       position: absolute;
       left: 50%; top: 45%;
       transform: translate(-50%, -50%);
-      width: 500px; /* 컨테이너에 맞춰 너비 조정 */
+      width: 500px;
       display: none;
       background: rgba(255, 255, 255, 0.3);
       backdrop-filter: blur(8px);
@@ -156,7 +156,7 @@
     <button class="pixel-btn" id="course-btn" onclick="showSection('course-section', this)">📚 수강 강의 조회</button>
     <button class="pixel-btn" onclick="location.href='/student/profile'">👤 정보 수정</button>
     <button class="pixel-btn danger" onclick="confirmWithdraw()">🚪 회원 탈퇴</button>
-    <button class="pixel-btn" style="background: #607d8b; margin-top: 10px;" onclick="location.href='/main'">
+    <button class="pixel-btn" style="background: #607d8b; margin-top: 10px;" onclick="location.href='/student/main'">
       🏠 메인으로
     </button>
   </div>

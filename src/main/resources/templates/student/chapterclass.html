@@ -40,7 +40,6 @@
         const chapNo = [[${chapter.chapNo}]];
         const courseId = [[${courseId}]];
 
-        // 1. 서버에 수강 완료 데이터 전송
         fetch(`/student/chapter/complete?chapNo=${chapNo}&courseId=${courseId}`, {
             method: 'POST'
         })
@@ -48,9 +47,6 @@
                 if(response.ok) {
                     alert("수강 완료! 강의는 어떠셨나요? 평가 페이지로 이동합니다. 🌟");
 
-                    // 2. 컨트롤러(@GetMapping("/createrevaluation"))에 맞춰서 이동
-                    // 쿼리 스트링(?courseId=...)을 붙여줘야 컨트롤러가 @RequestParam으로 받습니다.
-                    // 주소가 /student/evaluation/write 로 바뀝니다.
                     location.href = `/student/evaluation/write?courseId=${courseId}`;
                 } else {
                     alert("처리 중 오류가 발생했습니다.");

@@ -2,146 +2,238 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Studying Valley - main</title>
+    <title>Studying Valley - Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'DungGeunMo', sans-serif; }
-        #field {
-            width: 100vw; height: 100vh;
-            background: url('/image/stardew-main.png') no-repeat center center;
-            background-size: cover; position: relative; image-rendering: pixelated;
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'DungGeunMo', sans-serif; background: #2c3e50; }
+        #viewport { display: flex; width: 200vw; height: 100vh; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .section { width: 100vw; height: 100vh; position: relative; flex-shrink: 0; }
+
+        #field { background: url('/image/stardew-main.png') no-repeat center; background-size: cover; }
+        #course-zone { background: url('/image/stardew-main2.png') no-repeat center; background-size: cover; position: relative; display: flex; justify-content: center; align-items: center; }
+
         #character {
-            position: absolute;
-            width: 64px; height: 128px;
+            position: fixed; width: 64px; height: 128px;
             background: url('/image/character-sheet.png') no-repeat;
-            background-size: 512px 512px;
-            transform: translate(-50%, -85%);
-            z-index: 100; pointer-events: none;
-            image-rendering: pixelated;
-            background-position: -256px 0px;
-            transition: transform 0.05s linear;
+            background-size: 512px 512px; transform: translate(-50%, -85%);
+            z-index: 1000; pointer-events: none; image-rendering: pixelated;
         }
-        .entity { position: absolute; display: flex; flex-direction: column; align-items: center; z-index: 10; }
-        .entity-label { background: #fdf1d5; color: #4e342e; padding: 5px 12px; border: 3px solid #5d4037; border-radius: 6px; font-size: 15px; font-weight: bold; opacity: 0; transition: 0.2s; white-space: nowrap; pointer-events: none; }
+
+        .entity { position: absolute; display: flex; flex-direction: column; align-items: center; transition: z-index 0.1s; cursor: pointer; }
+        .entity img { image-rendering: pixelated; filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.2)); pointer-events: none; }
+
+        .entity-label {
+            background: #fdf1d5; color: #4e342e; padding: 5px 12px; border: 3px solid #5d4037;
+            border-radius: 6px; font-size: 15px; font-weight: bold; opacity: 0;
+            transition: 0.2s; white-space: nowrap; pointer-events: none; margin-bottom: 5px;
+        }
         .entity:hover .entity-label { opacity: 1; transform: translateY(-5px); }
-        .hitbox { width: 60px; height: 60px; cursor: pointer; }
+
+        /* 아이콘별 크기 설정 */
+        #dungeon img { width: 620px; }
+        #school img { width: 540px; }
+        #notice img { width: 170px; }
+        #home img { width: 260px; }
+        #npc img { width: 400px; }
+
+        .course-card { position: absolute; display: flex; flex-direction: column; align-items: center; text-decoration: none; pointer-events: auto; }
+        .course-card img { width: 320px; image-rendering: pixelated; cursor: pointer; transition: 0.2s; }
+        .pixel-text {
+            color: #fdf1d5; margin-top: -15px; font-size: 20px;
+            text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
 
-<div id="field">
-    <div id="school" class="entity" data-url="/student/school"><div class="entity-label">🏫 학교</div><div class="hitbox"></div></div>
-    <div id="home" class="entity" data-url="/student/home" data-method="POST"><div class="entity-label">🏡 우리집</div><div class="hitbox"></div></div>
-    <div id="character"></div>
+<div id="character"></div>
+
+<div id="viewport">
+    <div id="field" class="section">
+        <div id="dungeon" class="entity" data-url="/student/quiz" style="top: -3%; left: -2%;">
+            <div class="entity-label">💀 던전</div>
+            <img src="/image/dungeon-icon.png">
+        </div>
+        <div id="school" class="entity" data-url="/student/school" style="top: -15%; left: 57%;">
+            <div class="entity-label">🏫 학교</div>
+            <img src="/image/school-icon.png">
+        </div>
+        <div id="notice" class="entity" data-url="/student/notice" style="top: 22%; left: 45%;">
+            <div class="entity-label">📜 게시판</div>
+            <img src="/image/notice-icon.png">
+        </div>
+        <div id="home" class="entity" data-url="/student/home" style="top: 46%; left: 20%;">
+            <div class="entity-label">🏡 우리집</div>
+            <img src="/image/home-icon.png">
+        </div>
+        <div id="npc" class="entity" data-url="/student/npc" style="top: 47%; left: 70%;">
+            <div class="entity-label">🤖 NPC</div>
+            <img src="/image/npc-icon.png">
+        </div>
+    </div>
+
+    <div id="course-zone" class="section">
+        <div th:each="enroll : ${enrollments}" class="course-card">
+            <a th:href="@{/student/course(id=${enroll.course.courseId})}" style="text-align: center; text-decoration: none;">
+                <img src="/image/room-icon.png">
+                <p class="pixel-text" th:text="${enroll.course.courseTitle}">강의명</p>
+            </a>
+        </div>
+    </div>
 </div>
 
 <script th:inline="javascript">
+    const viewport = document.getElementById('viewport');
     const character = document.getElementById('character');
     const entities = document.querySelectorAll('.entity');
+    const courseCards = document.querySelectorAll('.course-card');
 
-    let charX = window.innerWidth * 0.5;
-    let charY = window.innerHeight * 0.8;
-    const speed = 4;
-
+    let isRedirecting = false;
+    let currentPage = 1;
+    let isTransitioning = false;
     let keys = {};
     let lastKey = "";
+    let charX = window.innerWidth * 0.5;
+    let charY = window.innerHeight * 0.8;
+    const speed = 5;
 
-    let currentFrame = 0;
-    let frameCounter = 0;
-    const frameRate = 8;
-    let currentDirY = 0;
-    let flipX = 1;
-
-    character.style.left = charX + 'px';
-    character.style.top = charY + 'px';
-
-    // 1. 키 입력 감지 (대문자/소문자 모두 대응하기 위해 toLowerCase 사용)
-    window.addEventListener('keydown', (e) => {
-        const k = e.key.toLowerCase();
-        if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd'].includes(k)) {
-            if (!keys[k]) {
-                keys[k] = true;
-                lastKey = k;
-            }
-        }
-    });
-
-    window.addEventListener('keyup', (e) => {
-        const k = e.key.toLowerCase();
-        keys[k] = false;
-
-        const remainingKeys = Object.keys(keys).filter(key => keys[key]);
-        if (remainingKeys.length > 0) {
-            lastKey = remainingKeys[remainingKeys.length - 1];
-        } else {
-            lastKey = "";
-        }
-    });
-
-    window.addEventListener('blur', () => {
+    // 페이지 복구 시 상태 초기화
+    window.addEventListener('pageshow', () => {
+        isRedirecting = true;
+        isTransitioning = false;
         keys = {};
-        lastKey = "";
+        setTimeout(() => { isRedirecting = false; }, 1000);
     });
+
+    // 클릭 이벤트 (즉시 이동)
+    entities.forEach(ent => {
+        ent.addEventListener('click', () => { window.location.href = ent.dataset.url; });
+    });
+
+    window.addEventListener('keydown', (e) => { keys[e.key.toLowerCase()] = true; lastKey = e.key.toLowerCase(); });
+    window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
 
     function gameLoop() {
-        let dx = 0;
-        let dy = 0;
-        let xFix = 0; // xFix 선언 추가
+        if (!isTransitioning) {
+            let dx = 0; let dy = 0;
+            if (keys['arrowleft'] || keys['a']) dx -= speed;
+            if (keys['arrowright'] || keys['d']) dx += speed;
+            if (keys['arrowup'] || keys['w']) dy -= speed;
+            if (keys['arrowdown'] || keys['s']) dy += speed;
 
-        if (keys['arrowleft'] || keys['a']) dx -= speed;
-        if (keys['arrowright'] || keys['d']) dx += speed;
-        if (keys['arrowup'] || keys['w']) dy -= speed;
-        if (keys['arrowdown'] || keys['s']) dy += speed;
+            if (dx !== 0 || dy !== 0) {
+                // 애니메이션 방향 설정
+                let currentDirY = 0; let flipX = 1; let xFix = 0;
+                if (lastKey === 'arrowleft' || lastKey === 'a') { currentDirY = 261; flipX = 1; xFix = 3; }
+                else if (lastKey === 'arrowright' || lastKey === 'd') { currentDirY = 261; flipX = -1; xFix = 3; }
+                else if (lastKey === 'arrowup' || lastKey === 'w') { currentDirY = 133; flipX = 1; xFix = 2; }
+                else if (lastKey === 'arrowdown' || lastKey === 's') { currentDirY = 5; flipX = 1; xFix = 0; }
 
-        if (dx !== 0 || dy !== 0) {
-            if (lastKey === 'arrowleft' || lastKey === 'a') {
-                currentDirY = 256 + 5; flipX = 1; xFix = 3;
-            } else if (lastKey === 'arrowright' || lastKey === 'd') {
-                currentDirY = 256 + 5; flipX = -1; xFix = 3;
-            } else if (lastKey === 'arrowup' || lastKey === 'w') {
-                currentDirY = 128 + 5; flipX = 1; xFix = 2;
-            } else if (lastKey === 'arrowdown' || lastKey === 's') {
-                currentDirY = 0 + 5; flipX = 1; xFix = 0;
+                charX += dx; charY += dy;
+
+                // 맵 전환 체크
+                handleMapTransition();
+
+                charX = Math.max(5, Math.min(window.innerWidth - 5, charX));
+                charY = Math.max(5, Math.min(window.innerHeight - 5, charY));
+
+                character.style.left = charX + 'px';
+                character.style.top = charY + 'px';
+                character.style.transform = `translate(-50%, -85%) scaleX(${flipX})`;
+
+                updateZIndex();
+
+                // 프레임 업데이트
+                let frame = Math.floor(Date.now() / 125) % 4;
+                const dirX = (frame * 64) + 256 + xFix;
+                character.style.backgroundPosition = `-${dirX}px -${currentDirY}px`;
+
+                if (!isRedirecting) checkCollision();
+            } else {
+                character.style.backgroundPosition = `-256px -${getStopDirY()}px`;
             }
-
-            charX += dx;
-            charY += dy;
-            charX = Math.max(30, Math.min(window.innerWidth - 30, charX));
-            charY = Math.max(30, Math.min(window.innerHeight - 30, charY));
-
-            character.style.left = charX + 'px';
-            character.style.top = charY + 'px';
-            character.style.transform = `translate(-50%, -85%) scaleX(${flipX})`;
-
-            frameCounter++;
-            if (frameCounter >= frameRate) {
-                currentFrame = (currentFrame + 1) % 4;
-                frameCounter = 0;
-            }
-            checkCollision();
-        } else {
-            currentFrame = 0;
-            xFix = 0;
         }
-
-        const dirX = (currentFrame * 64) + 256 + xFix;
-        character.style.backgroundPosition = `-${dirX}px -${currentDirY}px`;
-
         requestAnimationFrame(gameLoop);
     }
 
-    function checkCollision() {
-        entities.forEach(entity => {
-            const rect = entity.getBoundingClientRect();
-            if (charX > rect.left && charX < rect.right && charY > rect.top && charY < rect.bottom) {
-                const url = entity.getAttribute('data-url');
-                if (url) window.location.href = url;
-            }
+    function getStopDirY() {
+        if (lastKey === 'arrowup' || lastKey === 'w') return 133;
+        if (lastKey === 'arrowleft' || lastKey === 'a' || lastKey === 'arrowright' || lastKey === 'd') return 261;
+        return 5;
+    }
+
+    function handleMapTransition() {
+        if (currentPage === 1 && charX > window.innerWidth - 10) {
+            isTransitioning = true;
+            viewport.style.transform = 'translateX(-100vw)';
+            currentPage = 2; charX = 60;
+            setTimeout(() => isTransitioning = false, 600);
+        } else if (currentPage === 2 && charX < 10) {
+            isTransitioning = true;
+            viewport.style.transform = 'translateX(0)';
+            currentPage = 1; charX = window.innerWidth - 60;
+            setTimeout(() => isTransitioning = false, 600);
+        }
+    }
+
+    function updateZIndex() {
+        entities.forEach(ent => {
+            const entRect = ent.getBoundingClientRect();
+            const entBottom = entRect.top + entRect.height;
+            ent.style.zIndex = (charY < entBottom) ? "1001" : "999";
         });
     }
 
-    requestAnimationFrame(gameLoop);
+    function checkCollision() {
+        if (isRedirecting || isTransitioning) return;
+        const charRect = character.getBoundingClientRect();
+        const footX = charRect.left + (charRect.width / 2);
+        const footY = charRect.bottom - 10;
+
+        if (currentPage === 1) {
+            entities.forEach(ent => {
+                const rect = ent.getBoundingClientRect();
+
+                const centerX = rect.left + (rect.width / 2);
+                const centerY = rect.top + (rect.height / 2);
+
+                const thresholdX = rect.width * 0.15;
+                const thresholdY = rect.height * 0.15;
+
+                if (Math.abs(footX - centerX) < thresholdX && Math.abs(footY - centerY) < thresholdY) {
+                    isRedirecting = true;
+                    window.location.href = ent.dataset.url;
+                }
+            });
+        } else {
+            courseCards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const centerX = rect.left + (rect.width / 2);
+                const centerY = rect.top + (rect.height / 2);
+
+                // 강의실 아이콘도 중앙 20% 영역만 인식
+                const thresholdX = rect.width * 0.2;
+                const thresholdY = rect.height * 0.2;
+
+                if (Math.abs(footX - centerX) < thresholdX && Math.abs(footY - centerY) < thresholdY) {
+                    isRedirecting = true;
+                    window.location.href = card.querySelector('a').href;
+                }
+            });
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const fixedPositions = [{left:70,top:20},{left:35,top:60},{left:40,top:20},{left:75,top:60},{left:10,top:60}];
+        courseCards.forEach((card, index) => {
+            if (fixedPositions[index]) {
+                card.style.left = fixedPositions[index].left + "%";
+                card.style.top = fixedPositions[index].top + "%";
+            }
+        });
+        requestAnimationFrame(gameLoop);
+    });
 </script>
 </body>
 </html>

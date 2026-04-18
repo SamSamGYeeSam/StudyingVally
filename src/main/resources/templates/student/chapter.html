@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Studying Valley - chapter</title>
+    <title>Studying Vally - chapter</title>
     <style>
         .container { width: 900px; margin: 20px auto; font-family: 'Arial', sans-serif; }
         .progress-section { margin-bottom: 20px; padding: 15px; background: #f9f9f9; border: 2px solid #ddd; }
@@ -15,7 +15,7 @@
 
         .btn-back-list {
             padding: 10px 20px;
-            background-color: #607d8b; /* 차분한 회색 계열 */
+            background-color: #607d8b;
             color: white;
             border: none;
             border-radius: 5px;
@@ -56,7 +56,6 @@
             padding: 10px;
         }
 
-        /* 팝업 배경 */
         #videoPopup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; }
         .popup-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; }
         .close-btn { float: right; cursor: pointer; font-size: 20px; font-weight: bold; }
@@ -128,7 +127,6 @@
         const chapNo = button.getAttribute('data-no');
         const courseId = button.getAttribute('data-course');
 
-        // 1. 팝업 띄우기 로직
         const popup = document.getElementById('videoPopup');
         const container = document.getElementById('videoContainer');
         const embedUrl = url.replace("watch?v=", "embed/"); // URL 변환
@@ -136,29 +134,22 @@
         container.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
         popup.style.display = 'block';
 
-        // 2. 서버에 수강 완료 신호 보내기 (열자마자 실행)
         fetch(`/student/chapter/complete?chapNo=${chapNo}&courseId=${courseId}`, {
             method: 'POST'
         })
             .then(response => {
                 if(response.ok) {
-                    // 3. 성공하면 즉시 UI 변경 (새로고침 없이 체크 표시)
-                    // '수강하기' 버튼을 '완료' 상태로 바꾸거나 체크 아이콘을 보여줌
                     button.innerText = "✅ 완료";
                     button.classList.add("completed");
-                    // 만약 전체 진행률도 갱신하고 싶다면 location.reload()를 쓰는 게 가장 확실합니다.
                 }
             })
             .catch(error => console.error('Error:', error));
     }
 
-    // 닫기 버튼 함수 (단순히 닫기만 함)
     function closeVideo() {
         document.getElementById('videoPopup').style.display = 'none';
         document.getElementById('videoContainer').innerHTML = '';
 
-        // 사용자가 '나오면 완료 표시로 바뀌었으면 좋겠다'고 하셨으니
-        // 창을 닫을 때 페이지를 새로고침해서 진행도와 체크표시를 최신화합니다.
         location.reload();
     }
 
