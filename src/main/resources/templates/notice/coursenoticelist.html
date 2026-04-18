@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>강의 소식 목록</title>
+  <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 
 <body>
@@ -13,13 +14,16 @@
     <table>
       <thead>
       <tr>
+        <th>작성일</th>
         <th>강의명</th>
         <th>강의 소식 제목</th>
         <th>상세보기</th>
+        <th>삭제하기</th>
       </tr>
       </thead>
       <tbody>
       <tr th:each="notice : ${courseNotices}">
+        <td th:text="${#temporals.format(notice.createdDate, 'yyyy-MM-dd')}">2024-01-01 10:00</td>
         <td th:text="${notice.courseTitle}">강의명</td>
         <td th:text="${notice.courseNoticeTitle}">강의 소식 제목</td>
         <td>
@@ -28,21 +32,34 @@
             <button type="submit" class="detail-btn">상세보기</button>
           </form>
         </td>
+        <td>
+          <form th:action="@{/teacher/coursenotice/deletecheck}" method="post" style="margin: 0;">
+            <input type="hidden" name="courseNoticeNo" th:value="${notice.courseNoticeNo}">
+            <button type="submit">삭제하기</button>
+          </form>
+        </td>
       </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- 강의 소식이 없을 때 -->
+  <!-- 강의 소식 없을 때 -->
   <div th:if="${courseNotices.isEmpty()}" class="no-data">
     등록된 강의 소식이 없습니다.
   </div>
 </div>
 
+<br>
+
+<form action="/teacher/coursenotice/registcoursenoticePage" method="post" style="display:inline;">
+  <button type="submit">추가하기</button>
+</form>
+
 <form action="/teacher/teachermain" method="get">
   <button type="submit">이전으로</button>
 </form>
-
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
 </body>
 
 </html>

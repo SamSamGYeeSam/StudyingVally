@@ -23,7 +23,7 @@
             </thead>
             <tbody>
             <tr th:each="evaluation : ${evaluations}">
-                <td th:text="${#temporals.format(evaluation.createdDate, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                <td th:text="${#temporals.format(evaluation.createdDate, 'yyyy-MM-dd')}">2024-01-01 10:00</td>
                 <td th:text="${evaluation.userName}">이름</td>
                 <td th:text="${evaluation.userNickname}">닉네임</td>
                 <td class="star-rating" th:text="${evaluation.evaluationScore} + ' ★'">5.0 ★</td>

@@ -43,7 +43,7 @@ public class CourseService {
 
     // 실제 강의 수정
     @Transactional
-    public void modifyCourse(Long courseId, String courseTitle, String courseDescription) {
+    public void updateCourse(Long courseId, String courseTitle, String courseDescription) {
 
         // 강의 조회
         Course foundCourse = courseRepository.findById(courseId)
@@ -62,7 +62,8 @@ public class CourseService {
         chapterRepository.deleteByCourseId(courseId);
         enrollmentRepository.deleteByCourseId(courseId);
         evaluationRepository.deleteByCourseId(courseId);
-        courseRepository.deleteById(courseId);    }
+        courseRepository.deleteById(courseId);
+    }
 
     // 강의 등록
     @Transactional

@@ -20,7 +20,7 @@
             </thead>
             <tbody>
             <tr th:each="notice : ${notices}">
-                <td th:text="${#temporals.format(notice.createdDate, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                <td th:text="${#temporals.format(notice.createdDate, 'yyyy-MM-dd')}">2024-01-01</td>
                 <td th:text="${notice.noticeTitle}">공지사항 제목</td>
                 <td th:text="${notice.noticeDesc}">공지사항 내용</td>
             </tr>

@@ -31,4 +31,10 @@ public class TeacherCourseNotice extends BaseTimeEntity {
 
     @Column(name = "course_id")
     private Long courseId;
+
+    // 강의소식 수정 메서드
+    public void updateCourseNoticeInfo(String courseNoticeTitle, String courseNoticeDesc) {
+        this.courseNoticeTitle = courseNoticeTitle;
+        this.courseNoticeDesc = courseNoticeDesc;
+    }
 }

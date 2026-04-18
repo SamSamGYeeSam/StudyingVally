@@ -79,7 +79,7 @@ public class ChapterController {
             }
         }
 
-        chapterService.modifyChapter(chapNo, chapTitle, chapDesc, chapUrl);
+        chapterService.updateChapter(chapNo, chapTitle, chapDesc, chapUrl);
 
         redirectAttributes.addFlashAttribute("successMessage", "챕터가 수정되었습니다.");
         redirectAttributes.addAttribute("courseId", courseId);

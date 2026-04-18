@@ -110,7 +110,7 @@ public class CourseController {
 
     // 강의 정보 찾아서 강의 수정 페이지로 이동
     @PostMapping("/course/courseupdate")
-    public String updateCoursePage(@RequestParam Long courseId, Model model) {
+    public String gotoupdateCoursePage(@RequestParam Long courseId, Model model) {
         CourseDTO course = courseService.findCourseById(courseId);
         model.addAttribute("course", course);
         return "course/updatecourse";
@@ -122,7 +122,7 @@ public class CourseController {
                                @RequestParam String courseTitle,
                                @RequestParam String courseDescription) {
 
-        courseService.modifyCourse(courseId, courseTitle, courseDescription);
+        courseService.updateCourse(courseId, courseTitle, courseDescription);
 
         return "redirect:/teacher/course";
     }
@@ -139,7 +139,7 @@ public class CourseController {
     @PostMapping("/course/delete")
     public String deleteCourse(@RequestParam Long courseId, RedirectAttributes redirectAttributes){
 
-        // 삭제 전 강의 제목 가져오기
+        // 강의 제목 가져오기
         CourseDTO course = courseService.findCourseById(courseId);
         String courseTitle = course.getCourseTitle();
 

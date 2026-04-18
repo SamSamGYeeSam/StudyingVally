@@ -19,10 +19,7 @@
     </h3>
 </div>
 
-<!-- 챕터 -->
 <div style="border: 2px solid black; padding: 20px;">
-
-<!--  챕터 있는 경우  -->
     <ul th:if="${chapterList != null and !chapterList.isEmpty()}">
         <li th:each="chapter : ${chapterList}">
             <span th:text="${chapter.chapTitle}"></span>
@@ -34,7 +31,7 @@
         </li>
 
     </ul>
-<!--없을 때-->
+<!-- 챕터 없을 때-->
     <div th:if="${chapterList == null or chapterList.isEmpty()}">
         <p>등록된 챕터가 없습니다.</p>
     </div>

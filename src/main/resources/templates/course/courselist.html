@@ -97,7 +97,7 @@
         <td th:text="${course.courseTitle}"></td>
         <td th:text="${course.courseDescription}"></td>
         <td th:text="${course.courseStatus == 'OPEN' ? '개설' : '미개설'}"></td>
-        <td th:text="${#temporals.format(course.courseCreatedAt, 'yyyy. M. d.')}"></td>
+        <td th:text="${#temporals.format(course.courseCreatedAt, 'yyyy. M. d')}"></td>
         <td></td>
     </tr>
     </tbody>
