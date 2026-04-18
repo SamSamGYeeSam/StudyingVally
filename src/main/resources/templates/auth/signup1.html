@@ -93,7 +93,8 @@
                         <input type="text"
                                id="userPhoneNumber"
                                name="userPhoneNumber"
-                               placeholder="전화번호 입력"
+                               placeholder="전화번호 입력 ex)010-1234-1234"
+                               pattern="010-[0-9]{4}-[0-9]{4}" <!-- 0~9까지 4자리만 쓰겠다는 것-->
                                th:value="${signupDTO != null ? signupDTO.userPhoneNumber : ''}"
                                required />
                     </div>
@@ -104,7 +105,8 @@
                         <input type="email"
                                id="userEmail"
                                name="userEmail"
-                               placeholder="이메일 입력"
+                               placeholder="이메일 입력 ex) 123@gmail.com"
+                               pattern="[a-zA-Z0-9]+@gmail\.com" <!-- a-z, A-Z : a 부터 z 까지(대문자, 소문자), 0-9 : 0~9까지-->
                                th:value="${signupDTO != null ? signupDTO.userEmail : ''}"
                                required />
                     </div>
