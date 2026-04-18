@@ -35,4 +35,8 @@ public class QuestionCourse extends BaseTimeEntity {
     @Column(name = "question_course_answer")
     private String questionCourseAnswer;
 
+    // 답변 등록 처리
+    public void answerQuestion(String questionCourseAnswer) {
+        this.questionCourseAnswer = questionCourseAnswer;
+    }
 }

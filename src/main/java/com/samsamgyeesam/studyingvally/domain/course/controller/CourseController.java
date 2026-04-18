@@ -72,7 +72,7 @@ public class CourseController {
 
     // 강의평 보기
     @PostMapping("/course/review")
-    public String viewReviews(@RequestParam Long courseId, Model model) {
+    public String gotoReviewListPage(@RequestParam Long courseId, Model model) {
         List<EvaluationDTO> evaluations = evaluationService.findEvaluationsByCourseId(courseId);
 
         model.addAttribute("evaluations", evaluations);
@@ -83,7 +83,7 @@ public class CourseController {
 
     // 수강생 보기
     @PostMapping("/course/studentlist")
-    public String viewStudentList(@RequestParam Long courseId, Model model) {
+    public String gotoStudentListPage(@RequestParam Long courseId, Model model) {
 
         List<EnrollmentDTO> studentList = enrollmentService.findStudentsByCourseId(courseId);
 

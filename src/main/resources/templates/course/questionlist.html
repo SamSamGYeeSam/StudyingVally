@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>질문 목록</title>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
@@ -15,7 +16,8 @@
             <tr>
                 <th>작성일</th>
                 <th>답변여부</th>
-                <th>질문</th>
+                <th>질문제목</th>
+                <th>질문내용</th>
                 <th>답변</th>
             </tr>
             </thead>
@@ -24,11 +26,12 @@
                 <td th:text="${#temporals.format(question.createdDate, 'yyyy-MM-dd')}">2024-01-01</td>
                 <td th:text="${question.questionCourseAnswer != null ? '답변완료' : '미답변'}">미답변</td>
                 <td th:text="${question.questionCourseTitle}">질문 제목</td>
+                <td th:text="${question.questionCourseDesc}">질문 내용</td>
                 <td>
                     <span th:if="${question.questionCourseAnswer != null}"
                           th:text="${question.questionCourseAnswer}">답변 내용</span>
                     <form th:if="${question.questionCourseAnswer == null}"
-                          action="/teacher/course/question/answerpage"
+                          action="/teacher/course/question/answerPage"
                           method="post"
                           style="display:inline;">
                         <input type="hidden" name="questionCourseNo" th:value="${question.questionCourseNo}">
@@ -51,6 +54,9 @@
 <form action="/teacher/course" method="get">
     <button type="submit">이전으로</button>
 </form>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
 
 </body>
 </html>

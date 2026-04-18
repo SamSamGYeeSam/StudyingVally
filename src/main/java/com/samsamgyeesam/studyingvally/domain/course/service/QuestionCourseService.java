@@ -8,6 +8,7 @@ import com.samsamgyeesam.studyingvally.domain.course.repository.QuestionCourseRe
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,5 +40,32 @@ public class QuestionCourseService {
                     return questionCourseDTO;
                 })
                 .collect(Collectors.toList());
+    }
+
+    // 강사가 답변 달고자 하는 질문의 정보 가져오기
+    public QuestionCourseDTO findQuestionById(Long questionCourseNo) {
+        QuestionCourse question = questionRepository.findById(questionCourseNo)
+                .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다."));
+
+        QuestionCourseDTO dto = modelMapper.map(question, QuestionCourseDTO.class);
+
+        // 강의 제목 가져오기
+        if (question.getCourseId() != null) {
+            Course course = courseRepository.findById(question.getCourseId()).orElse(null);
+            if (course != null) {
+                dto.setCourseTitle(course.getCourseTitle());
+            }
+        }
+
+        return dto;
+    }
+
+    // 답변 등록 처리
+    @Transactional
+    public void answerQuestion(Long questionCourseNo, String questionCourseAnswer) {
+        QuestionCourse foundQuestion = questionRepository.findById(questionCourseNo)
+                .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다."));
+
+        foundQuestion.answerQuestion(questionCourseAnswer);
     }
 }
