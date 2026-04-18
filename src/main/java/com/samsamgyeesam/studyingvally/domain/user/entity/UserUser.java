@@ -49,13 +49,13 @@ public class UserUser extends BaseTimeEntity {
     /**
      * 전화번호
      */
-    @Column(name = "user_phone_number")
+    @Column(name = "user_phone_number", unique = true)
     private String userPhoneNumber;
 
     /**
      * 이메일
      */
-    @Column(name = "user_email")
+    @Column(name = "user_email", unique = true)
     private String userEmail;
 
     /**
@@ -68,7 +68,7 @@ public class UserUser extends BaseTimeEntity {
     /**
      * 닉네임
      */
-    @Column(name = "user_nickname")
+    @Column(name = "user_nickname", unique = true)
     private String userNickname;
 
     /**
