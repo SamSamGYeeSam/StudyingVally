@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>강의 소식 상세</title>
+</head>
+<body>
+
+<h1>강의 소식 상세</h1>
+
+<div class="content-container">
+    <div class="content-section">
+        <strong>강의명</strong>
+        <div th:text="${courseNotice.courseTitle}"></div>
+    </div>
+
+    <div class="content-section">
+        <strong>소식제목</strong>
+        <div th:text="${courseNotice.courseNoticeTitle}"></div>
+    </div>
+
+    <div class="content-section">
+        <strong>소식내용</strong>
+        <div style="white-space: pre-line;" th:text="${courseNotice.courseNoticeDesc}"></div>
+    </div>
+</div>
+
+<br>
+<form action="/teacher/coursenotice" method="get">
+    <button type="submit">이전으로</button>
+</form>
+
+</body>
+</html>

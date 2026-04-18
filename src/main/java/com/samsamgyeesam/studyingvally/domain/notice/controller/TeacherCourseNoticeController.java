@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -31,15 +32,19 @@ public class TeacherCourseNoticeController {
         model.addAttribute("courseNotices", courseNotices);
 
 
-        return "course/coursenoticelist";
+        return "notice/coursenoticelist";
     }
 //   강의소식 누른 경우
 
-    // 강의소식 페이지로 이동 -> 전체 강의소식 목록 나오는 화면으로
+
+    // 강의소식 목록에서 상세보기 누른 경우 : 강의먕 / 소식 제목 / 소식 내용
     @PostMapping("/coursenotice/detail")
-    public String gotoCourseNoticeDetailPage(@AuthenticationPrincipal AuthUserDetails userDetails, Model model) {
+    public String gotoCourseNoticeDetailPage(@RequestParam Long courseNoticeNo, Model model) {
+
+        TeacherCourseNoticeDTO courseNotice = courseNoticeService.findCourseNoticeById(courseNoticeNo);
+        model.addAttribute("courseNotice", courseNotice);
 
 
-        return "course/coursenoticedetaillist";
+        return "notice/coursenoticedetaillist";
     }
 }

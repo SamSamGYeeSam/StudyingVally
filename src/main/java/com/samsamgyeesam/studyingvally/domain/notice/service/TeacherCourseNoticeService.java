@@ -43,4 +43,23 @@ public class TeacherCourseNoticeService {
                 .collect(Collectors.toList());
 
     }
+
+
+    // 강의소식 상세 조회
+    public TeacherCourseNoticeDTO findCourseNoticeById(Long courseNoticeNo) {
+        TeacherCourseNotice courseNotice = teacherCourseNoticeRepository.findById(courseNoticeNo)
+                .orElseThrow(() -> new IllegalArgumentException("강의소식을 찾을 수 없습니다."));
+
+        TeacherCourseNoticeDTO dto = modelMapper.map(courseNotice, TeacherCourseNoticeDTO.class);
+
+        // 강의 제목 가져오기
+        if (courseNotice.getCourseId() != null) {
+            Course course = courseRepository.findById(courseNotice.getCourseId()).orElse(null);
+            if (course != null) {
+                dto.setCourseTitle(course.getCourseTitle());
+            }
+        }
+
+        return dto;
+    }
 }

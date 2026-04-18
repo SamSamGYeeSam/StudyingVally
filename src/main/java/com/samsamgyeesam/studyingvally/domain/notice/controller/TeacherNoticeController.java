@@ -25,7 +25,7 @@ public class TeacherNoticeController {
         List<TeacherNoticeDTO> notices = noticeService.findAllNotices();
         model.addAttribute("notices", notices);
 
-        return "course/noticelist";
+        return "notice/noticelist";
     }
 //   공지사항 누른 경우
 
