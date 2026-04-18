@@ -43,7 +43,7 @@ public class CourseService {
 
     // 실제 강의 수정
     @Transactional
-    public void modifyCourse(Long courseId, String courseTitle, String courseDescription) {
+    public void updateCourse(Long courseId, String courseTitle, String courseDescription) {
 
         // 강의 조회
         Course foundCourse = courseRepository.findById(courseId)

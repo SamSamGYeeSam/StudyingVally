@@ -23,7 +23,7 @@
       </thead>
       <tbody>
       <tr th:each="notice : ${courseNotices}">
-        <td th:text="${#temporals.format(notice.createdDate, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+        <td th:text="${#temporals.format(notice.createdDate, 'yyyy-MM-dd')}">2024-01-01 10:00</td>
         <td th:text="${notice.courseTitle}">강의명</td>
         <td th:text="${notice.courseNoticeTitle}">강의 소식 제목</td>
         <td>

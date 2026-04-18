@@ -20,7 +20,6 @@
 </div>
 
 <div style="border: 2px solid black; padding: 20px;">
-
     <ul th:if="${chapterList != null and !chapterList.isEmpty()}">
         <li th:each="chapter : ${chapterList}">
             <span th:text="${chapter.chapTitle}"></span>

@@ -55,7 +55,7 @@ public class ChapterService {
 
     //챕터 수정
     @Transactional
-    public void modifyChapter(Long chapNo, String chapTitle, String chapDesc, String chapUrl) {
+    public void updateChapter(Long chapNo, String chapTitle, String chapDesc, String chapUrl) {
 
         Chapter foundChapter = chapterRepository.findById(chapNo)
                 .orElseThrow(() -> new IllegalArgumentException("챕터를 찾을 수 없습니다."));

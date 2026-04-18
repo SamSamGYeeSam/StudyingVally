@@ -122,7 +122,7 @@ public class CourseController {
                                @RequestParam String courseTitle,
                                @RequestParam String courseDescription) {
 
-        courseService.modifyCourse(courseId, courseTitle, courseDescription);
+        courseService.updateCourse(courseId, courseTitle, courseDescription);
 
         return "redirect:/teacher/course";
     }

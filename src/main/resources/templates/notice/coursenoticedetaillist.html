@@ -9,19 +9,27 @@
 <h1>강의 소식 상세</h1>
 
 <div class="content-container">
-    <div class="content-section">
+    <div class="coursetitle-section" >
         <strong>강의명</strong>
-        <div th:text="${courseNotice.courseTitle}"></div>
+        <div th:text="${courseNotice.courseTitle}" style="border: 2px solid black; padding: 20px; margin-bottom: 20px;"></div>
     </div>
 
-    <div class="content-section">
-        <strong>소식제목</strong>
-        <div th:text="${courseNotice.courseNoticeTitle}"></div>
+    <div class="coursenoticetitle-section" style="border: 2px solid black; padding: 20px; margin-bottom: 20px;">
+        <strong>소식제목</strong><br>
+        <span th:text="${courseNotice.courseNoticeTitle}"></span>
+        <form action="/teacher/coursenotice/updatecoursenoticePage" method="post" style="display:inline; margin-left: 10px;">
+            <input type="hidden" name="courseNoticeNo" th:value="${courseNotice.courseNoticeNo}">
+            <button type="submit">✏️</button>
+        </form>
     </div>
 
-    <div class="content-section">
-        <strong>소식내용</strong>
-        <div style="white-space: pre-line;" th:text="${courseNotice.courseNoticeDesc}"></div>
+    <div class="coursenoticecontent-section" style="border: 2px solid black; padding: 20px;">
+        <strong>소식내용</strong><br>
+        <span style="white-space: pre-line;" th:text="${courseNotice.courseNoticeDesc}"></span>
+        <form action="/teacher/coursenotice/updatecoursenoticePage" method="post" style="display:inline; margin-left: 10px;">
+            <input type="hidden" name="courseNoticeNo" th:value="${courseNotice.courseNoticeNo}">
+            <button type="submit">✏️</button>
+        </form>
     </div>
 </div>
 

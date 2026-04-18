@@ -82,4 +82,14 @@ public class TeacherCourseNoticeService {
 
         teacherCourseNoticeRepository.deleteById(courseNoticeNo);
     }
+
+    // 강의소식 수정
+    @Transactional
+    public void updateCourseNotice(Long courseNoticeNo, String courseNoticeTitle, String courseNoticeDesc) {
+
+        TeacherCourseNotice foundCourseNotice = teacherCourseNoticeRepository.findById(courseNoticeNo)
+                .orElseThrow(() -> new IllegalArgumentException("강의소식을 찾을 수 없습니다."));
+
+        foundCourseNotice.updateCourseNoticeInfo(courseNoticeTitle, courseNoticeDesc);
+    }
 }

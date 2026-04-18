@@ -116,4 +116,30 @@ public class TeacherCourseNoticeController {
 
         return "redirect:/teacher/coursenotice";
     }
+
+
+    // 강의소식 수정하기 누르면 그 페이지로 이동
+    @PostMapping("coursenotice/updatecoursenoticePage")
+    public String gotoupdatecoursenoticePage(@RequestParam Long courseNoticeNo, Model model){
+
+        TeacherCourseNoticeDTO courseNotice = courseNoticeService.findCourseNoticeById(courseNoticeNo);
+        model.addAttribute("courseNotice", courseNotice);
+
+        return "notice/updatecoursenotice";
+    }
+
+    // 강의소식 수정 처리
+    @PostMapping("/coursenotice/updatecoursenotice")
+    public String updateCourseNotice(@RequestParam Long courseNoticeNo,
+                                     @RequestParam String courseNoticeTitle,
+                                     @RequestParam String courseNoticeDesc,
+                                     RedirectAttributes redirectAttributes) {
+
+        // 엔티티 클래스에서 메서드 만듦
+        courseNoticeService.updateCourseNotice(courseNoticeNo, courseNoticeTitle, courseNoticeDesc);
+
+        redirectAttributes.addFlashAttribute("successMessage", "강의 소식이 수정되었습니다.");
+
+        return "redirect:/teacher/coursenotice";
+    }
 }
