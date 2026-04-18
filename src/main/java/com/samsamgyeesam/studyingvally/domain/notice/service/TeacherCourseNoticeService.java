@@ -75,4 +75,11 @@ public class TeacherCourseNoticeService {
 
         teacherCourseNoticeRepository.save(courseNotice);
     }
+
+    // 강의소식 삭제
+    @Transactional
+    public void deleteCourseNotice(Long courseNoticeNo) {
+
+        teacherCourseNoticeRepository.deleteById(courseNoticeNo);
+    }
 }

@@ -62,7 +62,8 @@ public class CourseService {
         chapterRepository.deleteByCourseId(courseId);
         enrollmentRepository.deleteByCourseId(courseId);
         evaluationRepository.deleteByCourseId(courseId);
-        courseRepository.deleteById(courseId);    }
+        courseRepository.deleteById(courseId);
+    }
 
     // 강의 등록
     @Transactional

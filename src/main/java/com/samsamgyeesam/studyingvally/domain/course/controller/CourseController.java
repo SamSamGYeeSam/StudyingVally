@@ -139,7 +139,7 @@ public class CourseController {
     @PostMapping("/course/delete")
     public String deleteCourse(@RequestParam Long courseId, RedirectAttributes redirectAttributes){
 
-        // 삭제 전 강의 제목 가져오기
+        // 강의 제목 가져오기
         CourseDTO course = courseService.findCourseById(courseId);
         String courseTitle = course.getCourseTitle();
 

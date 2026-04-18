@@ -89,4 +89,31 @@ public class TeacherCourseNoticeController {
 
         return "redirect:/teacher/coursenotice";
     }
+
+
+    // 강의소식 삭제하기 버튼 눌렀을 때 - 강의삭제 확인페이지
+    @PostMapping("/coursenotice/deletecheck")
+    public String deleteCourseNoticeCheck(@RequestParam Long courseNoticeNo, Model model) {
+
+        TeacherCourseNoticeDTO courseNotice = courseNoticeService.findCourseNoticeById(courseNoticeNo);
+        model.addAttribute("courseNotice", courseNotice);
+
+        return "notice/deletecoursenotice";
+    }
+
+    // 강의삭제 처리
+    @PostMapping("/coursenotice/delete")
+    public String deleteCourseNotice(@RequestParam Long courseNoticeNo,
+                                     RedirectAttributes redirectAttributes) {
+
+        // 강의소식 정보 가져오기
+        TeacherCourseNoticeDTO courseNotice = courseNoticeService.findCourseNoticeById(courseNoticeNo);
+        String courseNoticeTitle = courseNotice.getCourseNoticeTitle();
+
+        courseNoticeService.deleteCourseNotice(courseNoticeNo);
+
+        redirectAttributes.addFlashAttribute("successMessage", courseNoticeTitle + " 강의 소식이 삭제되었습니다.");
+
+        return "redirect:/teacher/coursenotice";
+    }
 }
