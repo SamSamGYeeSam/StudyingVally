@@ -1,6 +1,6 @@
 package com.samsamgyeesam.studyingvally.domain.study.controller;
 
-import com.samsamgyeesam.studyingvally.domain.admin.dto.StudentAdminNoticeDTO;
+import com.samsamgyeesam.studyingvally.domain.study.dto.StudentAdminNoticeDTO;
 import com.samsamgyeesam.studyingvally.domain.study.dto.StudentCourseNoticeDTO;
 import com.samsamgyeesam.studyingvally.domain.study.entity.StudentEnrollment;
 import com.samsamgyeesam.studyingvally.domain.study.repository.StudentEnrollmentRepository;

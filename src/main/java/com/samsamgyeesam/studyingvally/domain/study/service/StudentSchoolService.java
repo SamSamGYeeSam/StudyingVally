@@ -28,8 +28,7 @@ public class StudentSchoolService {
                 .map(eval -> StudentEvaluationResponseDTO.builder()
                         .score(eval.getEvaluationScore())
                         .content(eval.getEvaluationDesc())
-                        .nickname("익명")
-                        .build())
+                        .nickname(eval.getUser() != null ? eval.getUser().getUserNickname() : "알 수 없음")                        .build())
                 .collect(Collectors.toList());
 
     }

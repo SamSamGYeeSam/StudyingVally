@@ -1,6 +1,6 @@
 package com.samsamgyeesam.studyingvally.domain.study.repository;
 
-import com.samsamgyeesam.studyingvally.domain.admin.dto.StudentAdminNoticeDTO;
+import com.samsamgyeesam.studyingvally.domain.study.dto.StudentAdminNoticeDTO;
 import com.samsamgyeesam.studyingvally.domain.study.entity.StudentAdminNotice;
 import com.samsamgyeesam.studyingvally.domain.study.dto.StudentCourseNoticeDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,12 +13,12 @@ import java.util.List;
 @Repository
 public interface StudentNoticeRepository extends JpaRepository<StudentAdminNotice, Long> {
 
-    @Query("SELECT new com.samsamgyeesam.studyingvally.domain.admin.dto.StudentAdminNoticeDTO(" +
+    @Query("SELECT new com.samsamgyeesam.studyingvally.domain.study.dto.StudentAdminNoticeDTO(" +
             "an.noticeNo, str(an.createdAt), an.noticeTitle, an.noticeDesc) " +
             "FROM StudentAdminNotice an ORDER BY an.createdAt DESC")
     List<StudentAdminNoticeDTO> findAllAdminNotices();
 
-    @Query("SELECT new com.samsamgyeesam.studyingvally.domain.course.dto.StudentCourseNoticeDTO(" +
+    @Query("SELECT new com.samsamgyeesam.studyingvally.domain.study.dto.StudentCourseNoticeDTO(" +
             "cn.courseNoticeNo, str(cn.createdAt), c.courseTitle, u.userName, cn.courseNoticeTitle, cn.courseNoticeDesc) " +
             "FROM StudentCourseNotice cn " +
             "JOIN cn.course c " +

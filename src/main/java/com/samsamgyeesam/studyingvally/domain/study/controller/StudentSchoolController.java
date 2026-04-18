@@ -38,7 +38,7 @@ public class StudentSchoolController {
 //    }
 
 
-    @GetMapping("/{courseId}")
+    @GetMapping("/evaluations/{courseId}")
     @ResponseBody
     public List<StudentEvaluationResponseDTO> getEvaluations(@PathVariable("courseId") Long courseId) {
         return studentSchoolService.getCourseEvaluations(courseId);
@@ -91,7 +91,7 @@ public class StudentSchoolController {
         studentSchoolService.registerCourse(userNo, courseId);
 
         rttr.addFlashAttribute("message", "수강신청이 완료되었습니다!");
-        return "redirect:/student/main";
+        return "redirect:/student/school";
     }
 
 }

@@ -94,8 +94,7 @@
         </thead>
         <tbody>
         <tr th:each="course : ${courses}">
-            <td th:text="${#temporals.format(course.courseCreatedAt, 'yyyy-MM-dd')}">2026-04-14</td>
-            <td th:text="${course.user != null ? course.user.userNickname : '강사미정'}">강사명</td>
+            <td th:text="${course.courseCreatedAt != null ? #temporals.format(course.courseCreatedAt, 'yyyy-MM-dd') : '날짜 없음'}">2026-04-14</td>            <td th:text="${course.user != null ? course.user.userNickname : '강사미정'}">강사명</td>
             <td th:text="${course.courseTitle}">자바 알고리즘</td>
 
             <td>
@@ -151,13 +150,13 @@
     <button onclick="closeModal()" class="btn" style="width: 100%; margin-top: 15px; background: #8d6e63; color: white;">닫기</button>
 </div>
 
-<script>
+<!-- script 태그에 th:inline="javascript"를 반드시 추가하세요 -->
+<script th:inline="javascript">
     function openDescModal(element) {
         const title = element.getAttribute('data-title');
         const content = element.getAttribute('data-desc');
         openModal('설명', title, content, false);
     }
-
 
     function openReviewModal(element) {
         const courseId = element.getAttribute('data-id');
@@ -168,9 +167,10 @@
             return;
         }
 
-        fetch(`/student/evaluation/${courseId}`)
+        // 경로를 컨트롤러와 일치하게 /evaluations/ 로 수정함
+        fetch(`/student/evaluations/${courseId}`)
             .then(response => {
-                if (!response.ok) throw new Error("404 혹은 서버 에러");
+                if (!response.ok) throw new Error("서버 응답 에러");
                 return response.json();
             })
             .then(data => {
@@ -191,15 +191,13 @@
             })
             .catch(err => {
                 console.error(err);
-                // 에러 시 경로 확인을 돕기 위한 메시지
-                openModal('에러', title, '데이터를 불러오는 중 오류가 발생했습니다. (URL: /student/evaluation/' + courseId + ')', false);
+                openModal('에러', title, '데이터를 불러오는 중 오류가 발생했습니다.', false);
             });
     }
 
     function openModal(type, title, content, isHtml = false) {
         const header = document.getElementById('modal-header');
         const body = document.getElementById('modal-body');
-        const ratingBox = document.getElementById('modal-rating');
 
         header.innerText = `[${type}] ${title}`;
 
@@ -208,8 +206,6 @@
         } else {
             body.innerText = content || "내용이 없습니다.";
         }
-
-        ratingBox.style.display = 'none';
 
         document.getElementById('custom-modal').style.display = 'block';
         document.getElementById('modal-overlay').style.display = 'block';
@@ -220,12 +216,13 @@
         document.getElementById('modal-overlay').style.display = 'none';
     }
 
-        /*<![CDATA[*/
-        const message = [[${message}]];
-        if (message) {
+    // 서버에서 보낸 플래시 메시지 처리
+    /*<![CDATA[*/
+    const message = [[${message}]];
+    if (message) {
         alert(message);
     }
-        /*]]>*/
+    /*]]>*/
 </script>
 
 </body>
