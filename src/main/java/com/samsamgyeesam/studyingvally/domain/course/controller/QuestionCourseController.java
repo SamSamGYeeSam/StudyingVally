@@ -62,4 +62,33 @@ public class QuestionCourseController {
         return "redirect:/teacher/course/question";
     }
 
+    // 답변 수정 페이지로 이동
+    @PostMapping("/question/updateanswerPage")
+    public String gotoUpdateAnswerPage(@RequestParam Long questionCourseNo,
+                                       @RequestParam Long courseId,
+                                       Model model) {
+
+        QuestionCourseDTO question = questionService.findQuestionById(questionCourseNo);
+
+        model.addAttribute("question", question);
+        model.addAttribute("courseId", courseId);
+
+        return "course/updateanswer";
+    }
+
+    // 답변 수정 처리
+    @PostMapping("/question/updateanswer")
+    public String updateAnswer(@RequestParam Long questionCourseNo,
+                               @RequestParam Long courseId,
+                               @RequestParam String questionCourseAnswer,
+                               RedirectAttributes redirectAttributes) {
+
+        questionService.answerQuestion(questionCourseNo, questionCourseAnswer);
+
+        redirectAttributes.addFlashAttribute("successMessage", "답변이 수정되었습니다.");
+        redirectAttributes.addAttribute("courseId", courseId);
+
+        return "redirect:/teacher/course/question";
+    }
+
 }

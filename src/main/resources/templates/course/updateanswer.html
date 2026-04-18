@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>답변 수정</title>
+</head>
+<body>
+
+<h1>답변 수정 페이지</h1>
+
+<div>
+  <label>강의명</label><br>
+  <span th:text="${question.courseTitle}"></span>
+</div>
+<br>
+
+<div>
+  <label>질문 제목</label><br>
+  <span th:text="${question.questionCourseTitle}"></span>
+</div>
+<br>
+
+<div>
+  <label>질문 내용</label><br>
+  <span th:text="${question.questionCourseDesc}"></span>
+</div>
+<br>
+
+<form action="/teacher/course/question/updateanswer" method="post">
+
+  <input type="hidden" name="questionCourseNo" th:value="${question.questionCourseNo}">
+  <input type="hidden" name="courseId" th:value="${courseId}">
+
+  <label>답변 내용</label><br>
+  <textarea rows="10" cols="50" name="questionCourseAnswer" required th:text="${question.questionCourseAnswer}"></textarea><br><br>
+
+  <button type="submit">답변 수정하기</button>
+</form>
+
+<form action="/teacher/course/question" method="post" style="display:inline;">
+  <input type="hidden" name="courseId" th:value="${courseId}">
+  <button type="submit">이전으로</button>
+</form>
+
+</body>
+</html>
