@@ -2,6 +2,7 @@ package com.samsamgyeesam.studyingvally.domain.npc.service;
 
 import com.samsamgyeesam.studyingvally.domain.npc.dto.UserNpcQuestionTechDTO;
 import com.samsamgyeesam.studyingvally.domain.npc.entity.UserNpcQuestionTech;
+import com.samsamgyeesam.studyingvally.domain.npc.exception.NpcException;
 import com.samsamgyeesam.studyingvally.domain.npc.repository.UserNpcQuestionTechRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,13 @@ public class UserNpcService {
 
     @Transactional
     public void registInquiry(UserNpcQuestionTechDTO dto, Long userNo) {
+        if (dto.getQuestionTitle() == null || dto.getQuestionTitle().trim().isEmpty()) {
+            throw new NpcException("문의 제목을 입력해 주세요.");
+        }
+        if (dto.getQuestionDesc() == null || dto.getQuestionDesc().trim().isEmpty()) {
+            throw new NpcException("문의 내용을 입력해 주세요.");
+        }
+
         UserNpcQuestionTech entity = new UserNpcQuestionTech();
         entity.setQuestionTitle(dto.getQuestionTitle());
         entity.setQuestionDesc(dto.getQuestionDesc());
@@ -27,13 +35,9 @@ public class UserNpcService {
         repository.save(entity);
     }
 
-    // ✨ [수정됨] Entity가 아닌 DTO 리스트를 반환하도록 변경
     @Transactional(readOnly = true)
     public List<UserNpcQuestionTechDTO> getMyInquiries(Long userNo) {
-        List<UserNpcQuestionTech> entities = repository.findByUserNoOrderByQuestionTechNoDesc(userNo);
-
-        // Entity 리스트를 DTO 리스트로 깔끔하게 변환 (Stream 활용)
-        return entities.stream().map(entity -> {
+        return repository.findByUserNoOrderByQuestionTechNoDesc(userNo).stream().map(entity -> {
             UserNpcQuestionTechDTO dto = new UserNpcQuestionTechDTO();
             dto.setQuestionTechNo(entity.getQuestionTechNo());
             dto.setQuestionTitle(entity.getQuestionTitle());

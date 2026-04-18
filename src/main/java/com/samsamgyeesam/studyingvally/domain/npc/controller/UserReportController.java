@@ -1,6 +1,7 @@
 package com.samsamgyeesam.studyingvally.domain.npc.controller;
 
 import com.samsamgyeesam.studyingvally.domain.npc.dto.UserReportDTO;
+import com.samsamgyeesam.studyingvally.domain.npc.exception.NpcException;
 import com.samsamgyeesam.studyingvally.domain.npc.service.UserReportService;
 import com.samsamgyeesam.studyingvally.domain.user.service.AuthUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -17,38 +18,34 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/npc/report") // 기본 경로를 /npc/report 로 분리
+@RequestMapping("/npc/report")
 public class UserReportController {
 
     private final UserReportService userReportService;
 
-    // 1. 신고하기 폼 화면
     @GetMapping
     public String reportForm() {
         return "npc/report_form";
     }
 
-    // 2. 신고하기 처리
     @PostMapping
     public String submitReport(@ModelAttribute UserReportDTO dto,
                                @AuthenticationPrincipal AuthUserDetails userDetails,
                                RedirectAttributes rttr) {
-
-        Long userNo = userDetails.getUserNo();
-        userReportService.registReport(dto, userNo);
-
-        rttr.addFlashAttribute("message", "신고가 정상적으로 접수되었습니다. 깨끗한 환경을 위해 더욱 노력하겠습니다.");
-        return "redirect:/npc";
+        try {
+            userReportService.registReport(dto, userDetails.getUserNo());
+            rttr.addFlashAttribute("successMessage", "신고가 정상적으로 접수되었습니다.");
+            return "redirect:/npc";
+        } catch (NpcException e) {
+            rttr.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/npc/report";
+        }
     }
 
-    // 3. 내 신고 내역 보기
     @GetMapping("/my-reports")
     public String myReports(@AuthenticationPrincipal AuthUserDetails userDetails, Model model) {
-        Long userNo = userDetails.getUserNo();
-
-        List<UserReportDTO> reports = userReportService.getMyReports(userNo);
+        List<UserReportDTO> reports = userReportService.getMyReports(userDetails.getUserNo());
         model.addAttribute("reports", reports);
-
         return "npc/my_reports";
     }
 }
