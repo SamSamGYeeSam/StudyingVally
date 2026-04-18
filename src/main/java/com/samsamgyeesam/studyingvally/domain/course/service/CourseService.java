@@ -2,10 +2,8 @@ package com.samsamgyeesam.studyingvally.domain.course.service;
 
 import com.samsamgyeesam.studyingvally.domain.course.dto.CourseDTO;
 import com.samsamgyeesam.studyingvally.domain.course.entity.Course;
-import com.samsamgyeesam.studyingvally.domain.course.repository.ChapterRepository;
-import com.samsamgyeesam.studyingvally.domain.course.repository.CourseRepository;
-import com.samsamgyeesam.studyingvally.domain.course.repository.EnrollmentRepository;
-import com.samsamgyeesam.studyingvally.domain.course.repository.EvaluationRepository;
+import com.samsamgyeesam.studyingvally.domain.course.repository.*;
+import com.samsamgyeesam.studyingvally.domain.notice.repository.TeacherCourseNoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -22,6 +20,8 @@ public class CourseService {
     private final ChapterRepository chapterRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final EvaluationRepository evaluationRepository;
+    private final QuestionCourseRepository questionCourseRepository;
+    private final TeacherCourseNoticeRepository courseNoticeRepository;
     private final ModelMapper modelMapper;
 
     // 강사 본인이 올린 강의 전체 조회 - 강사 번호(사용자 번호)로 조회 - list로 여러 개 반환
@@ -62,6 +62,8 @@ public class CourseService {
         chapterRepository.deleteByCourseId(courseId);
         enrollmentRepository.deleteByCourseId(courseId);
         evaluationRepository.deleteByCourseId(courseId);
+        questionCourseRepository.deleteByCourseId(courseId);
+        courseNoticeRepository.deleteByCourseId(courseId);
         courseRepository.deleteById(courseId);
     }
 

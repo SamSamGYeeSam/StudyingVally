@@ -12,4 +12,6 @@ public interface QuestionCourseRepository extends JpaRepository<QuestionCourse,L
     // 강의별 질문 조회
     List<QuestionCourse> findByCourseIdOrderByQuestionCourseNoDesc(Long courseId);
 
+    // 강의 삭제 시 질문도 삭제
+    void deleteByCourseId(Long courseId);
 }

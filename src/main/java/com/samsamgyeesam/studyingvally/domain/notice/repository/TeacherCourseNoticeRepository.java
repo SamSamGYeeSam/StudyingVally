@@ -12,4 +12,6 @@ public interface TeacherCourseNoticeRepository extends JpaRepository<TeacherCour
     // 전체 강의 소식 조회
     List<TeacherCourseNotice> findByUserNoOrderByCourseNoticeNoDesc(Long userNo);
 
+    // 강의 삭제 시 강의소식도 삭제
+    void deleteByCourseId(Long courseId);
 }
