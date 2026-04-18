@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>질문 목록</title>
+</head>
+<body>
+
+<h1>강의 질문 목록</h1>
+
+<div class="question-list">
+    <div th:if="${!questions.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>작성일</th>
+                <th>답변여부</th>
+                <th>질문</th>
+                <th>답변</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="question : ${questions}">
+                <td th:text="${#temporals.format(question.createdDate, 'yyyy-MM-dd')}">2024-01-01</td>
+                <td th:text="${question.questionCourseAnswer != null ? '답변완료' : '미답변'}">미답변</td>
+                <td th:text="${question.questionCourseTitle}">질문 제목</td>
+                <td>
+                    <span th:if="${question.questionCourseAnswer != null}"
+                          th:text="${question.questionCourseAnswer}">답변 내용</span>
+                    <form th:if="${question.questionCourseAnswer == null}"
+                          action="/teacher/course/question/answerpage"
+                          method="post"
+                          style="display:inline;">
+                        <input type="hidden" name="questionCourseNo" th:value="${question.questionCourseNo}">
+                        <input type="hidden" name="courseId" th:value="${courseId}">
+                        <button type="submit">답변하기</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${questions.isEmpty()}" class="no-data">
+        등록된 질문이 없습니다.
+    </div>
+</div>
+
+<br>
+
+<form action="/teacher/course" method="get">
+    <button type="submit">이전으로</button>
+</form>
+
+</body>
+</html>
