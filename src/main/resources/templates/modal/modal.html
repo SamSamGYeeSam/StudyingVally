@@ -101,7 +101,7 @@
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
   <div class="common-modal" id="commonModal">
     <h3 id="modalTitle">알림</h3>
-    <p id="modalMessage"></p>
+    <p id="modalMessage" style="white-space: pre-line;"></p>
     <button onclick="closeModal()">확인</button>
   </div>
 </div>
@@ -123,7 +123,7 @@
             title.textContent = 'ℹ 알림';
         }
 
-        messageEl.textContent = message;
+        messageEl.innerHTML = message.replace(/\n/g, '<br>');
         modal.classList.add('active');
         overlay.classList.add('active');
     }

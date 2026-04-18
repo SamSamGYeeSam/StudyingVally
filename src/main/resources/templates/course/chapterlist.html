@@ -55,6 +55,11 @@
 
 <br>
 
+<form action="/teacher/course/registchapterPage" method="post" style="display:inline;">
+    <input type="hidden" name="courseId" th:value="${courseId}">
+    <button type="submit">챕터 추가하기</button>
+</form>
+<br>
 <form action="/teacher/course" method="get" style="display:inline;">
     <button type="submit">이전으로</button>
 </form>
