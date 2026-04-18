@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Studying Valley - school</title>
+    <title>Studying Vally - school</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
     <style>
         body {
@@ -128,12 +128,12 @@
                 </div>
             </td>
 
-<!--            <td>-->
-<!--                <form th:action="@{/student/school/regist}" method="post">-->
-<!--                    <input type="hidden" name="courseId" th:value="${course.courseId}">-->
-<!--                    <button type="submit" class="btn btn-regist">신청하기</button>-->
-<!--                </form>-->
-<!--            </td>-->
+            <!--            <td>-->
+            <!--                <form th:action="@{/student/school/regist}" method="post">-->
+            <!--                    <input type="hidden" name="courseId" th:value="${course.courseId}">-->
+            <!--                    <button type="submit" class="btn btn-regist">신청하기</button>-->
+            <!--                </form>-->
+            <!--            </td>-->
         </tr>
         </tbody>
     </table>
@@ -219,6 +219,13 @@
         document.getElementById('custom-modal').style.display = 'none';
         document.getElementById('modal-overlay').style.display = 'none';
     }
+
+        /*<![CDATA[*/
+        const message = [[${message}]];
+        if (message) {
+        alert(message);
+    }
+        /*]]>*/
 </script>
 
 </body>

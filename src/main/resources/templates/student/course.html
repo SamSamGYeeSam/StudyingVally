@@ -1,160 +1,216 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>스터딩밸리 공지사항</title>
+    <title>Studying Vally - course</title>
     <style>
-        body {
-            font-family: 'NanumSquareRound', sans-serif;
-            background-color: #F5F5F0;
-            color: #333;
-            margin: 0;
-            padding: 20px;
+        body { background-color: #2c3e50; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Arial', sans-serif; overflow: hidden; }
+
+        .room-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            background: #f0f0f0;
+            border: 6px solid #5d4037;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            background-image: url('/image/room-bg.png');
+            background-position: center;
+            background-size: cover;
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        h1 {
-            color: #4A6F5A;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        /* 탭 스타일 */
-        .tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #A3C18D;
-        }
-
-        .tab-btn {
-            padding: 10px 20px;
-            cursor: pointer;
-            border: none;
-            background: none;
-            color: #4A6F5A;
+        .pixel-text {
             font-weight: bold;
-            border-radius: 10px 10px 0 0;
-            transition: background-color 0.3s;
+            color: #ffffff;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
         }
 
-        .tab-btn.active {
-            background-color: #4A6F5A;
-            color: #fff;
-        }
+        .progress-container { position: absolute; top: 20px; left: 20px; width: 250px; z-index: 10; }
+        .progress-bar-background { background-color: #e0e0e0; border: 2px solid #000; height: 18px; border-radius: 10px; overflow: hidden; }
+        .progress-bar-fill { background-color: #4caf50; height: 100%; transition: width 0.5s ease; }
 
-        .tab-btn:hover:not(.active) {
-            background-color: #E6EFEC;
-        }
-
-        /* 공지사항 목록 스타일 */
-        .notice-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .notice-item {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
+        #mailbox-icon {
+            position: absolute;
+            top: 85px;
+            left: 20px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            z-index: 10;
             display: flex;
             align-items: center;
+            gap: 8px;
+            transition: transform 0.1s;
+        }
+        #mailbox-icon:hover { transform: scale(1.1); }
+
+        .menu-container {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10;
         }
 
-        .notice-item:hover {
-            background-color: #F9FCFB;
-        }
-
-        .notice-icon {
-            margin-right: 15px;
-            font-size: 1.2em;
-        }
-
-        .notice-title {
-            flex-grow: 1;
-            font-weight: bold;
-        }
-
-        .notice-date {
-            color: #888;
-            font-size: 0.9em;
-        }
-
-        .new-icon {
-            color: #A3C18D;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
-        /* 테이블 스타일 (필요시 사용) */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th {
-            background-color: #A3C18D;
+        .pixel-btn {
+            padding: 8px 16px;
+            background: #8d6e63;
             color: white;
-            padding: 12px;
-            text-align: left;
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
-
-        tr:hover {
-            background-color: #F9FCFB;
-        }
-
-        .clickable-title {
+            border: 2px solid #000;
             cursor: pointer;
-            color: #4A6F5A;
+            text-decoration: none;
+            font-size: 14px;
             font-weight: bold;
+            text-align: center;
+            border-radius: 4px;
+            display: block;
+            min-width: 120px;
+        }
+        .pixel-btn:hover { background: #6d4c41; transform: translateY(-2px); }
+
+        #npc-character { position: absolute;
+            cursor: pointer; z-index: 5;
+            text-align: center;
+            transition: left 2s linear, top 2s linear, transform 0.2s ease;
+            will-change: left, top; }
+        .npc-image { width: 100px; image-rendering: pixelated; display: block; }
+        .npc-label { font-size: 12px; background: rgba(0,0,0,0.7); color: white; padding: 2px 8px; border-radius: 10px; margin-top: 5px; display: inline-block; }
+
+        #npcModal {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 180px;
+            background: #4e342e;
+            border: 4px solid #795548;
+            border-radius: 10px;
+            color: white;
+            padding: 15px;
+            z-index: 100;
+        }
+
+        #mailboxModal {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            max-height: 400px;
+            background: #fdf1d5;
+            border: 6px solid #5d4037;
+            padding: 20px;
+            z-index: 200;
+            overflow-y: auto;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🌱 스터딩밸리 소식통</h1>
-
-    <div class="tabs">
-        <button class="tab-btn active">전체 공지</button>
-        <button class="tab-btn">강의 공지</button>
+<div class="room-container" id="room">
+    <div class="progress-container">
+        <p class="pixel-text" style="margin: 0 0 5px 0; font-size: 14px;">학습 진행률: <span th:text="${progress}">0</span>%</p>
+        <div class="progress-bar-background">
+            <div class="progress-bar-fill" th:style="'width: ' + ${progress} + '%;'"></div>
+        </div>
     </div>
 
-    <ul class="notice-list">
-        <li class="notice-item">
-            <span class="notice-icon">🌿</span>
-            <span class="notice-title">스터딩밸리 이용 가이드 (필독!)</span>
-            <span class="notice-date">2026.04.16</span>
-        </li>
-        <li class="notice-item">
-            <span class="notice-icon">📢</span>
-            <span class="notice-title">자바 프로그래밍 입문 강의 개설 안내</span>
-            <span class="notice-date">2026.04.15</span>
-            <span class="new-icon">N</span>
-        </li>
-        <li class="notice-item">
-            <span class="notice-icon">🔧</span>
-            <span class="notice-title">시스템 점검 안내 (4/20 새벽 2시~6시)</span>
-            <span class="notice-date">2026.04.14</span>
-        </li>
-    </ul>
+    <div id="mailbox-icon" onclick="openMailbox()">
+        <div style="position: relative;">
+            <img src="/image/questions-post.png" alt="Mail" style="width: 45px; image-rendering: pixelated;">
+            <div id="mail-badge" style="display:none; position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border: 2px solid #000; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; text-align: center; line-height: 14px;">!</div>
+        </div>
+        <span class="pixel-text" style="font-size: 14px;">메일함</span>
+    </div>
 
-</div>
+    <div id="npc-character" onclick="talkToNpc()">
+        <img src="/image/npc1.png" alt="NPC" class="npc-image">
+        <div class="npc-label">대화하기</div>
+    </div>
+
+    <div id="npcModal">
+        <div style="display: flex; align-items: center;">
+            <img src="/images/npc.png" alt="NPC" style="width: 50px; height: 50px; margin-right: 15px; image-rendering: pixelated;">
+            <div id="npcContent">
+                <strong style="color: #ffca28;">스프링클 선생님</strong>
+                <p id="npcMessage" style="margin: 5px 0; font-size: 14px;">무엇을 도와드릴까요?</p>
+                <div id="npcChoices" style="margin-top: 10px;">
+                    <button onclick="startRandomTalk()" class="pixel-btn" style="display:inline-block; margin-right:5px; padding:4px 10px; font-size:12px; background:#4caf50;">대화하기</button>
+                    <button onclick="goToQuestionPage()" class="pixel-btn" style="display:inline-block; padding:4px 10px; font-size:12px; background:#2196f3;">질문하기</button>
+                </div>
+            </div>
+        </div>
+        <div id="modalFooter" style="text-align: right; display:none; margin-top: 5px;">
+            <button onclick="closeNpc()" style="background: #8d6e63; color: white; border: none; padding: 4px 12px; cursor: pointer; border-radius: 3px; font-size:12px;">닫기 [Space]</button>
+        </div>
+    </div>
+
+    <div class="menu-container">
+        <a th:href="@{/student/chapter(courseId=${courseId})}" class="pixel-btn">📜 챕터 목록</a>
+        <a th:href="@{/student/evaluation/write(courseId=${courseId})}" class="pixel-btn">⭐ 강의평 쓰기</a>
+        <button class="pixel-btn" style="background: #607d8b;" onclick="location.href='/student/main'">
+            🚪 강의실 나가기
+        </button>
+    </div>
+
+    <div id="mailboxModal">
+        <div style="display: flex; justify-content: space-between; border-bottom: 3px solid #5d4037; padding-bottom: 5px; margin-bottom: 10px;">
+            <h3 style="margin: 0; font-size: 18px; color: #4e342e;">📬 나의 질문함</h3>
+            <button onclick="closeMailbox()" style="background: #8d6e63; border: 2px solid #000; color: white; cursor: pointer;">X</button>
+        </div>
+        <div id="mailList"><p style="text-align: center; font-size: 13px;">불러오는 중...</p></div>
+    </div>
+
+</div> <script th:inline="javascript">
+
+    const npc = document.getElementById('npc-character');
+    const npcModal = document.getElementById('npcModal');
+    const courseId = /*[[${courseId}]]*/ 0;
+    let isTalking = false;
+
+    npc.style.left = '350px';
+    npc.style.top = '430px';
+
+    function moveNpcRandomly() {
+        if (isTalking) return;
+        const minX = 280;
+        const maxX = 630;
+        const minY = 160;
+        const maxY = 450;
+
+        const randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+        const randomY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+
+        const currentX = parseInt(npc.style.left);
+        const npcImg = npc.querySelector('.npc-image');
+        if (randomX > currentX) {
+            npcImg.style.transform = "scaleX(-1)";
+        } else {
+            npcImg.style.transform = "scaleX(1)";
+        }
+        npc.style.left = randomX + 'px';
+        npc.style.top = randomY + 'px';
+    }
+
+    function talkToNpc() {
+        isTalking = true;
+        npcModal.style.display = 'block';
+        document.getElementById('npcChoices').style.display = 'block';
+        document.getElementById('modalFooter').style.display = 'none';
+    }
+    function closeNpc() { npcModal.style.display = 'none'; isTalking = false; }
+    function closeMailbox() { document.getElementById('mailboxModal').style.display = 'none'; }
+    function openMailbox() { document.getElementById('mailboxModal').style.display = 'block'; }
+    function startRandomTalk() {
+        document.getElementById('npcMessage').innerText = "열심히 공부하는 모습이 보기 좋구먼! 🥦";
+        document.getElementById('npcChoices').style.display = 'none';
+        document.getElementById('modalFooter').style.display = 'block';
+    }
+    function goToQuestionPage() { location.href = `/student/course/talk?courseId=${courseId}`; }
+
+    setInterval(moveNpcRandomly, 3000);
+</script>
 
 </body>
 </html>
