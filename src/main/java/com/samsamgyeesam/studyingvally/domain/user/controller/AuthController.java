@@ -2,63 +2,46 @@ package com.samsamgyeesam.studyingvally.domain.user.controller;
 
 import com.samsamgyeesam.studyingvally.domain.user.dto.SignupDTO;
 import com.samsamgyeesam.studyingvally.domain.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-/**
- * 인증 화면 반환을 담당하는 컨트롤러이다.
- */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
 
-    /* 사용자 비즈니스 로직 서비스 */
     private final UserService userService;
 
-    /**
-     * 로그인 화면 반환
-     *
-     * 로그인 실패 시 AuthFailHandler에서
-     * /auth/login?error=true&message=... 형태로 보내므로,
-     * error와 message를 받아 화면에 전달한다.
-     *
-     * @param error 로그인 실패 여부
-     * @param message 로그인 실패 메시지
-     * @param model View에 전달할 모델 객체
-     * @return auth/login
-     */
     @GetMapping("/login")
-    public String login(@RequestParam(required = false) String error,
-                        @RequestParam(required = false) String message,
-                        Model model) {
+    public String login(Model model, HttpSession session) {
+        String loginErrorMessage = (String) session.getAttribute("loginErrorMessage");
 
-        /* 로그인 실패 여부 전달 */
-        if (error != null) {
+        if (loginErrorMessage != null && !loginErrorMessage.isBlank()) {
             model.addAttribute("loginError", true);
-        }
-
-        /* 실패 메시지가 있으면 화면에 전달 */
-        if (message != null && !message.isBlank()) {
-            model.addAttribute("loginErrorMessage", message);
+            model.addAttribute("loginErrorMessage", loginErrorMessage);
+            session.removeAttribute("loginErrorMessage");
         }
 
         return "auth/login";
     }
 
-    /**
-     * 회원가입 유형 선택 화면 반환
-     */
-    @GetMapping("/signup-type")
-    public String signupType() {
-        return "auth/signup-type";
+    @GetMapping("/loginerror")
+    public String loginError(Model model, HttpSession session) {
+        return login(model, session);
     }
 
-    /**
-     * 회원가입 1단계 화면 반환
-     */
+    @GetMapping("/signuptype")
+    public String signupType() {
+        return "auth/signuptype";
+    }
+
     @GetMapping("/signup1")
     public String signup1(@RequestParam(required = false) String userRole,
                           Model model) {
@@ -68,9 +51,6 @@ public class AuthController {
         return "auth/signup1";
     }
 
-    /**
-     * 회원가입 2단계 화면 이동
-     */
     @PostMapping("/signup2")
     public String signup2(@ModelAttribute SignupDTO signupDTO,
                           Model model) {
@@ -81,7 +61,7 @@ public class AuthController {
                 || signupDTO.getUserPhoneNumber() == null || signupDTO.getUserPhoneNumber().isBlank()
                 || signupDTO.getUserEmail() == null || signupDTO.getUserEmail().isBlank()) {
 
-            model.addAttribute("signup1Error", "회원가입 정보를 모두 입력해주세요.");
+            model.addAttribute("signup1Error", "?뚯썝媛???뺣낫瑜?紐⑤몢 ?낅젰?댁＜?몄슂.");
             model.addAttribute("signupDTO", signupDTO);
 
             return "auth/signup1";
@@ -92,9 +72,6 @@ public class AuthController {
         return "auth/signup2";
     }
 
-    /**
-     * 회원가입 최종 처리
-     */
     @PostMapping("/signup")
     public String signup(@ModelAttribute SignupDTO signupDTO,
                          Model model) {

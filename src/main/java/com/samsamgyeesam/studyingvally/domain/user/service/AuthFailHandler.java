@@ -13,9 +13,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * 로그인 실패 시 처리하는 핸들러
@@ -92,11 +91,11 @@ public class AuthFailHandler extends SimpleUrlAuthenticationFailureHandler {
                 )
         );
 
-        /* 한글 메시지 URL 인코딩 */
-        errorMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);
+        HttpSession session = request.getSession();
+        session.setAttribute("loginErrorMessage", errorMessage);
 
         /* 로그인 페이지로 다시 이동 */
-        setDefaultFailureUrl("/auth/login?error=true&message=" + errorMessage);
+        setDefaultFailureUrl("/auth/login");
 
         super.onAuthenticationFailure(request, response, exception);
     }

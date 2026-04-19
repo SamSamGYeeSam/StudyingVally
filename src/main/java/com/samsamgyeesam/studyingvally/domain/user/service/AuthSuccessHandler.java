@@ -69,7 +69,7 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 
         /* 강사 권한이면 강사 메인으로 이동 */
         if (hasRole(authorities, "ROLE_TEACHER")) {
-            response.sendRedirect("/course/teachermain");
+            response.sendRedirect("/teacher/teachermain");
             return;
         }
 
