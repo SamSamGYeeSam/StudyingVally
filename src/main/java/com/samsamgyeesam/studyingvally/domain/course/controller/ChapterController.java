@@ -33,7 +33,7 @@ public class ChapterController {
     // 선택창에서 오는 경우 -> post 방식
     // 챕터 등록 후 넘어오는 경우 -> get
     @RequestMapping(value = "/course/chapter", method = {RequestMethod.GET, RequestMethod.POST})
-    public String viewChapters(@RequestParam Long courseId, Model model) {
+    public String gotoChapterListPage(@RequestParam Long courseId, Model model) {
         List<ChapterDTO> chapterList = chapterService.findChaptersByCourseId(courseId);
         CourseDTO course = courseService.findCourseById(courseId);
 
