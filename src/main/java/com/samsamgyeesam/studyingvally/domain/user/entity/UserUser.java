@@ -1,28 +1,18 @@
 package com.samsamgyeesam.studyingvally.domain.user.entity;
 
-import com.samsamgyeesam.studyingvally.baseentity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 
 /**
- * user 테이블과 매핑되는 엔티티이다.
- *
- * 현재 로그인에서 핵심적으로 사용하는 컬럼:
- * - user_id
- * - user_password
- * - user_role
- *
- * 그 외 컬럼도 이후 마이페이지, 회원정보 조회 등에 사용할 수 있으므로 함께 매핑한다.
+ * user 테이블과 매핑되는 엔티티
  */
 @Getter
 @Entity
 @Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserUser extends BaseTimeEntity {
+public class UserUser {
 
     /**
      * 사용자 PK
@@ -41,7 +31,8 @@ public class UserUser extends BaseTimeEntity {
     /**
      * 비밀번호
      *
-     * 현재는 평문 상태를 그대로 사용한다.
+     * 현재는 평문 상태 그대로 사용
+     * 나중에 BCrypt로 변경 예정
      */
     @Column(name = "user_password", nullable = false)
     private String userPassword;
@@ -49,13 +40,13 @@ public class UserUser extends BaseTimeEntity {
     /**
      * 전화번호
      */
-    @Column(name = "user_phone_number", unique = true)
+    @Column(name = "user_phone_number")
     private String userPhoneNumber;
 
     /**
      * 이메일
      */
-    @Column(name = "user_email", unique = true)
+    @Column(name = "user_email")
     private String userEmail;
 
     /**
@@ -68,7 +59,7 @@ public class UserUser extends BaseTimeEntity {
     /**
      * 닉네임
      */
-    @Column(name = "user_nickname", unique = true)
+    @Column(name = "user_nickname")
     private String userNickname;
 
     /**
@@ -77,14 +68,35 @@ public class UserUser extends BaseTimeEntity {
     @Column(name = "user_name", nullable = false)
     private String userName;
 
-    /* 상태 */
+    /**
+     * 사용자 상태
+     *
+     * 예: ACTIVE
+     */
     @Column(name = "user_status", nullable = false)
     private String userStatus;
 
-    /* 성별 */
+    /**
+     * 성별
+     */
     @Column(name = "user_gender", nullable = false)
     private String userGender;
 
+    /**
+     * 로그인 실패 횟수
+     */
+    @Column(name = "login_fail_count", nullable = false)
+    private int loginFailCount;
+
+    /**
+     * 계정 잠금 여부
+     */
+    @Column(name = "is_account_locked", nullable = false)
+    private boolean accountLocked;
+
+    /**
+     * 기존 프로젝트 스타일에 맞춘 builder 시작 메서드
+     */
     public static UserUser builder() {
         return new UserUser();
     }
@@ -134,8 +146,21 @@ public class UserUser extends BaseTimeEntity {
         return this;
     }
 
-    /*
-     * 학생 / 강사 공통 정보 수정 메서드
+    public UserUser loginFailCount(int loginFailCount) {
+        this.loginFailCount = loginFailCount;
+        return this;
+    }
+
+    public UserUser accountLocked(boolean accountLocked) {
+        this.accountLocked = accountLocked;
+        return this;
+    }
+
+    /**
+     * 내 정보 수정
+     *
+     * 이름은 수정하지 않고
+     * 전화번호, 이메일, 비밀번호만 수정
      */
     public void updateInformation(String userPhoneNumber, String userEmail, String userPassword) {
         this.userPhoneNumber = userPhoneNumber;
@@ -143,4 +168,24 @@ public class UserUser extends BaseTimeEntity {
         this.userPassword = userPassword;
     }
 
+    /**
+     * 로그인 실패 횟수 증가
+     */
+    public void increaseLoginFailCount() {
+        this.loginFailCount++;
+    }
+
+    /**
+     * 로그인 실패 횟수 초기화
+     */
+    public void resetLoginFailCount() {
+        this.loginFailCount = 0;
+    }
+
+    /**
+     * 계정 잠금 처리
+     */
+    public void lockAccount() {
+        this.accountLocked = true;
+    }
 }
