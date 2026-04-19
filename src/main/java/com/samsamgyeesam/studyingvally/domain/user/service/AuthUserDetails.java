@@ -11,11 +11,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Spring Security 세션에 저장될 인증 사용자 객체이다.
- *
- * 현재는 User와 Admin을 모두 처리할 수 있도록 확장한다.
+ * Spring Security 세션에 저장될 사용자 정보 객체
  */
-
+@Getter
 public class AuthUserDetails implements UserDetails {
 
     /**
@@ -30,20 +28,28 @@ public class AuthUserDetails implements UserDetails {
 
     /**
      * 권한 문자열
+     *
+     * 예: ROLE_STUDENT, ROLE_TEACHER, ROLE_ADMIN
      */
     private final String role;
 
     /**
-     * 화면 표시용 이름
+     * 화면에 표시할 이름
      */
     private final String displayName;
 
-    private Long userNo;
+    /**
+     * 일반 사용자 PK
+     */
+    private final Long userNo;
 
     /**
-     * 일반 사용자(User) 기반 생성자
-     *
-     * @param user 일반 사용자 엔티티
+     * 계정 잠금 여부
+     */
+    private final boolean accountLocked;
+
+    /**
+     * 일반 사용자 생성자
      */
     public AuthUserDetails(UserUser user) {
         this.loginId = user.getUserId();
@@ -51,36 +57,23 @@ public class AuthUserDetails implements UserDetails {
         this.role = "ROLE_" + user.getUserRole().name();
         this.displayName = user.getUserNickname();
         this.userNo = user.getUserNo();
+        this.accountLocked = user.isAccountLocked();
     }
 
     /**
-     * 관리자(Admin) 기반 생성자
-     *
-     * admin 테이블에는 role 컬럼이 없으므로
-     * Security 내부에서는 ROLE_ADMIN으로 고정한다.
-     *
-     * @param admin 관리자 엔티티
+     * 관리자 생성자
      */
     public AuthUserDetails(UserAdmin admin) {
         this.loginId = admin.getAdminId();
         this.password = admin.getAdminPassword();
         this.role = "ROLE_ADMIN";
         this.displayName = "관리자";
+        this.userNo = null;
+        this.accountLocked = false;
     }
 
     /**
-     * 화면에서 현재 로그인한 사용자명을 표시할 때 사용할 수 있다.
-     *
-     * @return 표시용 이름
-     */
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    /**
-     * 현재 사용자의 권한 목록을 반환한다.
-     *
-     * @return 권한 컬렉션
+     * 현재 사용자의 권한 목록 반환
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -88,23 +81,17 @@ public class AuthUserDetails implements UserDetails {
     }
 
     /**
-     * 비밀번호 반환
-     *
-     * @return 비밀번호
+     * Security가 사용할 비밀번호 반환
      */
     @Override
     public String getPassword() {
         return password;
     }
 
-    public Long getUserNo() {
-        return userNo;
-    }
-
     /**
-     * 로그인 아이디 반환
+     * Security가 사용할 username 반환
      *
-     * @return 로그인 아이디
+     * 현재 프로젝트에서는 loginId를 username처럼 사용
      */
     @Override
     public String getUsername() {
@@ -113,10 +100,6 @@ public class AuthUserDetails implements UserDetails {
 
     /**
      * 계정 만료 여부
-     *
-     * 현재는 별도 관리하지 않으므로 true
-     *
-     * @return true
      */
     @Override
     public boolean isAccountNonExpired() {
@@ -126,21 +109,15 @@ public class AuthUserDetails implements UserDetails {
     /**
      * 계정 잠금 여부
      *
-     * 현재는 별도 관리하지 않으므로 true
-     *
-     * @return true
+     * false면 Spring Security가 로그인 차단
      */
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !accountLocked;
     }
 
     /**
      * 비밀번호 만료 여부
-     *
-     * 현재는 별도 관리하지 않으므로 true
-     *
-     * @return true
      */
     @Override
     public boolean isCredentialsNonExpired() {
@@ -149,10 +126,6 @@ public class AuthUserDetails implements UserDetails {
 
     /**
      * 계정 활성 여부
-     *
-     * 현재는 별도 관리하지 않으므로 true
-     *
-     * @return true
      */
     @Override
     public boolean isEnabled() {

@@ -113,7 +113,6 @@ public class StudentInformationController {
             model.addAttribute("userInfo", userInfo);
             model.addAttribute("updateDTO", updateDTO);
             model.addAttribute("updateError", exception.getMessage());
-
             model.addAttribute("formActionUrl", "/student/home/update-info");
             model.addAttribute("showPageUrl", "/student/home/info");
 

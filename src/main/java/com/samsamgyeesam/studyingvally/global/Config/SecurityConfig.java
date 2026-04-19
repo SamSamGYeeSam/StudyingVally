@@ -1,5 +1,6 @@
 package com.samsamgyeesam.studyingvally.global.Config;
 
+import com.samsamgyeesam.studyingvally.domain.user.service.AuthFailHandler;
 import com.samsamgyeesam.studyingvally.domain.user.service.AuthSuccessHandler;
 import com.samsamgyeesam.studyingvally.domain.user.service.AuthUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class SecurityConfig {
 
     //로그인 성공 후 권한별 이동 경로를 분기하는 핸들러
     private final AuthSuccessHandler authSuccessHandler;
+
+    private final AuthFailHandler authFailHandler;
 
     // 정적 리소스 예외 처리 (js, css, images 등)
     @Bean
@@ -61,19 +64,31 @@ public class SecurityConfig {
                 )
 
 
-                // 로그인 설정
+                /*
+                 * 로그인 설정
+                 */
                 .formLogin(login -> login
-                                .loginPage("/auth/login")
-                                .loginProcessingUrl("/auth/login")
-                                .usernameParameter("loginId")
-                                .passwordParameter("password")
-                                .successHandler(authSuccessHandler)
-                                .failureUrl("/auth/login?error=true")
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/auth/login")
+                        .usernameParameter("loginId")
+                        .passwordParameter("password")
+                        .successHandler(authSuccessHandler)
+                        .failureHandler(authFailHandler)
+                        .permitAll()
                 )
 
-                .logout( logout -> logout
+                /*
+                 * 로그아웃 설정
+                 */
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
                         .logoutSuccessUrl("/main")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .permitAll()
                 );
+
+
         // 히히
 
         return http.build();
