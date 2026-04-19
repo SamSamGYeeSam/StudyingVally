@@ -121,7 +121,6 @@ public class TeacherInformationController {
 
             userService.updateUserInformation(loginUserId, updateDTO);
 
-            /* 수정 완료 후 다시 조회 화면으로 이동 */
             return "redirect:/showinformation";
 
         } catch (IllegalArgumentException exception) {
@@ -132,15 +131,12 @@ public class TeacherInformationController {
             model.addAttribute("userInfo", userInfo);
             model.addAttribute("updateDTO", updateDTO);
             model.addAttribute("updateError", exception.getMessage());
-
             model.addAttribute("formActionUrl", "/updateinformation");
             model.addAttribute("showPageUrl", "/showinformation");
-
 
             return "auth/updateinformation";
         }
     }
-
     /**
      * 강사 탈퇴 화면 이동
      *

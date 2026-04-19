@@ -185,9 +185,10 @@
                     </div>
 
                     <!-- signup2 단계 에러 메시지 -->
-                    <div class="msg show error"
-                         th:if="${signup2Error}">
-                        <span th:text="${signup2Error}">회원가입 에러 메시지</span>
+                    <div th:if="${signup2Error != null}"
+                         class="error-message"
+                         th:text="${signup2Error}">
+                        회원가입 에러 메시지
                     </div>
                 </form>
             </section>

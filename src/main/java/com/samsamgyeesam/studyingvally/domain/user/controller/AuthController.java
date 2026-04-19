@@ -179,29 +179,20 @@ public class AuthController {
     public String signup(@ModelAttribute SignupDTO signupDTO,
                          Model model) {
 
-        System.out.println("=== AuthController.signup 진입 ===");
-        System.out.println("userId = " + signupDTO.getUserId());
-
         try {
+            /* Service에서 회원가입 처리 */
             userService.signup(signupDTO);
 
-            System.out.println("=== 회원가입 성공 후 /main 이동 ===");
+            /* 성공 시 메인으로 이동 */
             return "redirect:/main";
 
         } catch (IllegalArgumentException exception) {
-            System.out.println("=== IllegalArgumentException 발생 ===");
-            exception.printStackTrace();
-
+            /* Service에서 던진 에러 메시지를 화면에 전달 */
             model.addAttribute("signup2Error", exception.getMessage());
-            model.addAttribute("signupDTO", signupDTO);
-            return "auth/signup2";
 
-        } catch (Exception exception) {
-            System.out.println("=== 기타 예외 발생 ===");
-            exception.printStackTrace();
-
-            model.addAttribute("signup2Error", "회원가입 저장 중 오류가 발생했습니다.");
+            /* 사용자가 입력한 값 유지 */
             model.addAttribute("signupDTO", signupDTO);
+
             return "auth/signup2";
         }
     }
