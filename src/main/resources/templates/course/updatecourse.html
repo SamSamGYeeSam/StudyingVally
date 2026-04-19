@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>강의 수정</title>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
 <h1>강의 수정 페이지</h1>
 
-<form action="/teacher/course/updatecourse" method="post">
+<form action="/teacher/course/updatecourse" method="post" novalidate>
 
     <input type="hidden" name="courseId" th:value="${course.courseId}">
 
@@ -26,6 +27,10 @@
     <input type="hidden" name="courseId" th:value="${course.courseId}">
     <button type="submit">이전으로</button>
 </form>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+
+<script th:replace="~{modal/modal :: modalScript}"></script>
 
 </body>
 </html>

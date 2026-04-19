@@ -3,6 +3,7 @@ package com.samsamgyeesam.studyingvally.domain.course.service;
 import com.samsamgyeesam.studyingvally.domain.course.dto.QuestionCourseDTO;
 import com.samsamgyeesam.studyingvally.domain.course.entity.Course;
 import com.samsamgyeesam.studyingvally.domain.course.entity.QuestionCourse;
+import com.samsamgyeesam.studyingvally.domain.course.exception.CourseException;
 import com.samsamgyeesam.studyingvally.domain.course.repository.CourseRepository;
 import com.samsamgyeesam.studyingvally.domain.course.repository.QuestionCourseRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +42,7 @@ public class QuestionCourseService {
     // 강사가 답변 달고자 하는 질문의 정보 가져오기
     public QuestionCourseDTO findQuestionById(Long questionCourseNo) {
         QuestionCourse question = questionRepository.findById(questionCourseNo)
-                .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다."));
-
+                .orElseThrow(() -> new CourseException("해당 질문 글을 찾을 수 없습니다."));
         // 위에서 만든 거 쓰지
         return modelMapper.map(question, QuestionCourseDTO.class);
     }
@@ -50,8 +50,13 @@ public class QuestionCourseService {
     // 답변 등록 처리
     @Transactional
     public void answerQuestion(Long questionCourseNo, String questionCourseAnswer) {
+
+        if (questionCourseAnswer == null || questionCourseAnswer.trim().isEmpty()) {
+            throw new CourseException("답변 내용을 입력해주세요.");
+        }
+
         QuestionCourse foundQuestion = questionRepository.findById(questionCourseNo)
-                .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CourseException("답변을 등록할 질문이 존재하지 않습니다."));
 
         foundQuestion.answerQuestion(questionCourseAnswer);
     }

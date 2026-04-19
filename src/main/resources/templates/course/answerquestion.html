@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>질문 답변</title>
+  <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
@@ -26,7 +27,7 @@
 </div>
 <br>
 
-<form action="/teacher/course/question/answer" method="post">
+<form action="/teacher/course/question/answer" method="post" novalidate>
 
   <input type="hidden" name="questionCourseNo" th:value="${question.questionCourseNo}">
   <input type="hidden" name="courseId" th:value="${courseId}">
@@ -42,5 +43,8 @@
   <button type="submit">이전으로</button>
 </form>
 
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+
+<script th:replace="~{modal/modal :: modalScript}"></script>
 </body>
 </html>

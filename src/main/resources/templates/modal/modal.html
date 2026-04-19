@@ -94,6 +94,13 @@
     .common-modal.info button:hover {
         background-color: #0b7dda;
     }
+    .common-modal.warning h3 {
+        color: #ff9800;
+    }
+
+    .common-modal.warning button {
+        background-color: #ff9800;
+    }
   </style>
 </th:block>
 
@@ -118,7 +125,7 @@
         if (type === 'success') {
             title.textContent = '✓ 완료';
         } else if (type === 'error') {
-            title.textContent = '✗ 오류';
+            title.textContent = '⚠ 안내';
         } else {
             title.textContent = 'ℹ 알림';
         }
@@ -145,7 +152,47 @@
         } else if (infoMessage) {
             showModal(infoMessage, 'info');
         }
+
+    // 입력폼 중 하나라도 입력 안 하면 모달창 뜨게
+    const forms = document.querySelectorAll("form");
+
+    forms.forEach(form => {
+        form.addEventListener("submit", function (e) {
+
+            const inputs = form.querySelectorAll("input, textarea, select");
+
+            for (let input of inputs) {
+
+                if (input.type === "hidden") continue;
+
+                if (input.type === "file") {
+                    if (input.required && input.files.length === 0) {
+                        e.preventDefault();
+                        showModal("파일을 선택해주세요.", "error");
+                        input.focus();
+                        return;
+                    }
+                    continue;
+                }
+
+                if (input.hasAttribute("required") && input.value.trim() === "") {
+                    e.preventDefault();
+                    showModal("모든 항목을 입력해주십시오.", "error");
+                    input.focus();
+                    return;
+                }
+
+                if (input.tagName === "SELECT" && input.hasAttribute("required") && input.value === "") {
+                    e.preventDefault();
+                    showModal("선택되지 않은 항목이 있습니다.", "error");
+                    input.focus();
+                    return;
+                }
+            }
+        });
     });
+
+});
 
 </script>
 
