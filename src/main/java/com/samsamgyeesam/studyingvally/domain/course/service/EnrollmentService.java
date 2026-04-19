@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EnrollmentService {
 
-    private final UserRepository userRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final ModelMapper modelMapper;
 
@@ -24,23 +23,19 @@ public class EnrollmentService {
 
     // 특정 강의의 수강생 조회
     public List<EnrollmentDTO> findStudentsByCourseId(Long courseId) {
-        List<Enrollment> enrollmentList = enrollmentRepository.findByCourseIdOrderByEnrollmentProcessDesc(courseId);
+        List<Enrollment> enrollmentList = enrollmentRepository.findByCourseIdWithUser(courseId);
 
         return enrollmentList.stream()
                 .map(enrollment -> {
-                    EnrollmentDTO dto = modelMapper.map(enrollment, EnrollmentDTO.class);
+                    EnrollmentDTO enrollmentDTO = modelMapper.map(enrollment, EnrollmentDTO.class);
 
                     // 사용자 이름, 닉네임 가져오기
-                    if (enrollment.getUserNo() != null) {
-                        UserUser user = userRepository.findById(enrollment.getUserNo())
-                                .orElse(null);
-                        if (user != null) {
-                            dto.setUserName(user.getUserName());
-                            dto.setUserNickname(user.getUserNickname());
-                        }
+                    if (enrollment.getUser() != null) {
+                        enrollmentDTO.setUserName(enrollment.getUser().getUserName());
+                        enrollmentDTO.setUserNickname(enrollment.getUser().getUserNickname());
                     }
 
-                    return dto;
+                    return enrollmentDTO;
                 })
                 .collect(Collectors.toList());
     }

@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>강의 소식 등록</title>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
 <h1>강의 소식 등록 페이지</h1>
 
-<form action="/teacher/coursenotice/registcoursenotice" method="post">
+<form action="/teacher/coursenotice/registcoursenotice" method="post" novalidate>
 
     <label>강의 선택</label><br>
     <select name="courseId" required>
@@ -29,9 +30,13 @@
 
 <br>
 
-<form action="/teacher/coursenotice" method="get" style="display:inline;">
-    <button type="submit">이전으로</button>
-</form>
+<a href="/teacher/coursenotice">
+    <button type="button">이전으로</button>
+</a>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+
+<script th:replace="~{modal/modal :: modalScript}"></script>
 
 </body>
 </html>

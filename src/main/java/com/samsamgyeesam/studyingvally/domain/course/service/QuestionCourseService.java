@@ -3,6 +3,7 @@ package com.samsamgyeesam.studyingvally.domain.course.service;
 import com.samsamgyeesam.studyingvally.domain.course.dto.QuestionCourseDTO;
 import com.samsamgyeesam.studyingvally.domain.course.entity.Course;
 import com.samsamgyeesam.studyingvally.domain.course.entity.QuestionCourse;
+import com.samsamgyeesam.studyingvally.domain.course.exception.CourseException;
 import com.samsamgyeesam.studyingvally.domain.course.repository.CourseRepository;
 import com.samsamgyeesam.studyingvally.domain.course.repository.QuestionCourseRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,23 +19,19 @@ import java.util.stream.Collectors;
 public class QuestionCourseService {
 
     private final QuestionCourseRepository questionRepository;
-    private final CourseRepository courseRepository;
     private final ModelMapper modelMapper;
 
     // 강의별 질문 조회
     public List<QuestionCourseDTO> findQuestionsByCourseId(Long courseId) {
-        List<QuestionCourse> questionList = questionRepository.findByCourseIdOrderByQuestionCourseNoDesc(courseId);
+        List<QuestionCourse> questionList = questionRepository.findByCourseIdWithCourse(courseId);
 
         return questionList.stream()
                 .map(question -> {
                     QuestionCourseDTO questionCourseDTO = modelMapper.map(question, QuestionCourseDTO.class);
 
                     // 강의 제목 가져오기
-                    if (question.getCourseId() != null) {
-                        Course course = courseRepository.findById(question.getCourseId()).orElse(null);
-                        if (course != null) {
-                            questionCourseDTO.setCourseTitle(course.getCourseTitle());
-                        }
+                    if (question.getCourse() != null) {
+                        questionCourseDTO.setCourseTitle(question.getCourse().getCourseTitle());
                     }
 
                     return questionCourseDTO;
@@ -45,26 +42,21 @@ public class QuestionCourseService {
     // 강사가 답변 달고자 하는 질문의 정보 가져오기
     public QuestionCourseDTO findQuestionById(Long questionCourseNo) {
         QuestionCourse question = questionRepository.findById(questionCourseNo)
-                .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다."));
-
-        QuestionCourseDTO dto = modelMapper.map(question, QuestionCourseDTO.class);
-
-        // 강의 제목 가져오기
-        if (question.getCourseId() != null) {
-            Course course = courseRepository.findById(question.getCourseId()).orElse(null);
-            if (course != null) {
-                dto.setCourseTitle(course.getCourseTitle());
-            }
-        }
-
-        return dto;
+                .orElseThrow(() -> new CourseException("해당 질문 글을 찾을 수 없습니다."));
+        // 위에서 만든 거 쓰지
+        return modelMapper.map(question, QuestionCourseDTO.class);
     }
 
     // 답변 등록 처리
     @Transactional
     public void answerQuestion(Long questionCourseNo, String questionCourseAnswer) {
+
+        if (questionCourseAnswer == null || questionCourseAnswer.trim().isEmpty()) {
+            throw new CourseException("답변 내용을 입력해주세요.");
+        }
+
         QuestionCourse foundQuestion = questionRepository.findById(questionCourseNo)
-                .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CourseException("답변을 등록할 질문이 존재하지 않습니다."));
 
         foundQuestion.answerQuestion(questionCourseAnswer);
     }

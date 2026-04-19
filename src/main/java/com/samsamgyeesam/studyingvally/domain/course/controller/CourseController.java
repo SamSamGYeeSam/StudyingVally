@@ -118,11 +118,12 @@ public class CourseController {
 
     // 강의 수정 처리
     @PostMapping("/course/updatecourse")
-    public String updateCourse(@RequestParam Long courseId,
-                               @RequestParam String courseTitle,
-                               @RequestParam String courseDescription) {
+    public String updateCourse(@ModelAttribute CourseDTO courseDTO,
+                               RedirectAttributes redirectAttributes) {
 
-        courseService.updateCourse(courseId, courseTitle, courseDescription);
+        courseService.updateCourse(courseDTO);
+
+        redirectAttributes.addFlashAttribute("successMessage", "강의가 수정되었습니다.");
 
         return "redirect:/teacher/course";
     }
@@ -139,16 +140,12 @@ public class CourseController {
     @PostMapping("/course/delete")
     public String deleteCourse(@RequestParam Long courseId, RedirectAttributes redirectAttributes){
 
-        // 강의 제목 가져오기
-        CourseDTO course = courseService.findCourseById(courseId);
-        String courseTitle = course.getCourseTitle();
-
-        courseService.deleteCourse(courseId);
+        String courseTitle = courseService.deleteCourse(courseId);
 
         // 삭제 완료 메시지 전달
-        redirectAttributes.addFlashAttribute("successMessage", courseTitle + " 강의의 삭제가 완료되었습니다.");
+        redirectAttributes.addFlashAttribute("successMessage", courseTitle + " 강의가 완료되었습니다.");
 
-        return "redirect:/teacher/course";
+        return "redirect:/teacher/course"; // 강의 목록
     }
 
 }

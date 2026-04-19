@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
 <h1>챕터 등록 페이지</h1>
 <p><strong>강의명: <span th:text="${course.courseTitle}"></span></strong></p>
 
-<form th:action="@{/teacher/course/registchapter}" method="post" enctype="multipart/form-data">
+<form th:action="@{/teacher/course/registchapter}" method="post" enctype="multipart/form-data" novalidate>
 
     <input type="hidden" name="courseId" th:value="${courseId}" th:if="${courseId != null}">
     <input type="hidden" name="courseTitle" th:value="${courseTitle}">
@@ -31,9 +32,13 @@
     <button type="submit">등록 완료하기</button>
 </form>
 
-<form action="/teacher/course" method="get" style="display:inline;">
-    <button type="submit">이전으로</button>
-</form>
+<a href="/teacher/course">
+    <button type="button">이전으로</button>
+</a>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+
+<script th:replace="~{modal/modal :: modalScript}"></script>
 
 <script th:inline="javascript">
     // 챕터 갯수 세기 -> 챕터 추가하기 전 기본적으로 1개는 작석ㅇ

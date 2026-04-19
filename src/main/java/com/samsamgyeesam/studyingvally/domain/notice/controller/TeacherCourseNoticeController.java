@@ -11,10 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -54,7 +51,7 @@ public class TeacherCourseNoticeController {
 
 
     // 강의 소식 추가하기 버튼 눌렀을 때 페이지로 이동
-    @PostMapping("/coursenotice/registcoursenoticePage")
+    @GetMapping("/coursenotice/registcoursenoticePage")
     public String gotoCourseNoticeRegistPage(@AuthenticationPrincipal AuthUserDetails userDetails, Model model) {
 
         Long userNo = userDetails.getUserNo();
@@ -69,18 +66,11 @@ public class TeacherCourseNoticeController {
 
     // 강의 소식 등록 처리
     @PostMapping("/coursenotice/registcoursenotice")
-    public String registCourseNotice(@RequestParam Long courseId,
-                                     @RequestParam String courseNoticeTitle,
-                                     @RequestParam String courseNoticeDesc,
+    public String registCourseNotice(@ModelAttribute TeacherCourseNoticeDTO courseNoticeDTO,
                                      @AuthenticationPrincipal AuthUserDetails userDetails,
                                      RedirectAttributes redirectAttributes) {
 
         Long userNo = userDetails.getUserNo();
-
-        TeacherCourseNoticeDTO courseNoticeDTO = new TeacherCourseNoticeDTO();
-        courseNoticeDTO.setCourseId(courseId);
-        courseNoticeDTO.setCourseNoticeTitle(courseNoticeTitle);
-        courseNoticeDTO.setCourseNoticeDesc(courseNoticeDesc);
         courseNoticeDTO.setUserNo(userNo);
 
         courseNoticeService.registCourseNotice(courseNoticeDTO);
@@ -130,13 +120,10 @@ public class TeacherCourseNoticeController {
 
     // 강의소식 수정 처리
     @PostMapping("/coursenotice/updatecoursenotice")
-    public String updateCourseNotice(@RequestParam Long courseNoticeNo,
-                                     @RequestParam String courseNoticeTitle,
-                                     @RequestParam String courseNoticeDesc,
+    public String updateCourseNotice(@ModelAttribute TeacherCourseNoticeDTO courseNoticeDTO,
                                      RedirectAttributes redirectAttributes) {
 
-        // 엔티티 클래스에서 메서드 만듦
-        courseNoticeService.updateCourseNotice(courseNoticeNo, courseNoticeTitle, courseNoticeDesc);
+        courseNoticeService.updateCourseNotice(courseNoticeDTO);
 
         redirectAttributes.addFlashAttribute("successMessage", "강의 소식이 수정되었습니다.");
 

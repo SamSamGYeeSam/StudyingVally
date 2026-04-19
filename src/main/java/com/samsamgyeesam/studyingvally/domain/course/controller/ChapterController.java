@@ -70,13 +70,8 @@ public class ChapterController {
         ChapterDTO chapter = chapterService.findChapterByChapNo(chapNo);
         String chapUrl = chapter.getChapUrl();
 
-        // 새 영상이 있으면 저장
         if (videoFile != null && !videoFile.isEmpty()) {
-            try {
-                chapUrl = fileService.saveVideoFile(videoFile);
-            } catch (IOException e) {
-                // 실패 시 기존 URL 유지
-            }
+            chapUrl = fileService.saveVideoFile(videoFile);  // 예외는 ExceptionHandler가 처리
         }
 
         chapterService.updateChapter(chapNo, chapTitle, chapDesc, chapUrl);
@@ -108,25 +103,14 @@ public class ChapterController {
     @PostMapping("/course/deletechapter")
     public String deleteChapter(@RequestParam Long chapNo,
                                 @RequestParam Long courseId,
-                                Model model) {
+                                RedirectAttributes redirectAttributes) {
 
-        // 삭제 전 챕터 제목 가져오기
-        ChapterDTO chapter = chapterService.findChapterByChapNo(chapNo);
-        String chapTitle = chapter.getChapTitle();
+        String chapTitle = chapterService.deleteChapter(chapNo);
 
-        // 챕터 삭제
-        chapterService.deleteChapter(chapNo);
+        redirectAttributes.addFlashAttribute("successMessage", chapTitle + " 챕터가 삭제되었습니다.");
+        redirectAttributes.addAttribute("courseId", courseId);
 
-        // 챕터 목록 다시 조회
-        List<ChapterDTO> chapterList = chapterService.findChaptersByCourseId(courseId);
-        CourseDTO course = courseService.findCourseById(courseId);
-
-        model.addAttribute("chapterList", chapterList);
-        model.addAttribute("course", course);
-        model.addAttribute("courseId", courseId);
-        model.addAttribute("successMessage", chapTitle + " 챕터가 삭제되었습니다.");
-
-        return "course/chapterlist";
+        return "redirect:/teacher/course/chapter"; // 챕터 목록으로
     }
 
 

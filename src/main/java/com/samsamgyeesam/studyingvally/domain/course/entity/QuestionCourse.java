@@ -1,6 +1,7 @@
 package com.samsamgyeesam.studyingvally.domain.course.entity;
 
 import com.samsamgyeesam.studyingvally.baseentity.BaseTimeEntity;
+import com.samsamgyeesam.studyingvally.domain.user.entity.UserUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +35,16 @@ public class QuestionCourse extends BaseTimeEntity {
 
     @Column(name = "question_course_answer")
     private String questionCourseAnswer;
+
+    // 강의랑 관계
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", insertable = false, updatable = false)
+    private Course course;
+
+    // 수강생이랑 관계
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_no", insertable = false, updatable = false)
+    private UserUser user;
 
     // 답변 등록 처리
     public void answerQuestion(String questionCourseAnswer) {

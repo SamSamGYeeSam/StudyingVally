@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -42,26 +39,21 @@ public class CourseRegistController {
 
     // 강의 등록
     @PostMapping("/registcourse")
-    public String registCourse(@RequestParam String courseTitle,
-                               @RequestParam String courseDescription,
+    public String registCourse(@ModelAttribute CourseDTO courseDTO,
                                @AuthenticationPrincipal AuthUserDetails userDetails,
                                RedirectAttributes redirectAttributes) {
 
         Long userNo = userDetails.getUserNo();
-
-        CourseDTO courseDTO = new CourseDTO();
-        courseDTO.setCourseTitle(courseTitle);
-        courseDTO.setCourseDescription(courseDescription);
         courseDTO.setUserNo(userNo);
 
         courseService.registCourse(courseDTO);
 
-        redirectAttributes.addFlashAttribute("successMessage", "강의 등록이 완료되었습니다.\n 강의 목록에서 챕터를 추가해주세요. \n관리자의 승인이 완료되면 학생들에게 강의가 제공됩니다.");
+        redirectAttributes.addFlashAttribute("successMessage",
+                "강의 등록이 완료되었습니다.\n 강의 목록에서 챕터를 추가해주세요. \n관리자의 승인이 완료되면 학생들에게 강의가 제공됩니다.");
 
-        // 챕터 쪽으로 보내기
+        // 강의 목록으로 보내기
         return "redirect:/teacher/course";
     }
-
 
     // 챕터 등록 페이지로 이동
     @PostMapping("/course/registchapterPage")
@@ -98,14 +90,18 @@ public class CourseRegistController {
             chapterDTO.setChapDesc(chapDesc.get(i));
             chapterDTO.setCourseId(courseId);
 
+//            if (videoFiles != null && i < videoFiles.size() && !videoFiles.get(i).isEmpty()) {
+//                try {
+//                    String videoUrl = fileService.saveVideoFile(videoFiles.get(i));
+//                    chapterDTO.setChapUrl(videoUrl);
+//                } catch (IOException e) {
+//                    System.err.println("영상 파일 저장 실패: " + e.getMessage());
+//                    chapterDTO.setChapUrl(null);
+//                }
+//            }
             if (videoFiles != null && i < videoFiles.size() && !videoFiles.get(i).isEmpty()) {
-                try {
-                    String videoUrl = fileService.saveVideoFile(videoFiles.get(i));
-                    chapterDTO.setChapUrl(videoUrl);
-                } catch (IOException e) {
-                    System.err.println("영상 파일 저장 실패: " + e.getMessage());
-                    chapterDTO.setChapUrl(null);
-                }
+                String videoUrl = fileService.saveVideoFile(videoFiles.get(i));
+                chapterDTO.setChapUrl(videoUrl);
             }
             chapterService.registChapter(chapterDTO);
         }

@@ -2,6 +2,7 @@ package com.samsamgyeesam.studyingvally.domain.course.entity;
 
 import com.fasterxml.jackson.databind.ser.Serializers;
 import com.samsamgyeesam.studyingvally.baseentity.BaseTimeEntity;
+import com.samsamgyeesam.studyingvally.domain.user.entity.UserUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,4 +33,9 @@ public class Evaluation extends BaseTimeEntity {
 
     @Column(name = "user_no")
     private Long userNo;
+
+    // 수강생이랑 관계
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_no", insertable = false, updatable = false)
+    private UserUser user;
 }

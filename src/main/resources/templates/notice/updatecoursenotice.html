@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>강의 소식 수정</title>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
@@ -11,10 +12,10 @@
 <!--강의명은 수정 불가 -->
 <div >
     <label>강의명</label><br>
-    <span th:text="${courseNotice.courseTitle}"></span>
+    <span th:text="${courseNotice.courseName}"></span>
 </div>
 <br>
-<form action="/teacher/coursenotice/updatecoursenotice" method="post">
+<form action="/teacher/coursenotice/updatecoursenotice" method="post" novalidate>
 
     <input type="hidden" name="courseNoticeNo" th:value="${courseNotice.courseNoticeNo}">
 
@@ -31,6 +32,10 @@
     <input type="hidden" name="courseNoticeNo" th:value="${courseNotice.courseNoticeNo}">
     <button type="submit">이전으로</button>
 </form>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+
+<script th:replace="~{modal/modal :: modalScript}"></script>
 
 </body>
 </html>

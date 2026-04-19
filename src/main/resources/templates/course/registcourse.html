@@ -3,23 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
 <h1>강의 등록 페이지</h1>
-<form action="/teacher/registcourse" method="post" >
+<form action="/teacher/registcourse" method="post" novalidate>
 
     <label>강의 제목</label><br>
-    <input type="text" name="courseTitle" th:value="${courseTitle}" placeholder="제목을 입력하십시오"><br>
+    <input type="text" name="courseTitle" th:value="${courseTitle}" placeholder="제목을 입력하십시오" required ><br>
     <label>강의 설명</label><br>
-    <textarea rows="10" name="courseDescription" cols="50" th:text="${courseDescription}" placeholder="강의 설명을 입력하십시오"></textarea>
+    <textarea rows="10" name="courseDescription" cols="50" th:text="${courseDescription}" placeholder="강의 설명을 입력하십시오" required></textarea>
     <br>
 
     <input type="submit" value="강의 등록하기">
 </form>
 
-<form action="/teacher/teachermain" method="get" style="display:inline;">
-    <button type="submit">이전으로</button>
-</form>
+<a href="/teacher/teachermain">
+    <button type="button">이전으로</button>
+</a>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+
+<script th:replace="~{modal/modal :: modalScript}"></script>
 </body>
 </html>
