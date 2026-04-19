@@ -20,26 +20,22 @@ import java.util.stream.Collectors;
 public class TeacherCourseNoticeService {
 
     private final TeacherCourseNoticeRepository teacherCourseNoticeRepository;
-    private final CourseRepository courseRepository;
     private final ModelMapper modelMapper;
 
     // 강의소식 전체 조회
     public List<TeacherCourseNoticeDTO> findCourseNoticeByUserNo(Long userNo) {
-        List<TeacherCourseNotice> courseNoticeList = teacherCourseNoticeRepository.findByUserNoOrderByCourseNoticeNoDesc(userNo);
+        List<TeacherCourseNotice> courseNoticeList = teacherCourseNoticeRepository.findByUserNoWithCourse(userNo);
 
         return courseNoticeList.stream()
                 .map(notice -> {
-                    TeacherCourseNoticeDTO dto = modelMapper.map(notice, TeacherCourseNoticeDTO.class);
+                    TeacherCourseNoticeDTO teacherCourseNoticeDTO = modelMapper.map(notice, TeacherCourseNoticeDTO.class);
 
                     // 강의 제목 가져오기
-                    if (notice.getCourseId() != null) {
-                        Course course = courseRepository.findById(notice.getCourseId()).orElse(null);
-                        if (course != null) {
-                            dto.setCourseTitle(course.getCourseTitle());
-                        }
+                    if (notice.getCourse() != null) {
+                        teacherCourseNoticeDTO.setCourseName(notice.getCourse().getCourseTitle());
                     }
 
-                    return dto;
+                    return teacherCourseNoticeDTO;
                 })
                 .collect(Collectors.toList());
     }
@@ -50,26 +46,22 @@ public class TeacherCourseNoticeService {
         TeacherCourseNotice courseNotice = teacherCourseNoticeRepository.findById(courseNoticeNo)
                 .orElseThrow(() -> new IllegalArgumentException("강의소식을 찾을 수 없습니다."));
 
-        TeacherCourseNoticeDTO dto = modelMapper.map(courseNotice, TeacherCourseNoticeDTO.class);
+        TeacherCourseNoticeDTO teacherCourseNoticeDTO = modelMapper.map(courseNotice, TeacherCourseNoticeDTO.class);
 
         // 강의 제목 가져오기
-        if (courseNotice.getCourseId() != null) {
-            Course course = courseRepository.findById(courseNotice.getCourseId()).orElse(null);
-            if (course != null) {
-                dto.setCourseTitle(course.getCourseTitle());
-            }
+        if (courseNotice.getCourse() != null) {
+            teacherCourseNoticeDTO.setCourseName(courseNotice.getCourse().getCourseTitle());
         }
-        return dto;
+
+        return teacherCourseNoticeDTO;
     }
 
     // 강의소식 등록
     @Transactional
     public void registCourseNotice(TeacherCourseNoticeDTO courseNoticeDTO) {
         TeacherCourseNotice courseNotice = new TeacherCourseNotice(
-                null,
                 courseNoticeDTO.getCourseNoticeTitle(),
                 courseNoticeDTO.getCourseNoticeDesc(),
-                courseNoticeDTO.getUserNo(),
                 courseNoticeDTO.getCourseId()
         );
 

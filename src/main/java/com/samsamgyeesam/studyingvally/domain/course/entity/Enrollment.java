@@ -1,5 +1,6 @@
 package com.samsamgyeesam.studyingvally.domain.course.entity;
 
+import com.samsamgyeesam.studyingvally.domain.user.entity.UserUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,4 +28,9 @@ public class Enrollment {
 
     @Column(name = "course_id", nullable = false)
     private Long courseId;
+
+    // 수강생이랑 관계
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_no", insertable = false, updatable = false)
+    private UserUser user;
 }

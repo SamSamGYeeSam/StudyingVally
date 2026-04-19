@@ -19,5 +19,5 @@ public class TeacherCourseNoticeDTO {
 
     private LocalDateTime createdDate;
 
-    private String courseTitle;
+    private String courseName;
 }

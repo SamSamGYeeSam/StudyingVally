@@ -18,23 +18,19 @@ import java.util.stream.Collectors;
 public class QuestionCourseService {
 
     private final QuestionCourseRepository questionRepository;
-    private final CourseRepository courseRepository;
     private final ModelMapper modelMapper;
 
     // 강의별 질문 조회
     public List<QuestionCourseDTO> findQuestionsByCourseId(Long courseId) {
-        List<QuestionCourse> questionList = questionRepository.findByCourseIdOrderByQuestionCourseNoDesc(courseId);
+        List<QuestionCourse> questionList = questionRepository.findByCourseIdWithCourse(courseId);
 
         return questionList.stream()
                 .map(question -> {
                     QuestionCourseDTO questionCourseDTO = modelMapper.map(question, QuestionCourseDTO.class);
 
                     // 강의 제목 가져오기
-                    if (question.getCourseId() != null) {
-                        Course course = courseRepository.findById(question.getCourseId()).orElse(null);
-                        if (course != null) {
-                            questionCourseDTO.setCourseTitle(course.getCourseTitle());
-                        }
+                    if (question.getCourse() != null) {
+                        questionCourseDTO.setCourseTitle(question.getCourse().getCourseTitle());
                     }
 
                     return questionCourseDTO;
@@ -47,17 +43,8 @@ public class QuestionCourseService {
         QuestionCourse question = questionRepository.findById(questionCourseNo)
                 .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다."));
 
-        QuestionCourseDTO dto = modelMapper.map(question, QuestionCourseDTO.class);
-
-        // 강의 제목 가져오기
-        if (question.getCourseId() != null) {
-            Course course = courseRepository.findById(question.getCourseId()).orElse(null);
-            if (course != null) {
-                dto.setCourseTitle(course.getCourseTitle());
-            }
-        }
-
-        return dto;
+        // 위에서 만든 거 쓰지
+        return modelMapper.map(question, QuestionCourseDTO.class);
     }
 
     // 답변 등록 처리
