@@ -6,6 +6,7 @@ import com.samsamgyeesam.studyingvally.domain.study.entity.StudentEnrollment;
 import com.samsamgyeesam.studyingvally.domain.study.repository.StudentEnrollmentRepository;
 import com.samsamgyeesam.studyingvally.domain.study.dto.StudentDTO;
 import com.samsamgyeesam.studyingvally.domain.study.entity.StudentUser;
+import com.samsamgyeesam.studyingvally.domain.study.repository.StudentEvaluationRepository;
 import com.samsamgyeesam.studyingvally.domain.study.repository.StudentNoticeRepository;
 import com.samsamgyeesam.studyingvally.domain.study.repository.StudentUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,6 +26,7 @@ public class StudentService {
     private final StudentUserRepository studentUserRepository;
     private final StudentEnrollmentRepository studentEnrollmentRepository;
     private final StudentNoticeRepository studentnoticeRepository;
+    private final StudentEvaluationRepository studentEvaluationRepository;
 
     public Long findUserNoByUserId(String userId) {
         return studentUserRepository.findByUserId(userId)
@@ -36,14 +39,20 @@ public class StudentService {
                 .orElseThrow(() -> new IllegalAccessException("존재하지 않는 사용자입니다."));
 
         List<StudentEnrollment> studentEnrollments = studentEnrollmentRepository.findByUserNo(userNo);
-
         List<StudentDTO.EnrolledCourseDTO> courseList = studentEnrollments.stream()
-                .map(en -> StudentDTO.EnrolledCourseDTO.builder()
-                        .courseId(en.getCourse().getCourseId())
-                        .courseTitle(en.getCourse().getCourseTitle())
-                        .progress(en.getEnrollmentProcess().intValue()) // 진도율
-                        .targetUrl("/student/course/" + en.getCourse().getCourseId())
-                        .build())
+                .map(en -> {
+                    boolean exists = studentEvaluationRepository.existsByUser_UserNoAndStudentCourse_CourseId(
+                            userNo, en.getCourse().getCourseId()
+                    );
+
+                    return StudentDTO.EnrolledCourseDTO.builder()
+                            .courseId(en.getCourse().getCourseId())
+                            .courseTitle(en.getCourse().getCourseTitle())
+                            .progress(en.getEnrollmentProcess().intValue())
+                            .hasEvaluation(exists) // 이제 정상적으로 적용됩니다.
+                            .targetUrl("/student/course/" + en.getCourse().getCourseId())
+                            .build();
+                })
                 .collect(Collectors.toList());
 
         return StudentDTO.builder()
@@ -58,9 +67,7 @@ public class StudentService {
                 .userGender(user.getUserGender())
                 .enrolledCourses(courseList)
                 .build();
-
     }
-
     public List<StudentCourseNoticeDTO> getCourseNotices(Long userNo) {
         List<Long> courseIds = studentEnrollmentRepository.findByUserNo(userNo)
                 .stream()
@@ -77,6 +84,3 @@ public class StudentService {
     }
 
 }
-
-
-

@@ -110,6 +110,10 @@
 
 <div class="room-container" id="homeRoom">
 
+  <form id="evaluationForm" method="post" style="display:none;">
+    <input type="hidden" name="courseId" id="evalCourseId">
+  </form>
+
   <div id="welcome-msg">
     <h3 style="margin:0;">👨‍🌾 <span th:text="${student.userNickname}">학생</span>님의 방</h3>
   </div>
@@ -132,24 +136,49 @@
       </thead>
       <tbody>
       <tr th:each="course : ${courseList}">
-        <td th:text="${course.courseName}">자바 기초</td>
+        <td th:text="${course.courseTitle}">자바 기초</td>
         <td th:text="${course.progress} + '%'">80%</td>
         <td th:text="${course.score != null ? course.score : '-'}">A+</td>
         <td>
-          <button th:if="${course.progress == 100 and (course.score == null or course.score == '')}"
+          <button th:if="${course.progress == 100 and course.hasEvaluation}"
                   class="pixel-btn"
-                  style="padding: 5px 10px; font-size: 11px; width: auto; background-color: #ffca28; color: #000;"
-                  th:onclick="|location.href='/student/evaluation/write?courseId=' + ${course.courseId}|">
-            📝 강의평 작성
+                  style="padding: 5px 10px; font-size: 11px; width: auto; background-color: #4caf50;"
+                  th:onclick="'openEvaluation(' + ${course.courseId} + ')'">
+            📖 내 수강평 보기
           </button>
 
-          <span th:if="${course.progress < 100}" style="font-size: 11px; opacity: 0.6;">열공 중!</span>
-          <span th:if="${course.progress == 100 and course.score != null}" style="font-size: 11px; color: #ffca28;">평가완료</span>
+          <button th:if="${course.progress == 100 and !course.hasEvaluation}"
+                  class="pixel-btn"
+                  style="padding: 5px 10px; font-size: 11px; width: auto; background-color: #7f8c8d; color: #fff;"
+                  onclick="alert('수강평 작성은 해당 강의의 [강의실]에서 가능합니다!')">
+            📝 작성 필요
+          </button>
+
+          <span th:if="${course.progress < 100}"
+                style="font-size: 11px; opacity: 0.6; color: #fff;">
+            🔨 수강 중...
+        </span>
         </td>
       </tr>
       </tbody>
     </table>
     <button class="pixel-btn" style="margin-top:20px; width:100%;" onclick="hideSection()">닫기</button>
+  </div>
+
+  <div id="evalModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:200; justify-content:center; align-items:center;">
+    <div style="background:#fff; width:350px; padding:20px; border:4px solid #5d4037; color:#333; text-shadow:none;">
+      <h3 style="text-align:center; margin-top:0;">🌟 나의 수강평</h3>
+      <hr border="1" style="border-color:#5d4037;">
+      <div style="margin:15px 0;">
+        <label style="font-weight:bold;">[별점]</label>
+        <div id="modalRating" style="color:#ffca28; font-size:1.2rem; margin-top:5px;"></div>
+      </div>
+      <div style="margin:15px 0;">
+        <label style="font-weight:bold;">[후기]</label>
+        <p id="modalContent" style="background:#f9f9f9; padding:10px; border-radius:5px; min-height:80px; white-space:pre-wrap;"></p>
+      </div>
+      <button class="pixel-btn" style="width:100%; background:#8d6e63;" onclick="closeModal()">닫기</button>
+    </div>
   </div>
 
   <div class="menu-container">
@@ -171,6 +200,30 @@
   const roomHeight = 600;
   const charWidth = 100;
   const charHeight = 120;
+
+  function openEvaluation(courseId) {
+    fetch(`/student/evaluation/api/detail?courseId=${courseId}`)
+            .then(response => {
+              if (!response.ok) {
+                if(response.status === 404) alert('작성된 수강평이 없습니다.');
+                throw new Error('데이터를 가져오지 못했습니다.');
+              }
+              return response.json();
+            })
+            .then(data => {
+              const stars = '⭐'.repeat(Math.floor(data.rating));
+              document.getElementById('modalRating').innerText = stars + " (" + data.rating + ")";
+              document.getElementById('modalContent').innerText = data.content;
+              document.getElementById('evalModal').style.display = 'flex';
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+  }
+
+  function closeModal() {
+    document.getElementById('evalModal').style.display = 'none';
+  }
 
   function showSection(id, btn) {
     document.getElementById(id).style.display = 'block';
@@ -204,6 +257,11 @@
       location.href = "/student/withdraw";
     }
   }
+
+  function closeModal() {
+    document.getElementById('evalModal').style.display = 'none';
+  }
+
 </script>
 
 </body>

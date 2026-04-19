@@ -35,5 +35,7 @@ public class StudentDTO {
         private String courseTitle;
         private String targetUrl;
         private int progress;
+        private boolean hasEvaluation;
+        private String score;
     }
 }

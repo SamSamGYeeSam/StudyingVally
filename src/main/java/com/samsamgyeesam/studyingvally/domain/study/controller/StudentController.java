@@ -68,8 +68,7 @@ public class StudentController {
 
         StudentDTO student = studentService.getStudentMainData(userNo);
         model.addAttribute("student", student);
-        List<Map<String, Object>> courseList = studentCourseService.getStudentCourseStatus(userNo);
-        model.addAttribute("courseList", courseList);
+        model.addAttribute("courseList", student.getEnrolledCourses());
         return "student/home";
     }
 

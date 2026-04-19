@@ -9,14 +9,12 @@ import lombok.*;
 @Builder
 public class StudentEvaluationResponseDTO {
 
+    private Long courseId;
+    private String courseName;
+    private int progress;
+    private boolean hasEvaluation;
     private Double score;
     private String content;
     private String nickname;
-
-    public StudentEvaluationResponseDTO(String content, Double score, String nickname) {
-        this.content = content;
-        this.score = score;
-        this.nickname = nickname;
-    }
 
 }

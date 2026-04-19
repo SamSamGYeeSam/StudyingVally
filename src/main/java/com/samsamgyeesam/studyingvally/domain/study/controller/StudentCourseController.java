@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
 
 import static javax.swing.text.html.CSS.getAttribute;
 
@@ -111,7 +112,7 @@ public class StudentCourseController {
         return "student/chapterclass";
     }
 
-    @PostMapping("/chapter/complete")
+    @PostMapping("/chapter/complete/{courseId}/{chapNo}")
     @ResponseBody
     public ResponseEntity<String> completeChapter(@RequestParam Long courseId,
                                                   @RequestParam Long chapNo,
@@ -136,7 +137,7 @@ public class StudentCourseController {
             @RequestParam("courseId") Long courseId,
             @RequestParam("rating") int rating,
             @RequestParam("content") String content,
-            Principal principal)
+            Principal principal, HttpServletRequest request)
     {
         if (principal == null) return "redirect:/auth/login";
         String userId = principal.getName();
@@ -145,7 +146,14 @@ public class StudentCourseController {
         studentCourseService.saveStudentEvaluation(userNo, courseId, rating, content);
         System.out.println("리뷰 저장됨: 강의=" + courseId + ", 별점=" + rating + ", 내용=" + content);
 
-        return "redirect:/student/chapter?courseId=" + courseId;
+        return "redirect:/student/course";
+//        String referer = request.getHeader("Referer");
+//
+//        if (referer != null && !referer.isEmpty()) {
+//            return "redirect:/student/chapter/class";
+//        }
+//
+//        return "redirect:/student/home";
     }
 
     @GetMapping("/course/talk")
@@ -164,7 +172,7 @@ public class StudentCourseController {
         Long userNo = studentService.findUserNoByUserId(userId);
 
         studentCourseService.saveQuestion(userNo, courseId, title, desc);
-        return "redirect:/student/course?id=" + courseId;
+        return "redirect:/student/home";
     }
 
     @GetMapping("/course/mailbox")
