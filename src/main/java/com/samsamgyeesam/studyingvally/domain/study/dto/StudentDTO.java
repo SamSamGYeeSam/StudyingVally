@@ -37,5 +37,6 @@ public class StudentDTO {
         private int progress;
         private boolean hasEvaluation;
         private String score;
+        private String userGender;
     }
 }

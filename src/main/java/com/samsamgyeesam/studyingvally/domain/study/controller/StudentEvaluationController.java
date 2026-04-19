@@ -51,6 +51,8 @@ public class StudentEvaluationController {
         return "redirect:/student/home";
     }
 
+
+
     @PostMapping("/detail")
     public String viewMyEvaluation(HttpSession session, Model model) {
         Long courseId = (Long) session.getAttribute("currentCourseId");

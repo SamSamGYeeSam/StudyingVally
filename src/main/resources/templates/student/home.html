@@ -26,11 +26,13 @@
 
     #player-character {
       position: absolute;
-      width: 100px;
-      height: auto;
+      width: 128px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       z-index: 5;
       transition: left 2s linear, top 2s linear;
-      text-align: center;
       image-rendering: pixelated;
     }
 
@@ -38,16 +40,18 @@
       width: 70%;
       height: auto;
       display: block;
+      margin: 0 auto;
     }
 
     .char-image { width: 100px; height: auto; }
     .char-label {
+      margin-top: 5px;
       font-size: 11px;
       background: rgba(0,0,0,0.6);
       color: white;
       padding: 2px 6px;
       border-radius: 8px;
-      display: inline-block;
+      white-space: nowrap;
     }
 
     .main-content {
@@ -118,8 +122,9 @@
     <h3 style="margin:0;">👨‍🌾 <span th:text="${student.userNickname}">학생</span>님의 방</h3>
   </div>
 
-  <div id="player-character">
-    <img src="/image/character1.png" class="char-image" alt="My Character">
+  <div id="player-character" th:data-gender="${student.userGender == 'M' ? 'm' : 'f'}">
+    <img th:src="@{/image/{gender}-front.png(gender=${student.userGender == 'M' ? 'm' : 'f'})}"
+         class="char-image" id="target-char-img" alt="My Character">
     <div class="char-label">나</div>
   </div>
 
@@ -183,7 +188,7 @@
 
   <div class="menu-container">
     <button class="pixel-btn" id="course-btn" onclick="showSection('course-section', this)">📚 수강 강의 조회</button>
-    <button class="pixel-btn" onclick="location.href='/student/profile'">👤 정보 수정</button>
+    <button class="pixel-btn" onclick="location.href='/student/home/info'">👤 정보 수정</button>
     <button class="pixel-btn danger" onclick="confirmWithdraw()">🚪 회원 탈퇴</button>
     <button class="pixel-btn" style="background: #607d8b; margin-top: 10px;" onclick="location.href='/student/main'">
       🏠 메인으로
@@ -195,6 +200,8 @@
 <script>
   const char = document.getElementById('player-character');
   const room = document.getElementById('homeRoom');
+  const charImg = document.getElementById('target-char-img');
+  const gender = char.dataset.gender
 
   const roomWidth = 800;
   const roomHeight = 600;
@@ -247,6 +254,10 @@
 
     char.style.left = randomX + 'px';
     char.style.top = randomY + 'px';
+
+    charImg.src = `/image/${gender}-front.png`;
+    charImg.style.transform = 'scaleX(1)';
+
   }
 
   setInterval(moveCharRandomly, 3000);

@@ -27,22 +27,11 @@ public class StudentController {
     private final StudentCourseService studentCourseService;
     private final StudentEnrollmentRepository studentEnrollmentRepository;
 
-//    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-//        if (request.getSession().getAttribute("userNo") == null) {
-//            response.sendRedirect("/main");
-//            return false;
-//        }
-//        return true;
-//    }
-
     @Transactional(readOnly = true)
     @GetMapping("/main")
     public String studentMain(Model model, Principal principal) {
         try {
-            if (principal == null) {
-                System.out.println("인증 정보(Principal)가 없습니다. 메인으로 보냅니다.");
-                return "redirect:/auth/login";
-            }
+            if (principal == null) return "redirect:/auth/login";
 
             String userId = principal.getName();
             Long userNo = studentService.findUserNoByUserId(userId);
@@ -72,25 +61,6 @@ public class StudentController {
         return "student/home";
     }
 
-//    @GetMapping("/school")
-//    public String findCourseList(Model model) {
-//        return "student/school";
-//    }
-
-//    @PostMapping("/school/regist")
-//    public String registCourse(@RequestParam("courseNo") Long courseNo) {
-//        return "redirect:/student/home/course";
-//    }
-
-    @GetMapping("/quiz")
-    public String studentQuiz() {
-        return "student/quiz";
-    }
-
-//    @GetMapping("/notice")
-//    public String studentNotice() {
-//        return "student/notice";
-//    }
 
     @GetMapping("/home/courses")
     public String studentFindDetail(Model model, Principal principal) throws IllegalAccessException {
@@ -117,10 +87,6 @@ public class StudentController {
 
         return "student/notice";
 
-//    @GetMapping("/course")
-//    public String findCourse() {
-//        return "student/course";
-//    }
 
     }
 }
