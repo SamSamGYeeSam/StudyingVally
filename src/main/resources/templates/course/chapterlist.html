@@ -32,8 +32,9 @@
             </form>
         </td>
         <td>
-            <form action="/teacher/course/update" method="post" style="display:inline;">
+            <form action="/teacher/course/chapterupdate" method="post" style="display:inline;">
                 <input type="hidden" name="courseId" th:value="${courseId}">
+                <input type="hidden" name="chapNo" th:value="${chapter.chapNo}">
                 <button type="submit">수정하기</button>
             </form>
         </td>
