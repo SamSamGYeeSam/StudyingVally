@@ -1,21 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <!-- 문자 인코딩 -->
     <meta charset="UTF-8" />
-
-    <!-- 반응형 설정 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- 브라우저 탭 제목 -->
-    <title>강의 마을 - 비밀번호 찾기 결과</title>
-
-    <!-- auth 공통 CSS 사용 -->
+    <title>강의 마을 - 비밀번호 재설정</title>
     <link rel="stylesheet" th:href="@{/css/auth.css}">
 </head>
 <body>
 <div class="game-screen">
-    <!-- 배경 요소 -->
     <div class="sun"></div>
     <div class="cloud c1"></div>
     <div class="cloud c2"></div>
@@ -38,31 +30,54 @@
 
     <div class="panel-wrap">
         <div class="panel">
+            <section id="resetPwScreen" class="form-screen active">
+                <h1 class="title">비밀번호 재설정</h1>
 
-            <!-- 비밀번호 찾기 결과 화면 -->
-            <section id="findPwResultScreen" class="form-screen active">
-                <h1 class="title">비밀번호 찾기 결과</h1>
+                <form class="form-box" th:action="@{/auth/resetpw}" method="post">
+                    <input type="hidden" name="userId" th:value="${userId}">
+                    <input type="hidden" name="phoneNumber" th:value="${phoneNumber}">
 
-                <div class="form-box result-box">
-                    <p class="result-text">비밀번호는</p>
+                    <div class="field">
+                        <label for="newPassword">새 비밀번호</label>
+                        <input type="password"
+                               id="newPassword"
+                               name="newPassword"
+                               placeholder="새 비밀번호 입력"
+                               required>
+                    </div>
 
-                    <!-- 찾은 비밀번호 출력 -->
-                    <p class="result-value" th:text="${foundPassword}">1234!</p>
+                    <div class="field">
+                        <label for="confirmPassword">새 비밀번호 확인</label>
+                        <input type="password"
+                               id="confirmPassword"
+                               name="confirmPassword"
+                               placeholder="비밀번호를 다시 입력"
+                               required>
+                    </div>
 
-                    <p class="result-text">입니다</p>
-
-                    <div class="bottom-row single-row">
-                        <!-- 확인 버튼 클릭 시 첫 화면으로 이동 -->
+                    <div class="bottom-row">
                         <button type="button"
-                                onclick="location.href='/main'"
+                                onclick="history.back()"
+                                class="pixel-btn secondary"
+                                id="backFromResetPwBtn">
+                            뒤로가기
+                        </button>
+
+                        <button type="submit"
                                 class="pixel-btn"
-                                id="confirmFindPwBtn">
-                            확인
+                                id="resetPwSubmitBtn">
+                            비밀번호 재설정
                         </button>
                     </div>
-                </div>
-            </section>
 
+                    <div class="msg show error"
+                         th:if="${resetPwError != null}">
+                        <span th:text="${resetPwError}">
+                            비밀번호 재설정 중 오류가 발생했습니다.
+                        </span>
+                    </div>
+                </form>
+            </section>
         </div>
     </div>
 </div>

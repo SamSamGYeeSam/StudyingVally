@@ -8,6 +8,7 @@ import com.samsamgyeesam.studyingvally.domain.user.entity.UserRole;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserUser;
 import com.samsamgyeesam.studyingvally.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ public class UserService {
      * user 테이블 조회용 Repository
      */
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 이름 + 전화번호로 아이디 찾기
@@ -40,20 +42,30 @@ public class UserService {
         return foundUser.getUserId();
     }
 
-    /**
-     * 아이디 + 전화번호로 비밀번호 찾기
-     */
-    public String findUserPassword(String userId, String phoneNumber) {
-
+    public void validateUserForPasswordReset(String userId, String phoneNumber) {
         if (userId == null || userId.isBlank()
                 || phoneNumber == null || phoneNumber.isBlank()) {
-            throw new IllegalArgumentException("회원가입 정보를 모두 입력해주세요");
+            throw new IllegalArgumentException("아이디와 전화번호를 모두 입력해주세요.");
+        }
+
+        userRepository.findByUserIdAndUserPhoneNumber(userId, phoneNumber)
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원 정보를 찾을 수 없습니다."));
+    }
+
+
+    @Transactional
+    public void resetUserPassword(String userId, String phoneNumber, String newPassword) {
+        if (userId == null || userId.isBlank()
+                || phoneNumber == null || phoneNumber.isBlank()
+                || newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("모든 정보를 입력해주세요.");
         }
 
         UserUser user = userRepository.findByUserIdAndUserPhoneNumber(userId, phoneNumber)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원 정보를 찾을 수 없습니다."));
 
-        return user.getUserPassword();
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.updatePassword(encodedPassword);
     }
 
     /**
@@ -117,11 +129,13 @@ public class UserService {
             throw new IllegalArgumentException("회원가입 유형을 선택해주세요.");
         }
 
+        String encodedPassword = passwordEncoder.encode(signupDTO.getUserPassword());
+
         /* DTO -> Entity 변환 */
         UserUser newUser = UserUser.builder()
                 .userName(signupDTO.getUserName())
                 .userId(signupDTO.getUserId())
-                .userPassword(signupDTO.getUserPassword())
+                .userPassword(encodedPassword)
                 .userPhoneNumber(signupDTO.getUserPhoneNumber())
                 .userEmail(signupDTO.getUserEmail())
                 .userNickname(signupDTO.getUserNickname())
@@ -145,8 +159,7 @@ public class UserService {
         return new UserInformationResponseDTO(
                 user.getUserName(),
                 user.getUserPhoneNumber(),
-                user.getUserEmail(),
-                user.getUserPassword()
+                user.getUserEmail()
         );
     }
 
@@ -155,6 +168,8 @@ public class UserService {
      */
     @Transactional
     public void updateUserInformation(String loginUserId, UserInformationUpdateDTO updateDTO) {
+
+        String encodedPassword = passwordEncoder.encode(updateDTO.getUserPassword());
 
         UserUser user = userRepository.findByUserId(loginUserId)
                 .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
@@ -173,7 +188,7 @@ public class UserService {
         user.updateInformation(
                 updateDTO.getUserPhoneNumber(),
                 updateDTO.getUserEmail(),
-                updateDTO.getUserPassword()
+                encodedPassword
         );
     }
 
@@ -190,7 +205,7 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호를 입력해주세요.");
         }
 
-        if (!user.getUserPassword().equals(deleteUserDTO.getUserPassword())) {
+        if (!passwordEncoder.matches(deleteUserDTO.getUserPassword(), user.getUserPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
@@ -209,7 +224,7 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호를 입력해주세요.");
         }
 
-        if (!user.getUserPassword().equals(userPassword)) {
+        if (!passwordEncoder.matches(userPassword, user.getUserPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }

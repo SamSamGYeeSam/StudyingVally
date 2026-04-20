@@ -12,17 +12,13 @@ public class UserInformationResponseDTO {
     // 이메일
     private String userEmail;
 
-    // 비밀번호
-    private String userPassword;
-
     public UserInformationResponseDTO() {
     }
 
-    public UserInformationResponseDTO(String userName, String userPhoneNumber, String userEmail, String userPassword) {
+    public UserInformationResponseDTO(String userName, String userPhoneNumber, String userEmail) {
         this.userName = userName;
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
-        this.userPassword = userPassword;
     }
 
     public String getUserName() {
@@ -37,10 +33,6 @@ public class UserInformationResponseDTO {
         return userEmail;
     }
 
-    public String getUserPassword() {
-        return userPassword;
-    }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -51,9 +43,5 @@ public class UserInformationResponseDTO {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
     }
 }

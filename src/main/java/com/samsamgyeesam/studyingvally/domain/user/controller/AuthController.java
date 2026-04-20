@@ -119,20 +119,45 @@ public class AuthController {
         return "auth/findpw1";
     }
 
-    @GetMapping("/findpw2")
-    public String findPwResult(@RequestParam(required = false) String userId,
-                               @RequestParam(required = false) String phoneNumber,
-                               Model model) {
-
+    @PostMapping("/findpw2")
+    public String verifyUserForPasswordReset(@RequestParam String userId,
+                                             @RequestParam String phoneNumber,
+                                             Model model) {
         try {
-            String foundPassword = userService.findUserPassword(userId, phoneNumber);
-            model.addAttribute("foundPassword", foundPassword);
-
+            userService.validateUserForPasswordReset(userId, phoneNumber);
+            model.addAttribute("userId", userId);
+            model.addAttribute("phoneNumber", phoneNumber);
             return "auth/findpw2";
-
         } catch (IllegalArgumentException exception) {
             model.addAttribute("findPwError", exception.getMessage());
             return "auth/findpw1";
+        }
+    }
+
+    @PostMapping("/resetpw")
+    public String resetPassword(@RequestParam String userId,
+                                @RequestParam String phoneNumber,
+                                @RequestParam String newPassword,
+                                @RequestParam String confirmPassword,
+                                Model model) {
+        try {
+            if (newPassword == null || newPassword.isBlank()
+                    || confirmPassword == null || confirmPassword.isBlank()) {
+                throw new IllegalArgumentException("새 비밀번호를 모두 입력해주세요.");
+            }
+
+            if (!newPassword.equals(confirmPassword)) {
+                throw new IllegalArgumentException("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            }
+
+            userService.resetUserPassword(userId, phoneNumber, newPassword);
+            return "redirect:/auth/login";
+
+        } catch (IllegalArgumentException exception) {
+            model.addAttribute("resetPwError", exception.getMessage());
+            model.addAttribute("userId", userId);
+            model.addAttribute("phoneNumber", phoneNumber);
+            return "auth/findpw2";
         }
     }
 }
