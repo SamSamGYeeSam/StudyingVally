@@ -2,54 +2,164 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>내 신고 내역</title>
+    <title>내 신고 내역 - Valley Justice</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; padding: 40px; color: #333; }
-        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 5px solid #000; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'DungGeunMo', sans-serif;
+            overflow: hidden;
+        }
 
-        .card { border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 15px; background: #fafafa; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .title { font-size: 18px; font-weight: bold; color: #d32f2f; }
+        /* 배경 유지 */
+        .room-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 6px solid #5d4037;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            background-image: url('/image/npc-bg.png');
+            background-position: center;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .status-waiting { background: #eee; color: #666; border: 1px solid #ccc; }
+        /* 판결/신고 기록 패널 */
+        .records-panel {
+            width: 700px;
+            height: 520px;
+            background: rgba(255, 245, 238, 0.94); /* 밝은 베이지톤 반투명 */
+            border: 5px solid #4e342e;
+            outline: 2px solid #000;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #c0392b; /* 신고 페이지라 붉은색 강조 */
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header h2 { margin: 0; color: #c0392b; font-size: 24px; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
+
+        /* 리스트 스크롤 영역 */
+        .report-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* 스크롤바 디자인 */
+        .report-list::-webkit-scrollbar { width: 8px; }
+        .report-list::-webkit-scrollbar-thumb { background: #c0392b; border-radius: 4px; }
+
+        /* 신고 카드 */
+        .card {
+            border: 2px solid #4e342e;
+            border-radius: 4px;
+            padding: 18px;
+            margin-bottom: 20px;
+            background: #fff;
+            box-shadow: 4px 4px 0 rgba(192, 57, 43, 0.2);
+        }
+
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .title { font-size: 17px; font-weight: bold; color: #c0392b; line-height: 1.4; }
+
+        /* 처리 상태 배지 */
+        .status-badge { padding: 4px 10px; border: 2px solid #000; font-size: 11px; font-weight: bold; box-shadow: 2px 2px 0 #000; }
+        .status-waiting { background: #ecf0f1; color: #7f8c8d; }
         .status-done { background: #000; color: #fff; }
 
-        .desc { color: #555; font-size: 15px; line-height: 1.5; margin-bottom: 15px; white-space: pre-wrap; }
+        .desc {
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            background: #f9f9f9;
+            padding: 12px;
+            border: 1px dashed #ccc;
+        }
 
-        .answer-box { background: #fdf2f2; border-left: 4px solid #d32f2f; padding: 15px; margin-top: 15px; border-radius: 4px; }
-        .answer-title { font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #d32f2f; }
+        /* 결과 박스 (마법사의 판결) */
+        .answer-box {
+            background: #fdf2f2;
+            border-left: 5px solid #c0392b;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .answer-title { font-weight: bold; font-size: 13px; margin-bottom: 8px; color: #c0392b; display: flex; align-items: center; gap: 5px; }
+
+        /* 버튼 스타일 */
+        .pixel-btn {
+            padding: 8px 16px;
+            background: #4e342e;
+            color: white;
+            border: 2px solid #000;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 13px;
+            box-shadow: 2px 2px 0 #000;
+        }
+        .pixel-btn:hover { background: #c0392b; transform: translateY(-1px); }
+        .pixel-btn:active { transform: translate(1px, 1px); box-shadow: 0 0 0 #000; }
+
+        .empty-msg { padding: 80px 0; text-align: center; color: #7f8c8d; font-size: 16px; }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h2 style="margin: 0;">내 신고 내역</h2>
-        <a href="/npc" style="color: #666; text-decoration: underline;">돌아가기</a>
-    </div>
 
-    <div th:if="${not #lists.isEmpty(reports)}">
-        <div class="card" th:each="report : ${reports}">
-            <div class="card-header">
-                <span class="title">🚨 <span th:text="${report.reportTitle}"></span></span>
+<div class="room-container">
+    <div class="records-panel">
+        <div class="header">
+            <h2>🚨 나의 신고 기록</h2>
+            <a href="/npc" class="pixel-btn">🔙 돌아가기</a>
+        </div>
 
-                <span th:if="${report.reportStatus == '처리 대기'}" class="status-badge status-waiting">처리 대기</span>
-                <span th:if="${report.reportStatus == '처리 완료'}" class="status-badge status-done">처리 완료</span>
+        <div class="report-list">
+            <!-- 리스트가 비어있지 않을 때 -->
+            <div th:if="${not #lists.isEmpty(reports)}">
+                <div class="card" th:each="report : ${reports}">
+                    <div class="card-header">
+                        <span class="title">사건: <span th:text="${report.reportTitle}">신고 제목</span></span>
+
+                        <span th:if="${report.reportStatus == '처리 대기'}" class="status-badge status-waiting">⚖️ 처리 대기</span>
+                        <span th:if="${report.reportStatus == '처리 완료'}" class="status-badge status-done">📜 처리 완료</span>
+                    </div>
+
+                    <div class="desc" th:text="${report.reportDesc}">상세 신고 내용이 여기에 표시됩니다.</div>
+
+                    <!-- 처리 결과가 있을 때만 노출 -->
+                    <div class="answer-box" th:if="${report.reportAnswer != null and report.reportAnswer != ''}">
+                        <div class="answer-title">🧙‍♂️ 마법사의 판결</div>
+                        <div th:text="${report.reportAnswer}" style="font-size: 13px; line-height: 1.5; color: #2c3e50;"></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="desc" th:text="${report.reportDesc}"></div>
-
-            <div class="answer-box" th:if="${report.reportAnswer != null and report.reportAnswer != ''}">
-                <div class="answer-title">🤖 처리 결과</div>
-                <div th:text="${report.reportAnswer}" style="font-size: 14px; line-height: 1.5;"></div>
+            <!-- 리스트가 비어있을 때 -->
+            <div th:if="${#lists.isEmpty(reports)}" class="empty-msg">
+                <div style="font-size: 40px; margin-bottom: 15px;">🛡️</div>
+                접수된 신고 내역이 없습니다.<br>깨끗한 Valley 마을을 만들어주셔서 감사합니다!
             </div>
         </div>
     </div>
-
-    <div th:if="${#lists.isEmpty(reports)}" style="padding: 50px 0; text-align: center; color: #999;">
-        아직 작성하신 신고 내역이 없습니다.
-    </div>
 </div>
+
 </body>
 </html>
