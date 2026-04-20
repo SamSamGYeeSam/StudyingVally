@@ -4,8 +4,10 @@ import com.samsamgyeesam.studyingvally.domain.user.dto.DeleteUserDTO;
 import com.samsamgyeesam.studyingvally.domain.user.dto.SignupDTO;
 import com.samsamgyeesam.studyingvally.domain.user.dto.UserInformationResponseDTO;
 import com.samsamgyeesam.studyingvally.domain.user.dto.UserInformationUpdateDTO;
+import com.samsamgyeesam.studyingvally.domain.user.entity.UserAccountState;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserRole;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserUser;
+import com.samsamgyeesam.studyingvally.domain.user.repository.UserAccountStateRepository;
 import com.samsamgyeesam.studyingvally.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +23,7 @@ public class UserService {
     // user 테이블 조회용 Repository
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserAccountStateRepository userAccountStateRepository;
 
     // 이름 + 전화번호로 아이디 찾기
     public String findUserId(String userName, String phoneNumber) {
@@ -138,6 +141,7 @@ public class UserService {
                 .accountLocked(false);
 
         userRepository.save(newUser);
+        userAccountStateRepository.save(UserAccountState.create(newUser.getUserNo()));
     }
 
     // 현재 로그인한 사용자 정보 조회

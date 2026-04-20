@@ -1,5 +1,6 @@
 package com.samsamgyeesam.studyingvally.domain.user.service;
 
+import com.samsamgyeesam.studyingvally.domain.user.entity.UserAccountState;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserAdmin;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserUser;
 import lombok.Getter;
@@ -39,7 +40,7 @@ public class AuthUserDetails implements UserDetails {
     private final boolean enabled;
 
     // 일반 사용자 생성자
-    public AuthUserDetails(UserUser user) {
+    public AuthUserDetails(UserUser user, UserAccountState state) {
         this.loginId = user.getUserId();
         this.password = user.getUserPassword();
         this.role = "ROLE_" + user.getUserRole().name();
