@@ -147,8 +147,14 @@
     </div>
 
     <div class="menu-container">
-        <a th:href="@{/student/chapter(courseId=${courseId})}" class="pixel-btn">📜 챕터 목록</a>
-        <a th:href="@{/student/evaluation/write(courseId=${courseId})}" class="pixel-btn">⭐ 강의평 쓰기</a>
+        <form th:action="@{/student/chapter}" method="post" style="margin:0;">
+            <button type="submit" class="pixel-btn" style="width:100%;">📜 챕터 목록</button>
+        </form>
+
+        <form th:action="@{/student/evaluation/write}" method="post" style="margin:0;">
+            <button type="submit" class="pixel-btn" style="width:100%;">⭐ 강의평 쓰기</button>
+        </form>
+
         <button class="pixel-btn" style="background: #607d8b;" onclick="location.href='/student/main'">
             🚪 강의실 나가기
         </button>
@@ -201,13 +207,51 @@
     }
     function closeNpc() { npcModal.style.display = 'none'; isTalking = false; }
     function closeMailbox() { document.getElementById('mailboxModal').style.display = 'none'; }
-    function openMailbox() { document.getElementById('mailboxModal').style.display = 'block'; }
+    function openMailbox() {
+        const mailboxModal = document.getElementById('mailboxModal');
+        const mailList = document.getElementById('mailList');
+
+        // 모달 열기
+        mailboxModal.style.display = 'block';
+        mailList.innerHTML = '<p style="text-align: center; font-size: 13px;">불러오는 중...</p>';
+
+        fetch(`/student/course/my-questions?courseId=${courseId}`)
+            .then(response => response.json())
+            .then(data => {
+                mailList.innerHTML = ''; // 초기화
+
+                if (data.length === 0) {
+                    mailList.innerHTML = '<p style="text-align: center; font-size: 13px; color: #666;">보낸 질문이 없습니다.</p>';
+                    return;
+                }
+
+                data.forEach(q => {
+                    const item = document.createElement('div');
+                    item.style.cssText = "background: #fff; border: 2px solid #5d4037; margin-bottom: 10px; padding: 10px; border-radius: 5px; color: #333;";
+
+                    const statusTag = q.questionCourseAnswer
+                        ? '<span style="color: green; font-weight: bold;">[답변완료]</span>'
+                        : '<span style="color: #e74c3c; font-weight: bold;">[답변대기]</span>';
+
+                    item.innerHTML = `
+                    <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">${statusTag} ${q.questionCourseTitle}</div>
+                    <div style="font-size: 12px; color: #666; margin-bottom: 8px;">Q: ${q.questionCourseDesc}</div>
+                    ${q.questionCourseAnswer ? `<div style="font-size: 12px; background: #f0f0f0; padding: 5px; border-top: 1px dashed #ccc;"><strong>A:</strong> ${q.questionCourseAnswer}</div>` : ''}
+                `;
+                    mailList.appendChild(item);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mailList.innerHTML = '<p style="text-align: center; font-size: 13px; color: red;">데이터를 불러오지 못했습니다.</p>';
+            });
+    }
     function startRandomTalk() {
         document.getElementById('npcMessage').innerText = "열심히 공부하는 모습이 보기 좋구먼! 🥦";
         document.getElementById('npcChoices').style.display = 'none';
         document.getElementById('modalFooter').style.display = 'block';
     }
-    function goToQuestionPage() { location.href = `/student/course/talk?courseId=${courseId}`; }
+    function goToQuestionPage() { location.href = "/student/course/talk"; }
 
     setInterval(moveNpcRandomly, 3000);
 </script>

@@ -13,6 +13,29 @@
         }
         body { background-color: var(--grass-color); margin: 0; padding: 0; font-family: 'DungGeunMo', sans-serif; }
         .header-area { padding: 20px 40px; display: flex; align-items: flex-end; position: relative; }
+        .back-btn {
+            margin-right: 20px;
+            padding: 10px 15px;
+            background-color: #8d6e63;
+            color: white;
+            border: 3px solid black;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'DungGeunMo';
+            font-size: 14px;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+            transition: 0.1s;
+        }
+        .back-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.2);
+            background-color: #6d4c41;
+        }
+
+        .back-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px rgba(0,0,0,0.2);
+        }
         .tab-group { display: flex; gap: 5px; }
         .tab {
             width: 130px; height: 45px; background: white; border: 3px solid black;
@@ -33,6 +56,9 @@
 <body>
 
 <div class="header-area">
+    <button class="back-btn" onclick="location.href='/student/main'">
+        ◀ 메인으로
+    </button>
     <div class="tab-group">
         <div id="tab-admin" class="tab active" onclick="switchTab('admin')">공지사항</div>
         <div id="tab-course" class="tab" onclick="switchTab('course')">강의 소식</div>

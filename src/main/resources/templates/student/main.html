@@ -14,9 +14,22 @@
 
         #character {
             position: fixed; width: 64px; height: 128px;
-            background: url('/image/character-sheet.png') no-repeat;
-            background-size: 512px 512px; transform: translate(-50%, -85%);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            transform: translate(-50%, -85%);
             z-index: 1000; pointer-events: none; image-rendering: pixelated;
+            transition: transform 0.1s ease-out;
+        }
+
+        @keyframes walk-bob {
+            0% { margin-top: 0px; }
+            50% { margin-top: -5px; }
+            100% { margin-top: 0px; }
+        }
+
+        .walking {
+            animation: walk-bob 0.2s infinite;
         }
 
         .entity { position: absolute; display: flex; flex-direction: column; align-items: center; transition: z-index 0.1s; cursor: pointer; }
@@ -29,7 +42,6 @@
         }
         .entity:hover .entity-label { opacity: 1; transform: translateY(-5px); }
 
-        /* 아이콘별 크기 설정 */
         #dungeon img { width: 620px; }
         #school img { width: 540px; }
         #notice img { width: 170px; }
@@ -47,11 +59,14 @@
 </head>
 <body>
 
-<div id="character"></div>
+<div id="character"
+     th:data-gender="${student.userGender == 'M' ? 'm' : 'f'}"
+     th:style="|background-image: url('/image/${student.userGender == 'M' ? 'm' : 'f'}-front.png');|">
+</div>
 
 <div id="viewport">
     <div id="field" class="section">
-        <div id="dungeon" class="entity" data-url="/student/quiz" style="top: -3%; left: -2%;">
+        <div id="dungeon" class="entity" data-url="/student/quiz/room" style="top: -3%; left: -2%;">
             <div class="entity-label">💀 던전</div>
             <img src="/image/dungeon-icon.png">
         </div>
@@ -73,10 +88,13 @@
         </div>
     </div>
 
+    <form id="enterCourseForm" th:action="@{/student/course/enter}" method="post" style="display:none;">
+        <input type="hidden" name="courseId" id="hiddenCourseId">
+    </form>
+
     <div id="course-zone" class="section">
         <div th:each="enroll : ${enrollments}" class="course-card">
-            <a th:href="@{/student/course(id=${enroll.course.courseId})}" style="text-align: center; text-decoration: none;">
-                <img src="/image/room-icon.png">
+            <div th:onclick="'submitCourseEntry(' + ${enroll.course.courseId} + ')'" style="text-align: center; cursor: pointer;">                <img src="/image/room-icon.png">
                 <p class="pixel-text" th:text="${enroll.course.courseTitle}">강의명</p>
             </a>
         </div>
@@ -86,6 +104,7 @@
 <script th:inline="javascript">
     const viewport = document.getElementById('viewport');
     const character = document.getElementById('character');
+    const gender = character.dataset.gender;
     const entities = document.querySelectorAll('.entity');
     const courseCards = document.querySelectorAll('.course-card');
 
@@ -98,7 +117,6 @@
     let charY = window.innerHeight * 0.8;
     const speed = 5;
 
-    // 페이지 복구 시 상태 초기화
     window.addEventListener('pageshow', () => {
         isRedirecting = true;
         isTransitioning = false;
@@ -106,7 +124,6 @@
         setTimeout(() => { isRedirecting = false; }, 1000);
     });
 
-    // 클릭 이벤트 (즉시 이동)
     entities.forEach(ent => {
         ent.addEventListener('click', () => { window.location.href = ent.dataset.url; });
     });
@@ -117,51 +134,40 @@
     function gameLoop() {
         if (!isTransitioning) {
             let dx = 0; let dy = 0;
-            if (keys['arrowleft'] || keys['a']) dx -= speed;
-            if (keys['arrowright'] || keys['d']) dx += speed;
-            if (keys['arrowup'] || keys['w']) dy -= speed;
-            if (keys['arrowdown'] || keys['s']) dy += speed;
+            let direction = "front";
+
+            if (keys['arrowleft'] || keys['a']) { dx -= speed; direction = "left"; }
+            else if (keys['arrowright'] || keys['d']) { dx += speed; direction = "right"; }
+            else if (keys['arrowup'] || keys['w']) { dy -= speed; direction = "back"; }
+            else if (keys['arrowdown'] || keys['s']) { dy += speed; direction = "front"; }
 
             if (dx !== 0 || dy !== 0) {
-                // 애니메이션 방향 설정
-                let currentDirY = 0; let flipX = 1; let xFix = 0;
-                if (lastKey === 'arrowleft' || lastKey === 'a') { currentDirY = 261; flipX = 1; xFix = 3; }
-                else if (lastKey === 'arrowright' || lastKey === 'd') { currentDirY = 261; flipX = -1; xFix = 3; }
-                else if (lastKey === 'arrowup' || lastKey === 'w') { currentDirY = 133; flipX = 1; xFix = 2; }
-                else if (lastKey === 'arrowdown' || lastKey === 's') { currentDirY = 5; flipX = 1; xFix = 0; }
-
                 charX += dx; charY += dy;
-
-                // 맵 전환 체크
                 handleMapTransition();
-
-                charX = Math.max(5, Math.min(window.innerWidth - 5, charX));
-                charY = Math.max(5, Math.min(window.innerHeight - 5, charY));
 
                 character.style.left = charX + 'px';
                 character.style.top = charY + 'px';
-                character.style.transform = `translate(-50%, -85%) scaleX(${flipX})`;
+
+                let imgDir = (direction === "left") ? "right" : direction;
+                character.style.backgroundImage = `url('/image/${gender}-${imgDir}.png')`;
+
+                if (direction === "left") {
+                    character.style.transform = `translate(-50%, -85%) scaleX(-1)`;
+                } else {
+                    character.style.transform = `translate(-50%, -85%) scaleX(1)`;
+                }
+
+                character.classList.add('walking');
 
                 updateZIndex();
-
-                // 프레임 업데이트
-                let frame = Math.floor(Date.now() / 125) % 4;
-                const dirX = (frame * 64) + 256 + xFix;
-                character.style.backgroundPosition = `-${dirX}px -${currentDirY}px`;
-
                 if (!isRedirecting) checkCollision();
             } else {
-                character.style.backgroundPosition = `-256px -${getStopDirY()}px`;
-            }
+                character.classList.remove('walking');
+                character.style.backgroundImage = `url('/image/${gender}-front.png')`;            }
         }
         requestAnimationFrame(gameLoop);
     }
 
-    function getStopDirY() {
-        if (lastKey === 'arrowup' || lastKey === 'w') return 133;
-        if (lastKey === 'arrowleft' || lastKey === 'a' || lastKey === 'arrowright' || lastKey === 'd') return 261;
-        return 5;
-    }
 
     function handleMapTransition() {
         if (currentPage === 1 && charX > window.innerWidth - 10) {
@@ -183,6 +189,11 @@
             const entBottom = entRect.top + entRect.height;
             ent.style.zIndex = (charY < entBottom) ? "1001" : "999";
         });
+    }
+
+    function submitCourseEntry(courseId) {
+        document.getElementById('hiddenCourseId').value = courseId;
+        document.getElementById('enterCourseForm').submit();
     }
 
     function checkCollision() {
@@ -212,13 +223,13 @@
                 const centerX = rect.left + (rect.width / 2);
                 const centerY = rect.top + (rect.height / 2);
 
-                // 강의실 아이콘도 중앙 20% 영역만 인식
                 const thresholdX = rect.width * 0.2;
                 const thresholdY = rect.height * 0.2;
 
                 if (Math.abs(footX - centerX) < thresholdX && Math.abs(footY - centerY) < thresholdY) {
                     isRedirecting = true;
-                    window.location.href = card.querySelector('a').href;
+                    const courseId = card.querySelector('div').getAttribute('onclick').match(/\d+/)[0];
+                    submitCourseEntry(courseId);
                 }
             });
         }
