@@ -58,14 +58,6 @@ public class UserUser {
     @Column(name = "user_gender", nullable = false)
     private String userGender;
 
-    // 로그인 실패 횟수
-    @Column(name = "login_fail_count", nullable = false)
-    private int loginFailCount;
-
-    // 계정 잠금 여부
-    @Column(name = "is_account_locked", nullable = false)
-    private boolean accountLocked;
-
     // 기존 프로젝트 스타일에 맞춘 builder 시작 메서드
     public static UserUser builder() {
         return new UserUser();
@@ -116,38 +108,14 @@ public class UserUser {
         return this;
     }
 
-    public UserUser loginFailCount(int loginFailCount) {
-        this.loginFailCount = loginFailCount;
-        return this;
-    }
-
-    public UserUser accountLocked(boolean accountLocked) {
-        this.accountLocked = accountLocked;
-        return this;
-    }
 
     // 내 정보 수정
     public void updateInformation(String userNickname, String userPhoneNumber, String userEmail, String userPassword, String userGender) {
         this.userNickname = userNickname;
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
-        this.userPassword = userPassword;
         this.userGender = userGender;
-    }
-
-    // 로그인 실패 횟수 증가
-    public void increaseLoginFailCount() {
-        this.loginFailCount++;
-    }
-
-    // 로그인 실패 횟수 초기화
-    public void resetLoginFailCount() {
-        this.loginFailCount = 0;
-    }
-
-    // 계정 잠금 처리
-    public void lockAccount() {
-        this.accountLocked = true;
+        this.userPassword = userPassword;
     }
 
     // 비밀번호 재설정 업데이트
