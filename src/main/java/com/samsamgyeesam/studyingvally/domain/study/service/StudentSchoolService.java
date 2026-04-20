@@ -2,6 +2,7 @@ package com.samsamgyeesam.studyingvally.domain.study.service;
 
 import com.samsamgyeesam.studyingvally.domain.study.dto.StudentEvaluationResponseDTO;
 import com.samsamgyeesam.studyingvally.domain.study.entity.StudentCourse;
+import com.samsamgyeesam.studyingvally.domain.study.entity.StudentCourseNotice;
 import com.samsamgyeesam.studyingvally.domain.study.entity.StudentEnrollment;
 import com.samsamgyeesam.studyingvally.domain.study.entity.StudentEvaluation;
 import com.samsamgyeesam.studyingvally.domain.study.repository.StudentCourseRepository;
@@ -35,11 +36,14 @@ public class StudentSchoolService {
 
     @Transactional
     public void registerCourse(Long userNo, Long courseId) {
-        StudentCourse course = studentEnrollmentRepository.findAll().stream()
-                .map(StudentEnrollment::getCourse)
-                .filter(c -> c.getCourseId().equals(courseId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 강의가 없습니다."));
+//        StudentCourse course = studentEnrollmentRepository.findAll().stream()
+//                .map(StudentEnrollment::getCourse)
+//                .filter(c -> c.getCourseId().equals(courseId))
+//                .findFirst()
+//                .orElseThrow(() -> new IllegalArgumentException("해당 강의가 없습니다."));
+
+        StudentCourse course = studentCourseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다. ID: " + courseId));
 
         StudentEnrollment studentEnrollment = new StudentEnrollment();
         studentEnrollment.setUserNo(userNo);

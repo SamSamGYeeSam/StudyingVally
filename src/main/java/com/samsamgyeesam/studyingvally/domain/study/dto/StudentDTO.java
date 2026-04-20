@@ -38,5 +38,6 @@ public class StudentDTO {
         private boolean hasEvaluation;
         private String score;
         private String userGender;
+        private String courseStatus;
     }
 }

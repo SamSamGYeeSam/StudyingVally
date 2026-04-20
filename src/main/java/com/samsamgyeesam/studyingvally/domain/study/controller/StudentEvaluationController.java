@@ -4,6 +4,7 @@ import com.samsamgyeesam.studyingvally.domain.study.dto.StudentEvaluationRespons
 import com.samsamgyeesam.studyingvally.domain.study.entity.StudentEvaluation;
 import com.samsamgyeesam.studyingvally.domain.study.repository.StudentEvaluationRepository;
 import com.samsamgyeesam.studyingvally.domain.study.service.StudentEvaluationService;
+import com.samsamgyeesam.studyingvally.domain.study.service.StudentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class StudentEvaluationController {
 
     private final StudentEvaluationService studentEvaluationService;
+    private final StudentService studentService;
 
     @GetMapping("/{courseId}")
     @ResponseBody
@@ -64,11 +66,14 @@ public class StudentEvaluationController {
 
     @GetMapping("/api/detail")
     @ResponseBody
-    public ResponseEntity<?> getEvaluationApi(@RequestParam("courseId") Long courseId, HttpSession session) {
-        Long userNo = (Long) session.getAttribute("userNo");
-        if (userNo == null) {
+    public ResponseEntity<?> getEvaluationApi(@RequestParam("courseId") Long courseId, java.security.Principal principal) {
+
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
+
+        String userId = principal.getName();
+        Long userNo = studentService.findUserNoByUserId(userId);
 
         Optional<StudentEvaluation> evalOpt = studentEvaluationRepository
                 .findByUser_UserNoAndStudentCourse_CourseId(userNo, courseId);

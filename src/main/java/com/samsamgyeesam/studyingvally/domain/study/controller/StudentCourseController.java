@@ -114,8 +114,8 @@ public class StudentCourseController {
 
     @PostMapping("/chapter/complete/{courseId}/{chapNo}")
     @ResponseBody
-    public ResponseEntity<String> completeChapter(@RequestParam Long courseId,
-                                                  @RequestParam Long chapNo,
+    public ResponseEntity<String> completeChapter(@PathVariable Long courseId,
+                                                  @PathVariable Long chapNo,
                                                   Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("unauthorized");
 
@@ -125,12 +125,6 @@ public class StudentCourseController {
         studentCourseService.completeChapter(userNo, chapNo, courseId);
         return ResponseEntity.ok("success");
     }
-
-//    @GetMapping("/create/evaluation")
-//    public String reviewForm(@RequestParam Long courseId, Model model) {
-//        model.addAttribute("courseId", courseId);
-//        return "evaluation";
-//    }
 
     @PostMapping("/evaluation/save")
     public String saveStudentEvaluation(

@@ -48,6 +48,7 @@ public class StudentService {
                     return StudentDTO.EnrolledCourseDTO.builder()
                             .courseId(en.getCourse().getCourseId())
                             .courseTitle(en.getCourse().getCourseTitle())
+                            .courseStatus(en.getCourse().getCourseStatus())
                             .progress(en.getEnrollmentProcess().intValue())
                             .hasEvaluation(exists) // 이제 정상적으로 적용됩니다.
                             .targetUrl("/student/course/" + en.getCourse().getCourseId())
