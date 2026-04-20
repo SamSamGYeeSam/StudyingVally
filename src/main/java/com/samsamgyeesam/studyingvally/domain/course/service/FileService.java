@@ -28,6 +28,12 @@ public class FileService {
                 return null;
             }
 
+            // 파일 크기 제한 - 500MB
+            long maxSize = 500 * 1024 * 1024;
+            if (videoFile.getSize() > maxSize) {
+                throw new CourseException("영상 파일은 500MB 이하만 업로드 가능합니다.");
+            }
+
             // 동영상만 올릴 수 있게
             String contentType = videoFile.getContentType();
             if (contentType == null || !contentType.startsWith("video")) {

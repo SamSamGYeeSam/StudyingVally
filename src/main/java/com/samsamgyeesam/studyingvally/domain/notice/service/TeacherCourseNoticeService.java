@@ -72,7 +72,8 @@ public class TeacherCourseNoticeService {
         TeacherCourseNotice courseNotice = new TeacherCourseNotice(
                 courseNoticeDTO.getCourseNoticeTitle(),
                 courseNoticeDTO.getCourseNoticeDesc(),
-                courseNoticeDTO.getCourseId()
+                courseNoticeDTO.getCourseId(),
+                courseNoticeDTO.getUserNo()
         );
 
         teacherCourseNoticeRepository.save(courseNotice);

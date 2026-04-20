@@ -34,7 +34,7 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
-    // 수정하기 버튼 눌럿을 때 그 강의를 먼저 찾기 위함 - dto 객체로 조회 결과 하나 반환
+    // 강의 찾기
     public CourseDTO findCourseById(Long courseId) {
         Course foundCourse = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseException("해당 강의를 찾을 수 없습니다."));
@@ -95,6 +95,15 @@ public class CourseService {
 //        }
         if (courseDTO.getCourseDescription() == null || courseDTO.getCourseDescription().trim().isEmpty()) {
             throw new CourseException("강의 설명을 입력해주세요.");
+        }
+
+        // 동일한 강의명이 이미 있는 경우
+        List<Course> existingCourses = courseRepository.findByUserNoOrderByCourseCreatedAtDesc(courseDTO.getUserNo());
+        boolean isDuplicate = existingCourses.stream()
+                .anyMatch(course -> course.getCourseTitle().equals(courseDTO.getCourseTitle()));
+
+        if (isDuplicate) {
+            throw new CourseException("이미 동일한 이름의 강의가 존재합니다.");
         }
 
         Course course = new Course(
