@@ -207,7 +207,45 @@
     }
     function closeNpc() { npcModal.style.display = 'none'; isTalking = false; }
     function closeMailbox() { document.getElementById('mailboxModal').style.display = 'none'; }
-    function openMailbox() { document.getElementById('mailboxModal').style.display = 'block'; }
+    function openMailbox() {
+        const mailboxModal = document.getElementById('mailboxModal');
+        const mailList = document.getElementById('mailList');
+
+        // 모달 열기
+        mailboxModal.style.display = 'block';
+        mailList.innerHTML = '<p style="text-align: center; font-size: 13px;">불러오는 중...</p>';
+
+        fetch(`/student/course/my-questions?courseId=${courseId}`)
+            .then(response => response.json())
+            .then(data => {
+                mailList.innerHTML = ''; // 초기화
+
+                if (data.length === 0) {
+                    mailList.innerHTML = '<p style="text-align: center; font-size: 13px; color: #666;">보낸 질문이 없습니다.</p>';
+                    return;
+                }
+
+                data.forEach(q => {
+                    const item = document.createElement('div');
+                    item.style.cssText = "background: #fff; border: 2px solid #5d4037; margin-bottom: 10px; padding: 10px; border-radius: 5px; color: #333;";
+
+                    const statusTag = q.questionCourseAnswer
+                        ? '<span style="color: green; font-weight: bold;">[답변완료]</span>'
+                        : '<span style="color: #e74c3c; font-weight: bold;">[답변대기]</span>';
+
+                    item.innerHTML = `
+                    <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">${statusTag} ${q.questionCourseTitle}</div>
+                    <div style="font-size: 12px; color: #666; margin-bottom: 8px;">Q: ${q.questionCourseDesc}</div>
+                    ${q.questionCourseAnswer ? `<div style="font-size: 12px; background: #f0f0f0; padding: 5px; border-top: 1px dashed #ccc;"><strong>A:</strong> ${q.questionCourseAnswer}</div>` : ''}
+                `;
+                    mailList.appendChild(item);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mailList.innerHTML = '<p style="text-align: center; font-size: 13px; color: red;">데이터를 불러오지 못했습니다.</p>';
+            });
+    }
     function startRandomTalk() {
         document.getElementById('npcMessage').innerText = "열심히 공부하는 모습이 보기 좋구먼! 🥦";
         document.getElementById('npcChoices').style.display = 'none';
