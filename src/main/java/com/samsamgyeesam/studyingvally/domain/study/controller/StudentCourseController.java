@@ -43,16 +43,19 @@ public class StudentCourseController {
         if (principal == null) return "redirect:/auth/login";
 
         Long courseId = (Long) session.getAttribute("currentCourseId");
-
-        if (courseId == null) {
-            return "redirect:/student/home";
-        }
+        if (courseId == null) {return "redirect:/student/home";}
 
         String userId = principal.getName();
         Long userNo = studentService.findUserNoByUserId(userId);
 
         double progress = studentCourseService.updateAndGetProgress(userNo, courseId);
         Map<String, Object> courseData = studentCourseService.getCourseRoomData(userNo, courseId);
+
+        String instructorNickname = studentCourseService.getInstructorNickname(courseId);
+        model.addAttribute("instructorNickname", instructorNickname);
+
+        String instructorGender = studentCourseService.getInstructorGender(courseId);
+        model.addAttribute("instructorGender", instructorGender);
 
         model.addAllAttributes(courseData);
         model.addAttribute("courseId", courseId);
@@ -166,7 +169,7 @@ public class StudentCourseController {
         Long userNo = studentService.findUserNoByUserId(userId);
 
         studentCourseService.saveQuestion(userNo, courseId, title, desc);
-        return "redirect:/student/home";
+        return "redirect:/student/course";
     }
 
     @GetMapping("/course/mailbox")

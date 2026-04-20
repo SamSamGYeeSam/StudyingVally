@@ -104,7 +104,7 @@
             <tbody>
             <tr th:each="note : ${courseNotices}">
                 <td th:text="${note.createdAt}">2026-04-16</td>
-                <td th:text="${note.userName}">강사명</td>
+                <td th:text="${note.userNickname}">강사명</td>
                 <td th:text="${note.courseTitle}">강의명</td>
                 <td class="clickable-title"
                     th:text="${note.courseNoticeTitle}"

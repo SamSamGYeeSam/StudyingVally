@@ -124,16 +124,21 @@
         <span class="pixel-text" style="font-size: 14px;">메일함</span>
     </div>
 
-    <div id="npc-character" onclick="talkToNpc()">
-        <img src="/image/npc1.png" alt="NPC" class="npc-image">
+    <div id="npc-character"
+         onclick="talkToNpc()"
+         th:data-gender="${instructorGender == 'M' ? 'm' : 'f'}"
+         th:style="|left: 350px; top: 430px;|">
+        <img th:src="@{/image/{gender}-npc.png(gender=${instructorGender == 'M' ? 'm' : 'f'})}"
+             alt="NPC" class="npc-image" id="npcImgElement">
         <div class="npc-label">대화하기</div>
     </div>
 
     <div id="npcModal">
         <div style="display: flex; align-items: center;">
-            <img src="/images/npc.png" alt="NPC" style="width: 50px; height: 50px; margin-right: 15px; image-rendering: pixelated;">
+            <img th:src="@{/image/{gender}-npc.png(gender=${instructorGender == 'M' ? 'm' : 'f'})}"
+                 alt="NPC Icon" style="width: 50px; height: 50px; margin-right: 15px; image-rendering: pixelated;">
             <div id="npcContent">
-                <strong style="color: #ffca28;">스프링클 선생님</strong>
+                <strong style="color: #ffca28;"th:text="${instructorNickname}">강사 닉네임</strong>
                 <p id="npcMessage" style="margin: 5px 0; font-size: 14px;">무엇을 도와드릴까요?</p>
                 <div id="npcChoices" style="margin-top: 10px;">
                     <button onclick="startRandomTalk()" class="pixel-btn" style="display:inline-block; margin-right:5px; padding:4px 10px; font-size:12px; background:#4caf50;">대화하기</button>
@@ -170,9 +175,16 @@
 
 </div> <script th:inline="javascript">
 
+
     const npc = document.getElementById('npc-character');
-    const npcModal = document.getElementById('npcModal');
+    const npcImg = document.getElementById('npcImgElement');
+    const npcModal = document.getElementById('npcModal')
+    const gender = npc.dataset.gender;
     const courseId = /*[[${courseId}]]*/ 0;
+    const instructorName = /*[[${instructorNickname}]]*/;
+
+    npcImg.src = `/image/${gender}-npc.png`;
+
     let isTalking = false;
 
     npc.style.left = '350px';
@@ -187,9 +199,8 @@
 
         const randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
         const randomY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
-
         const currentX = parseInt(npc.style.left);
-        const npcImg = npc.querySelector('.npc-image');
+
         if (randomX > currentX) {
             npcImg.style.transform = "scaleX(-1)";
         } else {
@@ -217,7 +228,7 @@
         fetch(`/student/course/my-questions?courseId=${courseId}`)
             .then(response => response.json())
             .then(data => {
-                mailList.innerHTML = ''; // 초기화
+                mailList.innerHTML = '';
 
                 if (data.length === 0) {
                     mailList.innerHTML = '<p style="text-align: center; font-size: 13px; color: #666;">보낸 질문이 없습니다.</p>';
