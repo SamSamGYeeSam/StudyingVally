@@ -10,50 +10,35 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Spring Security 세션에 저장될 사용자 정보 객체
- */
+// Spring Security 세션에 저장될 사용자 정보 객체
 @Getter
 public class AuthUserDetails implements UserDetails {
 
-    /**
-     * 로그인 아이디
-     */
+    // 로그인 아이디
     private final String loginId;
 
-    /**
-     * 비밀번호
-     */
+    // 비밀번호
     private final String password;
 
-    /**
+    /*
      * 권한 문자열
-     *
      * 예: ROLE_STUDENT, ROLE_TEACHER, ROLE_ADMIN
      */
     private final String role;
 
-    /**
-     * 화면에 표시할 이름
-     */
+    // 화면에 표시할 이름
     private final String displayName;
 
-    /**
-     * 일반 사용자 PK
-     */
+    // 일반 사용자 PK
     private final Long userNo;
 
-    /**
-     * 계정 잠금 여부
-     */
+    // 계정 잠금 여부
     private final boolean accountLocked;
 
     // 계정 상태
     private final boolean enabled;
 
-    /**
-     * 일반 사용자 생성자
-     */
+    // 일반 사용자 생성자
     public AuthUserDetails(UserUser user) {
         this.loginId = user.getUserId();
         this.password = user.getUserPassword();
@@ -64,9 +49,7 @@ public class AuthUserDetails implements UserDetails {
         this.enabled = user.isActive();
     }
 
-    /**
-     * 관리자 생성자
-     */
+    // 관리자 생성자
     public AuthUserDetails(UserAdmin admin) {
         this.loginId = admin.getAdminId();
         this.password = admin.getAdminPassword();
@@ -77,43 +60,32 @@ public class AuthUserDetails implements UserDetails {
         this.enabled = true;
     }
 
-    /**
-     * 현재 사용자의 권한 목록 반환
-     */
+    // 현재 사용자의 권한 목록 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));
     }
 
-    /**
-     * Security가 사용할 비밀번호 반환
-     */
+    // Security가 사용할 비밀번호 반환
     @Override
     public String getPassword() {
         return password;
     }
 
-    /**
-     * Security가 사용할 username 반환
-     *
-     * 현재 프로젝트에서는 loginId를 username처럼 사용
-     */
+    //  Security가 사용할 username 반환
     @Override
     public String getUsername() {
         return loginId;
     }
 
-    /**
-     * 계정 만료 여부
-     */
+    // 계정 만료 여부
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    /**
+    /*
      * 계정 잠금 여부
-     *
      * false면 Spring Security가 로그인 차단
      */
     @Override
@@ -121,17 +93,13 @@ public class AuthUserDetails implements UserDetails {
         return !accountLocked;
     }
 
-    /**
-     * 비밀번호 만료 여부
-     */
+    // 비밀번호 만료 여부
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    /**
-     * 계정 활성 여부
-     */
+    // 계정 활성 여부
     @Override
     public boolean isEnabled() {
         return enabled;
