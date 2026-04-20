@@ -4,10 +4,7 @@ import com.samsamgyeesam.studyingvally.domain.course.dto.ChapterDTO;
 import com.samsamgyeesam.studyingvally.domain.course.dto.CourseDTO;
 import com.samsamgyeesam.studyingvally.domain.course.dto.EnrollmentDTO;
 import com.samsamgyeesam.studyingvally.domain.course.dto.EvaluationDTO;
-import com.samsamgyeesam.studyingvally.domain.course.service.ChapterService;
-import com.samsamgyeesam.studyingvally.domain.course.service.CourseService;
-import com.samsamgyeesam.studyingvally.domain.course.service.EnrollmentService;
-import com.samsamgyeesam.studyingvally.domain.course.service.EvaluationService;
+import com.samsamgyeesam.studyingvally.domain.course.service.*;
 import com.samsamgyeesam.studyingvally.domain.user.service.AuthUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,6 +28,7 @@ public class CourseController {
     private final ChapterService chapterService;
     private final EnrollmentService enrollmentService;
     private final EvaluationService evaluationService;
+    private final QuestionCourseService questionCourseService;
 
     // url에 입력해서 경로 이동하는 경우 get방식
     @GetMapping("/teachermain")
@@ -49,11 +48,12 @@ public class CourseController {
     public String gotoCourseListPage(@AuthenticationPrincipal AuthUserDetails userDetails, Model model) {
         Long userNo = userDetails.getUserNo();
 
-        System.out.println("Session userNo: " + userNo);
-
         List<CourseDTO> courseList = courseService.findAllCoursesByUserNo(userNo);
+        // 답변 대기 중인 질문 개수 조회
+        Map<String, Integer> unansweredQuestions = questionCourseService.getUnansweredQuestionsByUserNo(userNo);
 
         model.addAttribute("courseList", courseList);
+        model.addAttribute("unansweredQuestions", unansweredQuestions);
 
         return "course/courselist";
     }
