@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>오류</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<div class="game-screen">
+    <div class="sun"></div>
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+
+    <div class="mountains"></div>
+    <div class="far-trees"></div>
+
+    <div class="ground"></div>
+    <div class="path"></div>
+    <div class="fence"></div>
+
+    <div class="house">
+        <div class="roof"></div>
+        <div class="body"></div>
+        <div class="window left"></div>
+        <div class="window right"></div>
+        <div class="door"></div>
+    </div>
+
+    <div class="panel-wrap">
+        <div class="panel">
+            <section class="form-screen active">
+                <h1 class="title">잘못된 경로입니다.</h1>
+                <p class="subtitle">
+                    요청한 페이지에 접근할 수 없거나 존재하지 않는 페이지입니다.
+                </p>
+
+                <div class="bottom-row">
+                    <button type="button"
+                            class="pixel-btn secondary"
+                            onclick="history.back()">
+                        뒤로가기
+                    </button>
+
+                    <button type="button"
+                            class="pixel-btn"
+                            onclick="location.href='/main'">
+                        메인으로
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 //사용자 관련 비즈니스 로직 서비스
 @Service
 @RequiredArgsConstructor
@@ -157,24 +159,55 @@ public class UserService {
         );
     }
 
-    // 현재 로그인한 사용자 정보 수정
+//    // 현재 로그인한 사용자 정보 수정
+//    @Transactional
+//    public void updateUserInformation(String loginUserId, UserInformationUpdateDTO updateDTO) {
+//
+//        String encodedPassword = passwordEncoder.encode(updateDTO.getUserPassword());
+//
+//        UserUser user = userRepository.findByUserId(loginUserId)
+//                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+//
+//        if (updateDTO.getUserPhoneNumber() == null || updateDTO.getUserPhoneNumber().isBlank()
+//                || updateDTO.getUserEmail() == null || updateDTO.getUserEmail().isBlank()
+//                || updateDTO.getUserPassword() == null || updateDTO.getUserPassword().isBlank()
+//                || updateDTO.getUserNickname() == null || updateDTO.getUserNickname().isBlank()
+//                || updateDTO.getUserGender() == null || updateDTO.getUserGender().isBlank()) {
+//            throw new IllegalArgumentException("수정할 정보를 모두 입력해주세요.");
+//        }
+//
+//        // 이메일 형식 검증
+//        if (!isValidEmailFormat(updateDTO.getUserEmail())) {
+//            throw new IllegalArgumentException("gmail 형식의 이메일만 입력 가능합니다.");
+//        }
+//
+//        if (!user.getUserNickname().equals(updateDTO.getUserNickname())
+//                && userRepository.existsByUserNickname(updateDTO.getUserNickname())) {
+//            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+//        }
+//
+//        user.updateInformation(
+//                updateDTO.getUserNickname(),
+//                updateDTO.getUserPhoneNumber(),
+//                updateDTO.getUserEmail(),
+//                updateDTO.getUserGender(),
+//                encodedPassword
+//        );
+//    }
+
     @Transactional
     public void updateUserInformation(String loginUserId, UserInformationUpdateDTO updateDTO) {
-
-        String encodedPassword = passwordEncoder.encode(updateDTO.getUserPassword());
 
         UserUser user = userRepository.findByUserId(loginUserId)
                 .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
-        if (updateDTO.getUserPhoneNumber() == null || updateDTO.getUserPhoneNumber().isBlank()
+        if (updateDTO.getUserNickname() == null || updateDTO.getUserNickname().isBlank()
+                || updateDTO.getUserPhoneNumber() == null || updateDTO.getUserPhoneNumber().isBlank()
                 || updateDTO.getUserEmail() == null || updateDTO.getUserEmail().isBlank()
-                || updateDTO.getUserPassword() == null || updateDTO.getUserPassword().isBlank()
-                || updateDTO.getUserNickname() == null || updateDTO.getUserNickname().isBlank()
                 || updateDTO.getUserGender() == null || updateDTO.getUserGender().isBlank()) {
             throw new IllegalArgumentException("수정할 정보를 모두 입력해주세요.");
         }
 
-        // 이메일 형식 검증
         if (!isValidEmailFormat(updateDTO.getUserEmail())) {
             throw new IllegalArgumentException("gmail 형식의 이메일만 입력 가능합니다.");
         }
@@ -184,12 +217,19 @@ public class UserService {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
+        AtomicReference<String> passwordToSave = new AtomicReference<>(user.getUserPassword());
+
+        // 새 비밀번호를 입력한 경우에만 변경
+        if (updateDTO.getUserPassword() != null && !updateDTO.getUserPassword().isBlank()) {
+            passwordToSave.set(passwordEncoder.encode(updateDTO.getUserPassword()));
+        }
+
         user.updateInformation(
                 updateDTO.getUserNickname(),
                 updateDTO.getUserPhoneNumber(),
                 updateDTO.getUserEmail(),
                 updateDTO.getUserGender(),
-                encodedPassword
+                passwordToSave.get()
         );
     }
 
@@ -208,6 +248,10 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
+        // 1. 상태 테이블 먼저 삭제
+        userAccountStateRepository.deleteById(user.getUserNo());
+
+        // 2. 그 다음 user 삭제
         userRepository.delete(user);
     }
 
