@@ -110,7 +110,11 @@ public class UserUser {
 
 
     // 내 정보 수정
-    public void updateInformation(String userNickname, String userPhoneNumber, String userEmail, String userPassword, String userGender) {
+    public void updateInformation(String userNickname,
+                                  String userPhoneNumber,
+                                  String userEmail,
+                                  String userGender,
+                                  String userPassword) {
         this.userNickname = userNickname;
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
