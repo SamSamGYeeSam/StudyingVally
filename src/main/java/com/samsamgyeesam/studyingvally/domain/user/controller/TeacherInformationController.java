@@ -80,9 +80,10 @@ public class TeacherInformationController {
             UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
 
             UserInformationUpdateDTO updateDTO = new UserInformationUpdateDTO();
+            updateDTO.setUserNickname(userInfo.getUserNickname());
             updateDTO.setUserPhoneNumber(userInfo.getUserPhoneNumber());
             updateDTO.setUserEmail(userInfo.getUserEmail());
-
+            updateDTO.setUserGender(userInfo.getUserGender());
             model.addAttribute("userInfo", userInfo);
             model.addAttribute("updateDTO", updateDTO);
 

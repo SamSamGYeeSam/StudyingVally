@@ -20,12 +20,44 @@
     </div>
 
     <div>
+        <label for="userNickname">닉네임</label>
+        <input type="text"
+               id="userNickname"
+               name="userNickname"
+               th:value="${updateDTO != null ? updateDTO.userNickname : ''}"
+               required>
+    </div>
+
+    <div>
         <label for="userPhoneNumber">전화번호</label>
         <input type="text"
                id="userPhoneNumber"
                name="userPhoneNumber"
                th:value="${updateDTO != null ? updateDTO.userPhoneNumber : ''}"
                required>
+    </div>
+
+    <div>
+        <label>성별</label>
+
+        <label for="genderM">
+            <input type="radio"
+                   id="genderM"
+                   name="userGender"
+                   value="M"
+                   th:checked="${updateDTO != null and updateDTO.userGender == 'M'}"
+                   required>
+            남성
+        </label>
+
+        <label for="genderF">
+            <input type="radio"
+                   id="genderF"
+                   name="userGender"
+                   value="F"
+                   th:checked="${updateDTO != null and updateDTO.userGender == 'F'}">
+            여성
+        </label>
     </div>
 
     <div>
