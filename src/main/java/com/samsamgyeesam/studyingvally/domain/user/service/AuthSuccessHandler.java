@@ -36,19 +36,6 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        jakarta.servlet.http.HttpSession session = request.getSession();
-
-        Object principal = authentication.getPrincipal();
-
-        if (principal instanceof AuthUserDetails) {
-            AuthUserDetails userDetails = (AuthUserDetails) principal;
-
-            session.setAttribute("userNo", userDetails.getUserNo()); // 엔티티의 PK 값
-            session.setAttribute("userNickname", userDetails.getDisplayName());
-            System.out.println("로그인 성공! 세션 저장 완료: userNo = " + userDetails.getUserNo());
-        }
-
-
         /*
          * 현재 로그인한 사용자의 권한 목록을 가져온다.
          */
