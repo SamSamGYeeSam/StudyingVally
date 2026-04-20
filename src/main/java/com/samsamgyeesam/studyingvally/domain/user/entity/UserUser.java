@@ -188,4 +188,8 @@ public class UserUser {
     public void lockAccount() {
         this.accountLocked = true;
     }
+
+    public void updatePassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
 }

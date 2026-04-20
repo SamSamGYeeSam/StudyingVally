@@ -84,7 +84,6 @@ public class TeacherInformationController {
             UserInformationUpdateDTO updateDTO = new UserInformationUpdateDTO();
             updateDTO.setUserPhoneNumber(userInfo.getUserPhoneNumber());
             updateDTO.setUserEmail(userInfo.getUserEmail());
-            updateDTO.setUserPassword(userInfo.getUserPassword());
 
             model.addAttribute("userInfo", userInfo);
             model.addAttribute("updateDTO", updateDTO);
