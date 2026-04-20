@@ -15,7 +15,9 @@
     </style>
 </head>
 <body>
-<button type="button" onclick="history.back();" style="margin-bottom: 20px;">⬅ 퀴즈 목록으로 돌아가기</button>
+<button type="button" onclick="location.href='/teacher/quiz/find-quiz-by-chap'" style="margin-bottom: 20px; padding: 10px; cursor: pointer;">
+    ⬅ 퀴즈 목록으로 돌아가기
+</button>
 <h2>퀴즈 상세 (문제 리스트)</h2>
 
 <div th:if="${successMessage}" th:text="${successMessage}" style="color: green; margin-bottom: 15px; font-weight: bold;"></div>

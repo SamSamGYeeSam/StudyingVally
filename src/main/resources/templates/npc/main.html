@@ -118,7 +118,7 @@
 <div class="room-container">
 
     <!-- 방 나가기 버튼 -->
-    <a th:href="${role == 'TEACHER' ? '/teacher/main' : '/student/main'}" class="exit-room">🚪 나가기</a>
+    <a th:href="${role == 'TEACHER' ? '/teacher/teachermain' : '/student/main'}" class="exit-room">🚪 나가기</a>
 
     <!-- 클릭 가능한 NPC 마법사 -->
     <div id="npc-wizard" onclick="openDialogue()">

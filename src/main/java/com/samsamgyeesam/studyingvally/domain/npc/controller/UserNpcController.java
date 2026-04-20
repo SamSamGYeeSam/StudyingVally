@@ -29,10 +29,16 @@ public class UserNpcController {
     // ==================== [메인 화면] ====================
     @GetMapping
     public String npcMain(@AuthenticationPrincipal AuthUserDetails userDetails, Model model) {
-        // HTML에서 분기 처리를 할 수 있도록 사용자의 역할을 'role'이라는 이름으로 넘겨줍니다.
-        // (주의: AuthUserDetails 클래스에 getRole() 메서드가 있다고 가정했습니다.
-        // 만약 이름이 다르다면 userDetails.getUserRole() 등으로 수정해 주세요.)
-        model.addAttribute("role", userDetails.getRole().toString());
+        // 1. 엔티티 필드명에 맞춰 getUserRole() 사용 (문자열이 null일 경우를 대비해 빈 문자열 처리)
+        String roleStr = userDetails.getRole() != null ? userDetails.getRole() : "";
+
+        // 2. 대소문자 구분이나 "ROLE_" 접두사 유무에 상관없이 안전하게 "TEACHER" 판별
+        if (roleStr.toUpperCase().contains("TEACHER")) {
+            model.addAttribute("role", "TEACHER");
+        } else {
+            model.addAttribute("role", "STUDENT");
+        }
+
         return "npc/main";
     }
 
