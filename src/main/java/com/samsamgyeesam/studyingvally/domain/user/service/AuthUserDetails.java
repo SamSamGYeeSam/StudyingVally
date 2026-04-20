@@ -46,7 +46,7 @@ public class AuthUserDetails implements UserDetails {
         this.role = "ROLE_" + user.getUserRole().name();
         this.displayName = user.getUserNickname();
         this.userNo = user.getUserNo();
-        this.accountLocked = user.isAccountLocked();
+        this.accountLocked = state != null && state.isAccountLocked();
         this.enabled = user.isActive();
     }
 

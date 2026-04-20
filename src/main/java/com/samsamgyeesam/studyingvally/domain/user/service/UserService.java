@@ -136,9 +136,7 @@ public class UserService {
                 .userNickname(signupDTO.getUserNickname())
                 .userGender(signupDTO.getUserGender())
                 .userRole(selectedRole)
-                .userStatus("ACTIVE")
-                .loginFailCount(0)
-                .accountLocked(false);
+                .userStatus("ACTIVE");
 
         userRepository.save(newUser);
         userAccountStateRepository.save(UserAccountState.create(newUser.getUserNo()));
@@ -234,39 +232,38 @@ public class UserService {
      */
     @Transactional
     public void incrementLoginFailCount(String loginId) {
-
         UserUser user = userRepository.findByUserId(loginId).orElse(null);
 
-        // 존재하지 않는 아이디면 종료
         if (user == null) {
             return;
         }
 
-        // 이미 잠긴 계정이면 종료
-        if (user.isAccountLocked()) {
+        UserAccountState state = userAccountStateRepository.findById(user.getUserNo())
+                .orElseGet(() -> userAccountStateRepository.save(UserAccountState.create(user.getUserNo())));
+
+        if (state.isAccountLocked()) {
             return;
         }
 
-        user.increaseLoginFailCount();
+        state.increaseLoginFailCount();
 
-        if (user.getLoginFailCount() >= 5) {
-            user.lockAccount();
+        if (state.getLoginFailCount() >= 5) {
+            state.lockAccount();
         }
     }
 
     // 로그인 성공 시 실패 횟수 초기화
     @Transactional
     public void resetLoginFailCount(String loginId) {
-
         UserUser user = userRepository.findByUserId(loginId).orElse(null);
 
         if (user == null) {
             return;
         }
 
-        user.resetLoginFailCount();
+        userAccountStateRepository.findById(user.getUserNo())
+                .ifPresent(UserAccountState::resetLoginFailCount);
     }
-
     /*
      * 이메일 형식 검증 메서드
      * 조건:
