@@ -11,12 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * 관리자 공지사항 서비스
- */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -25,18 +22,14 @@ public class AdminNoticeService {
     private final AdminNoticeRepository adminNoticeRepository;
 
     public List<AdminNoticeListDTO> findAllNoticeList() {
-        List<AdminNotice> noticeList = adminNoticeRepository.findAllByOrderByNoticeNoDesc();
-        List<AdminNoticeListDTO> result = new ArrayList<>();
-
-        for (AdminNotice notice : noticeList) {
-            result.add(new AdminNoticeListDTO(
-                    notice.getNoticeNo(),
-                    notice.getNoticeTitle(),
-                    notice.getCreatedDate()
-            ));
-        }
-
-        return result;
+        return adminNoticeRepository.findAllByOrderByNoticeNoDesc()
+                .stream()
+                .map(notice -> new AdminNoticeListDTO(
+                        notice.getNoticeNo(),
+                        notice.getNoticeTitle(),
+                        notice.getCreatedDate()
+                ))
+                .collect(Collectors.toList());
     }
 
     public AdminNoticeDetailDTO findNoticeDetail(Long noticeNo) {
@@ -81,12 +74,6 @@ public class AdminNoticeService {
         );
     }
 
-    /**
-     * 공지사항 입력값 검증
-     *
-     * @param noticeTitle 공지 제목
-     * @param noticeDesc 공지 내용
-     */
     private void validateNoticeInput(String noticeTitle, String noticeDesc) {
         if (noticeTitle == null || noticeTitle.trim().isEmpty()) {
             throw new AdminException("공지사항 제목은 필수입니다.");

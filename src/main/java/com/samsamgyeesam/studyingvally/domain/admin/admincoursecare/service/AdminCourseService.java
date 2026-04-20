@@ -16,10 +16,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/* comment.
- * 관리자 강의 관리 서비스 클래스
- */
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -31,9 +27,6 @@ public class AdminCourseService {
     private static final DateTimeFormatter DATE_TIME_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    /* comment.
-     * 개설 요청된 전체 강의 목록 조회 메서드
-     */
     public List<AdminManagedCourseDTO> findAllCourses() {
         return adminCourseRepository.findByCourseSendApproveTrueOrderByCourseIdDesc()
                 .stream()
@@ -41,9 +34,6 @@ public class AdminCourseService {
                 .collect(Collectors.toList());
     }
 
-    /* comment.
-     * 개설 요청된 강의 중 상태별 목록 조회 메서드
-     */
     public List<AdminManagedCourseDTO> findCoursesByStatus(String status) {
         return adminCourseRepository.findByCourseSendApproveTrueAndCourseStatusOrderByCourseIdDesc(status)
                 .stream()
@@ -51,13 +41,11 @@ public class AdminCourseService {
                 .collect(Collectors.toList());
     }
 
-    /* comment.
-     * 강의 상세 조회 메서드
-     */
     public AdminCourseDetailResponseDTO findCourseDetail(Long courseId) {
+        AdminCourse adminCourse = adminCourseRepository.findDetailByCourseId(courseId)
+                .orElseThrow(() -> new AdminException("해당 강의가 존재하지 않습니다."));
 
-        AdminCourse adminCourse = adminCourseRepository.findById(courseId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 강의가 존재하지 않습니다."));
+        validateApprovedCourse(adminCourse);
 
         List<AdminChapterResponseDTO> chapterList = adminChapterRepository.findByCourseIdOrderByChapNoAsc(courseId)
                 .stream()
@@ -76,31 +64,32 @@ public class AdminCourseService {
         );
     }
 
-    /* comment.
-     * 강의 활성화 메서드
-     */
     @Transactional
     public void openCourse(Long courseId) {
-        AdminCourse adminCourse = adminCourseRepository.findById(courseId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 강의가 존재하지 않습니다."));
+        AdminCourse adminCourse = adminCourseRepository.findDetailByCourseId(courseId)
+                .orElseThrow(() -> new AdminException("해당 강의가 존재하지 않습니다."));
+
+        validateApprovedCourse(adminCourse);
 
         adminCourse.changeCourseStatus("OPEN");
     }
 
-    /* comment.
-     * 강의 비활성화 메서드
-     */
     @Transactional
     public void closeCourse(Long courseId) {
-        AdminCourse adminCourse = adminCourseRepository.findById(courseId)
+        AdminCourse adminCourse = adminCourseRepository.findDetailByCourseId(courseId)
                 .orElseThrow(() -> new AdminException("해당 강의가 존재하지 않습니다."));
+
+        validateApprovedCourse(adminCourse);
 
         adminCourse.changeCourseStatus("CLOSED");
     }
 
-    /* comment.
-     * 목록 화면 DTO 변환 메서드
-     */
+    private void validateApprovedCourse(AdminCourse adminCourse) {
+        if (!Boolean.TRUE.equals(adminCourse.getCourseSendApprove())) {
+            throw new AdminException("승인 완료된 강의만 조회 및 상태 변경할 수 있습니다.");
+        }
+    }
+
     private AdminManagedCourseDTO toListDTO(AdminCourse adminCourse) {
         return new AdminManagedCourseDTO(
                 adminCourse.getCourseId(),
@@ -113,9 +102,6 @@ public class AdminCourseService {
         );
     }
 
-    /* comment.
-     * 챕터 DTO 변환 메서드
-     */
     private AdminChapterResponseDTO toChapterDTO(AdminChapter adminChapter) {
         return new AdminChapterResponseDTO(
                 adminChapter.getChapNo(),
@@ -125,9 +111,6 @@ public class AdminCourseService {
         );
     }
 
-    /* comment.
-     * 강의 상태 값을 한글로 변환하는 메서드
-     */
     private String convertCourseStatusToKorean(String courseStatus) {
         if ("OPEN".equalsIgnoreCase(courseStatus)) {
             return "활성화";
@@ -137,5 +120,4 @@ public class AdminCourseService {
         }
         return courseStatus;
     }
-
 }

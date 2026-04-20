@@ -137,7 +137,6 @@
                 </thead>
                 <tbody>
                 <tr th:each="contact, status : ${contactList}">
-                    <!-- 화면 표시용 번호는 프론트에서 status.count 사용 -->
                     <td th:text="${status.count}">1</td>
 
                     <td class="left" th:text="${contact.questionTitle}">문의 제목</td>
@@ -150,7 +149,7 @@
                     </td>
 
                     <td th:text="${contact.questionAnsweredAt != null ? #temporals.format(contact.questionAnsweredAt, 'yyyy-MM-dd HH:mm') : '-'}">
-                        2026-04-17 10:00
+                        -
                     </td>
 
                     <td>
@@ -165,7 +164,7 @@
         </div>
 
         <div class="empty-text" th:if="${#lists.isEmpty(contactList)}">
-            조회된 문의 내역이 없습니다.
+            조회된 문의가 없습니다.
         </div>
     </div>
 </div>

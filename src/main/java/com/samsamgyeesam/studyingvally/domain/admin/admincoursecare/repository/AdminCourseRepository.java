@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /* comment.
  *  관리자 사용자 상세 화면 및 강의 관리 화면에서 강의 정보를 조회하기 위한 Repository 인터페이스
@@ -47,4 +48,14 @@ public interface AdminCourseRepository extends JpaRepository<AdminCourse, Long> 
      */
     @EntityGraph(attributePaths = "teacher")
     List<AdminCourse> findByCourseSendApproveTrueAndCourseStatusOrderByCourseIdDesc(String courseStatus);
+
+    /**
+     * 강의 상세 조회
+     *
+     * 왜 필요한가:
+     * - 상세 페이지에서 teacher 정보까지 함께 안전하게 조회하기 위함이다.
+     * - LAZY 로딩으로 인한 예기치 않은 문제를 방지한다.
+     */
+    @EntityGraph(attributePaths = "teacher")
+    Optional<AdminCourse> findDetailByCourseId(Long courseId);
 }

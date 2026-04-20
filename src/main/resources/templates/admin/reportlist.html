@@ -137,7 +137,6 @@
                 </thead>
                 <tbody>
                 <tr th:each="report, status : ${reportList}">
-                    <!-- 화면 표시용 번호는 프론트에서 status.count 사용 -->
                     <td th:text="${status.count}">1</td>
 
                     <td class="left" th:text="${report.reportTitle}">신고 제목</td>
@@ -150,7 +149,7 @@
                     </td>
 
                     <td th:text="${report.reportProcessedAt != null ? #temporals.format(report.reportProcessedAt, 'yyyy-MM-dd HH:mm') : '-'}">
-                        2026-04-17 10:00
+                        -
                     </td>
 
                     <td>
@@ -165,7 +164,7 @@
         </div>
 
         <div class="empty-text" th:if="${#lists.isEmpty(reportList)}">
-            조회된 신고 내역이 없습니다.
+            조회된 신고가 없습니다.
         </div>
     </div>
 </div>

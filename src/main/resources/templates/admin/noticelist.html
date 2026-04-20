@@ -175,7 +175,7 @@
                     <!-- 프론트에서 순번 생성 -->
                     <td th:text="${status.count}">1</td>
                     <td class="left" th:text="${notice.noticeTitle}">환불 규정</td>
-                    <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd')}">2026-04-17</td>
+                    <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-17</td>
                     <td>
                         <a th:href="@{/admin/callcenter/noticedetail(noticeNo=${notice.noticeNo})}"
                            class="select-button">
