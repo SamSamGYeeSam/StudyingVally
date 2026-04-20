@@ -28,11 +28,8 @@ public class UserUser {
     @Column(name = "user_id", nullable = false, unique = true)
     private String userId;
 
-    /**
+    /*
      * 비밀번호
-     *
-     * 현재는 평문 상태 그대로 사용
-     * 나중에 BCrypt로 변경 예정
      */
     @Column(name = "user_password", nullable = false)
     private String userPassword;
@@ -189,7 +186,13 @@ public class UserUser {
         this.accountLocked = true;
     }
 
+    // 재설정 업데이트
     public void updatePassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    // 상태 확인 메서드
+    public boolean isActive() {
+        return "ACTIVE".equalsIgnoreCase(this.userStatus);
     }
 }
