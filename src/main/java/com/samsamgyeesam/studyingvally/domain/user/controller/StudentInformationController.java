@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/student/home")
+@RequestMapping("/student")
 public class StudentInformationController {
     private final UserService userService;
 
@@ -27,7 +27,7 @@ public class StudentInformationController {
      *
      * URL: GET /student/home/info
      */
-    @GetMapping("/info")
+    @GetMapping("/home/info")
     public String showStudentInformation(Authentication authentication, Model model) {
 
         try {
@@ -55,7 +55,7 @@ public class StudentInformationController {
      *
      * URL: GET /student/home/update-info
      */
-    @GetMapping("/update-info")
+    @GetMapping("/home/update-info")
     public String updateStudentInformationPage(Authentication authentication, Model model) {
 
         try {
@@ -91,7 +91,7 @@ public class StudentInformationController {
      *
      * URL: POST /student/home/update-info
      */
-    @PostMapping("/update-info")
+    @PostMapping("/home/update-info")
     public String updateStudentInformation(Authentication authentication,
                                            @ModelAttribute UserInformationUpdateDTO updateDTO,
                                            Model model) {
@@ -120,16 +120,16 @@ public class StudentInformationController {
     /**
      * 학생 탈퇴 화면 이동
      *
-     * URL: GET /student/home/leave
+     * URL: GET /student/withdraw
      */
-    @GetMapping("/leave")
+    @GetMapping("/withdraw")
     public String deleteStudentAccountPage(Model model) {
 
         /* 탈퇴 폼 바인딩용 DTO */
         model.addAttribute("deleteUserDTO", new DeleteUserDTO());
 
         /* 공통 탈퇴 화면에서 사용할 form action 주소 */
-        model.addAttribute("formActionUrl", "/student/home/leave");
+        model.addAttribute("formActionUrl", "/student/withdraw");
 
         return "auth/deleteaccount";
     }
@@ -137,9 +137,9 @@ public class StudentInformationController {
     /**
      * 학생 탈퇴 처리
      *
-     * URL: POST /student/home/leave
+     * URL: POST /student/withdraw
      */
-    @PostMapping("/leave")
+    @PostMapping("/withdraw")
     public String deleteStudentAccount(Authentication authentication,
                                        @ModelAttribute DeleteUserDTO deleteUserDTO,
                                        Model model,
@@ -163,7 +163,7 @@ public class StudentInformationController {
             /* 실패 시 에러 메시지와 기존 입력값 유지 */
             model.addAttribute("deleteError", exception.getMessage());
             model.addAttribute("deleteUserDTO", deleteUserDTO);
-            model.addAttribute("formActionUrl", "/student/home/leave");
+            model.addAttribute("formActionUrl", "/student/withdraw");
 
             return "auth/deleteaccount";
         }
