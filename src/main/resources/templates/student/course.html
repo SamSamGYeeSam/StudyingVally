@@ -211,7 +211,6 @@
         const mailboxModal = document.getElementById('mailboxModal');
         const mailList = document.getElementById('mailList');
 
-        // 모달 열기
         mailboxModal.style.display = 'block';
         mailList.innerHTML = '<p style="text-align: center; font-size: 13px;">불러오는 중...</p>';
 
@@ -251,7 +250,7 @@
         document.getElementById('npcChoices').style.display = 'none';
         document.getElementById('modalFooter').style.display = 'block';
     }
-    function goToQuestionPage() { location.href = "/student/course/talk"; }
+    function goToQuestionPage() { location.href = "/student/course/talk?courseId=" + courseId; }
 
     setInterval(moveNpcRandomly, 3000);
 </script>
