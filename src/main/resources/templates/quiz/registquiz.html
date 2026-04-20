@@ -5,7 +5,9 @@
     <title>퀴즈 생성</title>
 </head>
 <body>
-<button type="button" onclick="history.back();" style="margin-bottom: 20px;">⬅ 생성 취소하고 돌아가기</button>
+<button type="button" onclick="location.href='/teacher/quiz/find-quiz-by-chap'" style="margin-bottom: 20px; padding: 10px; cursor: pointer;">
+    ⬅ 생성 취소하고 돌아가기
+</button>
 <h2>퀴즈 생성</h2>
 <div th:if="${message}" th:text="${message}" style="color: blue; margin-bottom: 15px;"></div>
 
