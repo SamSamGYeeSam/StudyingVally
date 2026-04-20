@@ -1,87 +1,103 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>내 정보 조회</title>
-    <link rel="stylesheet" th:href="@{/css/auth.css}">
-</head>
-<body>
-<div class="game-screen">
-    <!-- 하늘 요소 -->
-    <div class="sun"></div>
-    <div class="cloud c1"></div>
-    <div class="cloud c2"></div>
-    <div class="cloud c3"></div>
+    <head>
+        <meta charset="UTF-8">
+        <title>내 정보 조회</title>
+        <link rel="stylesheet" th:href="@{/css/auth.css}">
+    </head>
+        <body>
+            <div class="game-screen">
+            <!-- 하늘 요소 -->
+            <div class="sun"></div>
+            <div class="cloud c1"></div>
+            <div class="cloud c2"></div>
+            <div class="cloud c3"></div>
 
-    <!-- 배경 산/나무 -->
-    <div class="mountains"></div>
-    <div class="far-trees"></div>
+            <!-- 배경 산/나무 -->
+            <div class="mountains"></div>
+            <div class="far-trees"></div>
 
-    <!-- 땅/길/울타리 -->
-    <div class="ground"></div>
-    <div class="path"></div>
-    <div class="fence"></div>
+        <!--땅/길/울타리 -->
+            <div class="ground"></div>
+            <div class="path"></div>
+            <div class="fence"></div>
 
-    <!-- 집 -->
-    <div class="house">
-        <div class="roof"></div>
-        <div class="body"></div>
-        <div class="window left"></div>
-        <div class="window right"></div>
-        <div class="door"></div>
-    </div>
+            <!-- 집 -->
+            <div class="house">
+            <div class="roof"></div>
+            <div class="body"></div>
+            <div class="window left"></div>
+            <div class="window right"></div>
+            <div class="door"></div>
+        </div>
 
-    <!-- 중앙 패널 -->
-    <div class="panel-wrap">
-        <div class="panel">
+        <!-- 중앙 패널 -->
+        <div class="panel-wrap">
+            <div class="panel">
 
 
-<h1>내 정보 조회</h1>
+            <h1>내 정보 조회</h1>
 
-<!-- 조회 실패 메시지 -->
-<div th:if="${infoError != null}" th:text="${infoError}">
-    조회 에러 메시지
-</div>
+            <!-- 조회 실패 메시지 -->
+            <div th:if="${infoError != null}" th:text="${infoError}">
+                조회 에러 메시지
+            </div>
 
-<!-- 이름 -->
-<div>
-    <label>이름</label>
-    <input type="text"
-           th:value="${userInfo != null ? userInfo.userName : ''}"
-           readonly>
-</div>
+            <!-- 이름 -->
+            <div>
+                <label>이름</label>
+                <input type="text"
+                       th:value="${userInfo != null ? userInfo.userName : ''}"
+                        readonly>
+            </div>
+                <div>
+                    <label>닉네임</label>
+                    <input type="text"
+                           th:value="${userInfo != null ? userInfo.userNickname : ''}"
+                           readonly>
+                </div>
 
-<!-- 전화번호 -->
-<div>
-    <label>전화번호</label>
-    <input type="text"
-           th:value="${userInfo != null ? userInfo.userPhoneNumber : ''}"
-           readonly>
-</div>
+                <div>
+                    <label>성별</label>
+                    <input type="text"
+                           th:value="${userInfo != null ? (userInfo.userGender == 'M' ? '남성' : '여성') : ''}"
+                           readonly>
+                </div>
 
-<!-- 이메일 -->
-<div>
-    <label>이메일</label>
-    <input type="text"
-           th:value="${userInfo != null ? userInfo.userEmail : ''}"
-           readonly>
-</div>
+            <!-- 전화번호 -->
+            <div>
+                <label>전화번호</label>
+                <input type="text"
+                    th:value="${userInfo != null ? userInfo.userPhoneNumber : ''}"
+                    readonly>
+            </div>
 
-<!-- 비밀번호 -->
-<div>
-    <label>비밀번호</label>
-</div>
+            <!-- 이메일 -->
+            <div>
+                <label>이메일</label>
+                <input type="text"
+                    th:value="${userInfo != null ? userInfo.userEmail : ''}"
+                    readonly>
+            </div>
 
-<!-- 수정 버튼 -->
-<div th:if="${updatePageUrl != null}">
-    <a th:href="${updatePageUrl}">
-        수정
-    </a>
-</div>
+            <!-- 비밀번호 -->
+            <div>
+                <label>비밀번호</label>
+            </div>
 
-<!-- 전페이지(마이페이지)로 돌아가기 위한 확인 버튼-->
-<div th:if="${confirmPageUrl !=null}">
-    <a th:href="${confirmPageUrl}">확인</a>
-</div>
-</body>
+            <!-- 수정 버튼 -->
+            <div th:if="${updatePageUrl != null}">
+                <a th:href="${updatePageUrl}">
+                    수정
+                </a>
+            </div>
+
+            <!-- 전페이지(마이페이지)로 돌아가기 위한 확인 버튼-->
+            <div th:if="${confirmPageUrl !=null}">
+                <a th:href="${confirmPageUrl}">확인</a>
+            </div>
+        </div>
+        </div>
+            </div>
+    </body>
 </html>

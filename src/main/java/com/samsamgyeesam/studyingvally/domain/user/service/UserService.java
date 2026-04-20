@@ -149,7 +149,9 @@ public class UserService {
         return new UserInformationResponseDTO(
                 user.getUserName(),
                 user.getUserPhoneNumber(),
-                user.getUserEmail()
+                user.getUserEmail(),
+                user.getUserNickname(),
+                user.getUserGender()
         );
     }
 
@@ -164,7 +166,9 @@ public class UserService {
 
         if (updateDTO.getUserPhoneNumber() == null || updateDTO.getUserPhoneNumber().isBlank()
                 || updateDTO.getUserEmail() == null || updateDTO.getUserEmail().isBlank()
-                || updateDTO.getUserPassword() == null || updateDTO.getUserPassword().isBlank()) {
+                || updateDTO.getUserPassword() == null || updateDTO.getUserPassword().isBlank()
+                || updateDTO.getUserNickname() == null || updateDTO.getUserNickname().isBlank()
+                || updateDTO.getUserGender() == null || updateDTO.getUserGender().isBlank()) {
             throw new IllegalArgumentException("수정할 정보를 모두 입력해주세요.");
         }
 
@@ -173,9 +177,16 @@ public class UserService {
             throw new IllegalArgumentException("gmail 형식의 이메일만 입력 가능합니다.");
         }
 
+        if (!user.getUserNickname().equals(updateDTO.getUserNickname())
+                && userRepository.existsByUserNickname(updateDTO.getUserNickname())) {
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+        }
+
         user.updateInformation(
+                updateDTO.getUserNickname(),
                 updateDTO.getUserPhoneNumber(),
                 updateDTO.getUserEmail(),
+                updateDTO.getUserGender(),
                 encodedPassword
         );
     }

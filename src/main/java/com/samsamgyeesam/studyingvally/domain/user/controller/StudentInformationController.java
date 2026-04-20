@@ -62,8 +62,10 @@ public class StudentInformationController {
             UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
 
             UserInformationUpdateDTO updateDTO = new UserInformationUpdateDTO();
+            updateDTO.setUserNickname(userInfo.getUserNickname());
             updateDTO.setUserPhoneNumber(userInfo.getUserPhoneNumber());
             updateDTO.setUserEmail(userInfo.getUserEmail());
+            updateDTO.setUserGender(userInfo.getUserGender());
             model.addAttribute("userInfo", userInfo);
             model.addAttribute("updateDTO", updateDTO);
 
@@ -105,7 +107,6 @@ public class StudentInformationController {
             String loginUserId = authentication.getName();
 
             UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
-
             model.addAttribute("userInfo", userInfo);
             model.addAttribute("updateDTO", updateDTO);
             model.addAttribute("updateError", exception.getMessage());

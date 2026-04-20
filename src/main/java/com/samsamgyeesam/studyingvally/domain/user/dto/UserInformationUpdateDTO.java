@@ -12,6 +12,12 @@ public class UserInformationUpdateDTO {
     // 비밀번호
     private String userPassword;
 
+    // 닉네임
+    private String userNickname;
+
+    // 성별
+    private String userGender;
+
     public UserInformationUpdateDTO() {
     }
 
@@ -37,5 +43,21 @@ public class UserInformationUpdateDTO {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    public String getUserNickname() {
+        return userNickname;
+    }
+
+    public void setUserNickname(String userNickname) {
+        this.userNickname = userNickname;
+    }
+
+    public String getUserGender() {
+        return userGender;
+    }
+
+    public void setUserGender(String userGender) {
+        this.userGender = userGender;
     }
 }

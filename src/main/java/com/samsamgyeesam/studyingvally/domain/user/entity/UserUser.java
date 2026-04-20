@@ -127,10 +127,12 @@ public class UserUser {
     }
 
     // 내 정보 수정
-    public void updateInformation(String userPhoneNumber, String userEmail, String userPassword) {
+    public void updateInformation(String userNickname, String userPhoneNumber, String userEmail, String userPassword, String userGender) {
+        this.userNickname = userNickname;
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
+        this.userGender = userGender;
     }
 
     // 로그인 실패 횟수 증가
