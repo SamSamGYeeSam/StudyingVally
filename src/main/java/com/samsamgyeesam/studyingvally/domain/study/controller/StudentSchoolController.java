@@ -29,15 +29,6 @@ public class StudentSchoolController {
     private final StudentCourseService studentCourseService;
     private final StudentService studentService;
 
-//    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-//        if (request.getSession().getAttribute("userNo") == null) {
-//            response.sendRedirect("/main");
-//            return false;
-//        }
-//        return true;
-//    }
-
-
     @GetMapping("/evaluations/{courseId}")
     @ResponseBody
     public List<StudentEvaluationResponseDTO> getEvaluations(@PathVariable("courseId") Long courseId) {
@@ -49,11 +40,13 @@ public class StudentSchoolController {
 
         if (principal == null) {return "redirect:/auth/login";}
 
-        List<StudentEnrollment> enrollments = studentEnrollmentRepository.findAll();
-        List<StudentCourse> courses = enrollments.stream()
-                .map(StudentEnrollment::getCourse)
-                .distinct()
-                .collect(Collectors.toList());
+//        List<StudentEnrollment> enrollments = studentEnrollmentRepository.findAll();
+//        List<StudentCourse> courses = enrollments.stream()
+//                .map(StudentEnrollment::getCourse)
+//                .distinct()
+//                .collect(Collectors.toList());
+
+        List<StudentCourse> courses = studentCourseService.getOpenCourses();
 
         String userId = principal.getName();
         Long userNo = studentService.findUserNoByUserId(userId);

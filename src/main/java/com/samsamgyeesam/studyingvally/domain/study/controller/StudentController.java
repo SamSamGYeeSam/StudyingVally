@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/student")
@@ -56,6 +57,11 @@ public class StudentController {
         Long userNo = studentService.findUserNoByUserId(userId);
 
         StudentDTO student = studentService.getStudentMainData(userNo);
+
+        List<StudentDTO.EnrolledCourseDTO> activeCourses = student.getEnrolledCourses().stream()
+                .filter(course -> "OPEN".equals(course.getCourseStatus()))
+                .collect(Collectors.toList());
+
         model.addAttribute("student", student);
         model.addAttribute("courseList", student.getEnrolledCourses());
         return "student/home";

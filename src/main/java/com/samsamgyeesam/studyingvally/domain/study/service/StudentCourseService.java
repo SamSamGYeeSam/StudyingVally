@@ -25,12 +25,13 @@ public class StudentCourseService {
     private final StudentCourseQuestionRepository studentCourseQuestionRepository;
 
     public List<StudentCourse> getOpenCourses() {
-        return studentEnrollmentRepository.findAll().stream()
-                .filter(enrollment -> enrollment.getCourse() != null &&
-                        "open".equalsIgnoreCase(enrollment.getCourse().getCourseStatus()))
-                .map(StudentEnrollment::getCourse)
-                .distinct()
-                .collect(Collectors.toList());
+//        return studentEnrollmentRepository.findAll().stream()
+//                .filter(enrollment -> enrollment.getCourse() != null &&
+//                        "open".equalsIgnoreCase(enrollment.getCourse().getCourseStatus()))
+//                .map(StudentEnrollment::getCourse)
+//                .distinct()
+//                .collect(Collectors.toList());
+        return studentCourseRepository.findByCourseStatusIgnoreCase("OPEN");
     }
 
 
