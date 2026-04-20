@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -77,7 +78,10 @@ public class AuthFailHandler extends SimpleUrlAuthenticationFailureHandler {
             /*
              * 그 외 예외
              */
-        } else {
+        } else if (exception instanceof DisabledException) {
+        errorMessage = "비활성화된 계정입니다. 관리자에게 문의해주세요.";
+
+        }else {
             errorMessage = "로그인 요청을 처리할 수 없습니다.";
         }
 

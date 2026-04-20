@@ -48,6 +48,9 @@ public class AuthUserDetails implements UserDetails {
      */
     private final boolean accountLocked;
 
+    // 계정 상태
+    private final boolean enabled;
+
     /**
      * 일반 사용자 생성자
      */
@@ -58,6 +61,7 @@ public class AuthUserDetails implements UserDetails {
         this.displayName = user.getUserNickname();
         this.userNo = user.getUserNo();
         this.accountLocked = user.isAccountLocked();
+        this.enabled = user.isActive();
     }
 
     /**
@@ -70,6 +74,7 @@ public class AuthUserDetails implements UserDetails {
         this.displayName = "관리자";
         this.userNo = null;
         this.accountLocked = false;
+        this.enabled = true;
     }
 
     /**
@@ -129,6 +134,8 @@ public class AuthUserDetails implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
+
+
 }
