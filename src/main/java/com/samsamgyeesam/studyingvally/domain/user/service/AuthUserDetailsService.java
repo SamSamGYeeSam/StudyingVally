@@ -1,8 +1,10 @@
 package com.samsamgyeesam.studyingvally.domain.user.service;
 
+import com.samsamgyeesam.studyingvally.domain.user.entity.UserAccountState;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserAdmin;
 import com.samsamgyeesam.studyingvally.domain.user.repository.AdminRepository;
 import com.samsamgyeesam.studyingvally.domain.user.entity.UserUser;
+import com.samsamgyeesam.studyingvally.domain.user.repository.UserAccountStateRepository;
 import com.samsamgyeesam.studyingvally.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +35,9 @@ public class AuthUserDetailsService implements UserDetailsService {
      */
     private final AdminRepository adminRepository;
 
+    // 회원 성공 상태 Repository
+    private final UserAccountStateRepository userAccountStateRepository;
+
     /*
      * 로그인 아이디로 사용자를 조회한다.
      *
@@ -55,9 +60,13 @@ public class AuthUserDetailsService implements UserDetailsService {
         }
 
         // 관리자가 아니면 일반 사용자(user) 테이블에서 조회한다.
+
         UserUser user = userRepository.findByUserId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException("일치하는 계정을 찾을 수 없습니다."));
 
-        return new AuthUserDetails(user);
+        UserAccountState state = userAccountStateRepository.findById(user.getUserNo())
+                .orElseGet(() -> userAccountStateRepository.save(UserAccountState.create(user.getUserNo())));
+
+        return new AuthUserDetails(user, state);
     }
 }
