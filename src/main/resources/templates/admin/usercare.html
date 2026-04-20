@@ -158,7 +158,6 @@
             <td>
                 <form th:action="@{/admin/usercare/detail}" method="post" class="select-form">
                     <input type="hidden" name="userNo" th:value="${user.userNo}">
-                    <input type="hidden" name="displayNo" th:value="${stat.index + 1}"> <!-- 추가 -->
                     <button type="submit" class="select-btn">선택</button>
                 </form>
             </td>

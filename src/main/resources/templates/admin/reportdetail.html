@@ -62,10 +62,6 @@
             cursor: pointer;
         }
 
-        .submit-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
 
         .form-table {
             width: 100%;
@@ -106,9 +102,6 @@
             resize: vertical;
         }
 
-        .disabled-textarea {
-            background-color: #f1f1f1;
-        }
 
         .bottom-button-area {
             display: flex;
@@ -123,12 +116,6 @@
             margin-bottom: 14px;
         }
 
-        .guide-text {
-            margin-top: 12px;
-            color: #444;
-            font-size: 14px;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -177,36 +164,32 @@
                         <div class="readonly-box" th:text="${reportDetail.reportDesc}">신고 상세 내용</div>
                     </td>
                 </tr>
-                <tr>
-                    <th>기존 답변</th>
+
+                <!-- 답변이 이미 있는 경우: 읽기 전용 답변만 표시 -->
+                <tr th:if="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)}">
+                    <th>답변 내용</th>
                     <td>
-                        <div class="readonly-box"
-                             th:text="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer) ? reportDetail.reportAnswer : '아직 등록된 답변이 없습니다.'}">
-                            아직 등록된 답변이 없습니다.
+                        <div class="readonly-box" th:text="${reportDetail.reportAnswer}">
+                            등록된 답변
                         </div>
                     </td>
                 </tr>
-                <tr>
+
+                <!-- 답변이 없는 경우: 작성 영역 표시 -->
+                <tr th:if="${reportDetail.reportAnswer == null or #strings.isEmpty(reportDetail.reportAnswer)}">
                     <th>답변 작성</th>
                     <td>
-                        <textarea name="reportAnswer"
-                                  class="form-textarea"
-                                  th:classappend="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)} ? ' disabled-textarea' : ''"
-                                  th:disabled="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)}"
-                                  th:text="${reportDetail.reportAnswer}"
-                                  placeholder="신고에 대한 처리 답변을 입력하세요."></textarea>
-
-                        <div class="guide-text"
-                             th:if="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)}">
-                            이미 답변이 완료된 신고입니다. 답변은 수정할 수 없습니다.
-                        </div>
+                <textarea name="reportAnswer"
+                          class="form-textarea"
+                          placeholder="신고에 대한 처리 답변을 입력하세요."></textarea>
                     </td>
                 </tr>
             </table>
 
+            <!-- 답변이 없는 경우에만 완료 버튼 표시 -->
             <div class="bottom-button-area"
                  th:if="${reportDetail.reportAnswer == null or #strings.isEmpty(reportDetail.reportAnswer)}">
-                <button type="submit" class="submit-button">완료</button>
+                <button type="submit" class="submit-button">답변 완료</button>
             </div>
         </form>
     </div>

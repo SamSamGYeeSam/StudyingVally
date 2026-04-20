@@ -153,10 +153,6 @@
 
     <div class="top-layout">
         <div class="left-panel">
-            <div class="box info-box">
-                번호 :
-                <span th:text="${displayNo}" style="margin-left: 8px;">1</span>
-            </div>
 
             <div class="box info-box" th:text="${courseDetail.courseTitle}">
                 강의명
@@ -225,7 +221,6 @@
 
         <form th:action="@{/admin/coursecare/close}" method="post" class="button-form">
             <input type="hidden" name="courseId" th:value="${courseDetail.courseId}">
-            <input type="hidden" name="displayNo" th:value="${displayNo}">
             <button type="submit" class="action-btn">비활성화</button>
         </form>
 

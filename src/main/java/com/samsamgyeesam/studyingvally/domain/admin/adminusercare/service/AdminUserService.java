@@ -11,6 +11,7 @@ import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.repository.A
 import com.samsamgyeesam.studyingvally.domain.admin.admincallcenter.contact.repository.AdminQuestionTechRepository;
 import com.samsamgyeesam.studyingvally.domain.admin.admincallcenter.report.repository.AdminReportCountRepository;
 import com.samsamgyeesam.studyingvally.domain.admin.adminusercare.repository.AdminUserRepository;
+import com.samsamgyeesam.studyingvally.domain.admin.exception.AdminException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,7 +62,7 @@ public class AdminUserService {
     public AdminUserDetailResponseDTO findUserDetail(Long userNo) {
 
         AdminUser adminUser = adminUserRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new AdminException("해당 사용자가 존재하지 않습니다."));
 
         List<String> courseTitleList = Collections.emptyList();
         String courseSectionTitle = "";
