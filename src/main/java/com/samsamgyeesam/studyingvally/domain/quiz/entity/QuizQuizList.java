@@ -32,6 +32,9 @@ public class QuizQuizList extends BaseTimeEntity {
     @Column(name = "quiz_answer_desc")
     private String quizAnswerDesc;
 
+    @Column(name = "quiz_score")
+    private Long quizScore;
+
     @Column(name = "quiz_no")
     private String quizNo;
 

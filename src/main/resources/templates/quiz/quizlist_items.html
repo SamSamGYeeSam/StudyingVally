@@ -3,25 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>퀴즈 문제 목록</title>
+    <style>
+        .total-score { font-size: 18px; font-weight: bold; margin-bottom: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px; border-left: 5px solid #000; }
+        .score-ok { color: green; }
+        .score-warn { color: #d32f2f; }
+        .quiz-item { margin-bottom: 15px; font-size: 16px; }
+        .quiz-score { color: #d32f2f; font-weight: bold; margin-left: 10px; }
+        .btn-action { padding: 10px 20px; color: #fff; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; font-size: 15px; }
+        .btn-add { background: #000; }
+        .btn-edit { background: #1976d2; }
+    </style>
 </head>
 <body>
 <button type="button" onclick="history.back();" style="margin-bottom: 20px;">⬅ 퀴즈 목록으로 돌아가기</button>
 <h2>퀴즈 상세 (문제 리스트)</h2>
 
+<div th:if="${successMessage}" th:text="${successMessage}" style="color: green; margin-bottom: 15px; font-weight: bold;"></div>
+<div th:if="${errorMessage}" th:text="${errorMessage}" style="color: red; margin-bottom: 15px; font-weight: bold;"></div>
+
+<div th:with="totalScore=${#aggregates.sum(quizItems.![quizScore]) ?: 0}" class="total-score">
+    현재 배점 합계:
+    <span th:class="${totalScore == 100 ? 'score-ok' : 'score-warn'}" th:text="${totalScore} + ' / 100점'"></span>
+</div>
+
 <ul>
-    <li th:each="item : ${quizItems}">
-        <form action="/teacher/quiz/update-quizlist-form-post" method="post" style="display:inline;">
-            <input type="hidden" name="quizListNo" th:value="${item.quizListNo}">
-            <button type="submit" style="cursor:pointer; text-decoration:underline; background:none; border:none; padding:0; font-size:16px;" th:text="${item.quizTitle}"></button>
-        </form>
+    <li th:each="item, stat : ${quizItems}" class="quiz-item">
+        <strong th:text="'Q' + ${stat.count} + '. '"></strong>
+        <span th:text="${item.quizTitle}"></span>
+        <span class="quiz-score" th:text="'[' + ${item.quizScore} + '점]'"></span>
     </li>
 </ul>
 
 <div th:if="${#lists.isEmpty(quizItems)}" style="color: gray; margin-bottom: 20px;">등록된 문제가 없습니다.</div>
 
-<form action="/teacher/quiz/regist-quizlist-form-post" method="post">
+<form th:if="${#lists.isEmpty(quizItems)}" action="/teacher/quiz/regist-quizlist-form-post" method="post">
     <input type="hidden" name="quizNo" th:value="${quizNo}">
-    <button type="submit">+ 새 문제 등록하기</button>
+    <button type="submit" class="btn-action btn-add">+ 새 문제 일괄 등록하기</button>
 </form>
+
+<form th:if="${not #lists.isEmpty(quizItems)}" action="/teacher/quiz/update-quizlist-form-post" method="post">
+    <input type="hidden" name="quizNo" th:value="${quizNo}">
+    <button type="submit" class="btn-action btn-edit">전체 문제 일괄 수정하기 (배점 조정)</button>
+</form>
+
 </body>
 </html>
