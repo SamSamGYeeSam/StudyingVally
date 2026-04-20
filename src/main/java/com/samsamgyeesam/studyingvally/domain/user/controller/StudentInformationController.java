@@ -22,9 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class StudentInformationController {
     private final UserService userService;
 
-    /**
+    /*
      * 학생 정보 조회
-     *
      * URL: GET /student/home/info
      */
     @GetMapping("/home/info")
@@ -36,7 +35,7 @@ public class StudentInformationController {
             UserInformationResponseDTO userInfo = userService.getUserInformation(loginUserId);
             model.addAttribute("userInfo", userInfo);
 
-            /* 조회 화면에서 수정 버튼 클릭 시 이동할 주소 */
+            // 조회 화면에서 수정 버튼 클릭 시 이동할 주소
             model.addAttribute("updatePageUrl", "/student/home/update-info");
             // 뒤로가기 누를 시 마이페이지로 이동
             model.addAttribute("confirmPageUrl", "/student/home");
@@ -50,9 +49,8 @@ public class StudentInformationController {
         }
     }
 
-    /**
+    /*
      * 학생 정보 수정 화면 이동
-     *
      * URL: GET /student/home/update-info
      */
     @GetMapping("/home/update-info")
@@ -69,10 +67,10 @@ public class StudentInformationController {
             model.addAttribute("userInfo", userInfo);
             model.addAttribute("updateDTO", updateDTO);
 
-            /* 수정 form submit 주소 */
+            // 수정 form submit 주소
             model.addAttribute("formActionUrl", "/student/home/update-info");
 
-            /* 뒤로가기 시 조회 화면 주소 */
+            // 뒤로가기 시 조회 화면 주소
             model.addAttribute("showPageUrl", "/student/home/info");
 
             return "auth/updateinformation";

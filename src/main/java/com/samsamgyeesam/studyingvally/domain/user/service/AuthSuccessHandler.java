@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-/**
+/*
  * 로그인 성공 후 처리 핸들러
  *
  * 처리 내용:
@@ -27,13 +27,13 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 
-    /* 사용자 관련 서비스 */
+    // 사용자 관련 서비스
     private final UserService userService;
 
-    /* 로그인 성공/실패 로그 저장용 Repository */
+    // 로그인 성공/실패 로그 저장용 Repository
     private final LoginLogRepository loginLogRepository;
 
-    /**
+    /*
      * 로그인 성공 시 실행되는 메서드
      *
      * @param request 로그인 요청 객체
@@ -45,16 +45,16 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        /* 현재 로그인한 사용자 아이디 */
+        // 현재 로그인한 사용자 아이디
         String loginId = authentication.getName();
 
-        /* 현재 접속 IP 주소 */
+        // 현재 접속 IP 주소
         String ipAddress = request.getRemoteAddr();
 
-        /* 로그인 성공 시 실패 횟수 초기화 */
+        // 로그인 성공 시 실패 횟수 초기화
         userService.resetLoginFailCount(loginId);
 
-        /* 로그인 성공 로그 저장 */
+        // 로그인 성공 로그 저장
         loginLogRepository.save(
                 new LoginLog(
                         loginId,              // 로그인한 사용자 아이디
@@ -64,16 +64,16 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
                 )
         );
 
-        /* 현재 로그인한 사용자의 권한 목록 */
+        // 현재 로그인한 사용자의 권한 목록
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-        /* 강사 권한이면 강사 메인으로 이동 */
+        // 강사 권한이면 강사 메인으로 이동
         if (hasRole(authorities, "ROLE_TEACHER")) {
             response.sendRedirect("/teacher/teachermain");
             return;
         }
 
-        /* 학생 권한이면 학생 메인으로 이동 */
+        // 학생 권한이면 학생 메인으로 이동
         if (hasRole(authorities, "ROLE_STUDENT")) {
             response.sendRedirect("/student/main");
             return;

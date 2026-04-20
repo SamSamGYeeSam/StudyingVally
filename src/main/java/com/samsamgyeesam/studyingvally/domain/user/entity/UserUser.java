@@ -5,95 +5,68 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * user 테이블과 매핑되는 엔티티
- */
+// user 테이블과 매핑되는 엔티티
 @Getter
 @Entity
 @Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserUser {
 
-    /**
-     * 사용자 PK
-     */
+    // 사용자 PK
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_no")
     private Long userNo;
 
-    /**
-     * 로그인 아이디
-     */
+    // 로그인 아이디
     @Column(name = "user_id", nullable = false, unique = true)
     private String userId;
 
-    /*
-     * 비밀번호
-     */
+    // 비밀번호
     @Column(name = "user_password", nullable = false)
     private String userPassword;
 
-    /**
-     * 전화번호
-     */
+    // 전화번호
     @Column(name = "user_phone_number")
     private String userPhoneNumber;
 
-    /**
-     * 이메일
-     */
+    // 이메일
     @Column(name = "user_email")
     private String userEmail;
 
-    /**
-     * 사용자 권한
-     */
+    // 사용자 권한
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role", nullable = false)
     private UserRole userRole;
 
-    /**
-     * 닉네임
-     */
+    // 닉네임
     @Column(name = "user_nickname")
     private String userNickname;
 
-    /**
-     * 사용자 이름
-     */
+    // 사용자 이름
     @Column(name = "user_name", nullable = false)
     private String userName;
 
-    /**
+    /*
      * 사용자 상태
-     *
      * 예: ACTIVE
      */
     @Column(name = "user_status", nullable = false)
     private String userStatus;
 
-    /**
-     * 성별
-     */
+    // 성별
     @Column(name = "user_gender", nullable = false)
     private String userGender;
 
-    /**
-     * 로그인 실패 횟수
-     */
+    // 로그인 실패 횟수
     @Column(name = "login_fail_count", nullable = false)
     private int loginFailCount;
 
-    /**
-     * 계정 잠금 여부
-     */
+    // 계정 잠금 여부
     @Column(name = "is_account_locked", nullable = false)
     private boolean accountLocked;
 
-    /**
-     * 기존 프로젝트 스타일에 맞춘 builder 시작 메서드
-     */
+    // 기존 프로젝트 스타일에 맞춘 builder 시작 메서드
     public static UserUser builder() {
         return new UserUser();
     }
@@ -153,40 +126,29 @@ public class UserUser {
         return this;
     }
 
-    /**
-     * 내 정보 수정
-     *
-     * 이름은 수정하지 않고
-     * 전화번호, 이메일, 비밀번호만 수정
-     */
+    // 내 정보 수정
     public void updateInformation(String userPhoneNumber, String userEmail, String userPassword) {
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
     }
 
-    /**
-     * 로그인 실패 횟수 증가
-     */
+    // 로그인 실패 횟수 증가
     public void increaseLoginFailCount() {
         this.loginFailCount++;
     }
 
-    /**
-     * 로그인 실패 횟수 초기화
-     */
+    // 로그인 실패 횟수 초기화
     public void resetLoginFailCount() {
         this.loginFailCount = 0;
     }
 
-    /**
-     * 계정 잠금 처리
-     */
+    // 계정 잠금 처리
     public void lockAccount() {
         this.accountLocked = true;
     }
 
-    // 재설정 업데이트
+    // 비밀번호 재설정 업데이트
     public void updatePassword(String userPassword) {
         this.userPassword = userPassword;
     }

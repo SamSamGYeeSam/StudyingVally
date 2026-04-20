@@ -12,23 +12,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * 사용자 관련 비즈니스 로직 서비스
- */
+//사용자 관련 비즈니스 로직 서비스
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
 
-    /**
-     * user 테이블 조회용 Repository
-     */
+    // user 테이블 조회용 Repository
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    /**
-     * 이름 + 전화번호로 아이디 찾기
-     */
+    // 이름 + 전화번호로 아이디 찾기
     public String findUserId(String userName, String phoneNumber) {
 
         if (userName == null || userName.isBlank()
@@ -68,13 +62,11 @@ public class UserService {
         user.updatePassword(encodedPassword);
     }
 
-    /**
-     * 회원가입
-     */
+    // 회원가입
     @Transactional
     public void signup(SignupDTO signupDTO) {
 
-        /* 필수값 검증 */
+        // 필수값 검증
         if (signupDTO.getUserName() == null || signupDTO.getUserName().isBlank()
                 || signupDTO.getUserId() == null || signupDTO.getUserId().isBlank()
                 || signupDTO.getUserPassword() == null || signupDTO.getUserPassword().isBlank()
@@ -95,22 +87,22 @@ public class UserService {
             throw new IllegalArgumentException("gmail 형식의 이메일만 입력 가능합니다.");
         }
 
-        /* 아이디 중복 검사 */
+        // 아이디 중복 검사
         if (userRepository.existsByUserId(signupDTO.getUserId())) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
 
-        /* 이메일 중복 검사 */
+        // 이메일 중복 검사
         if (userRepository.existsByUserEmail(signupDTO.getUserEmail())) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
 
-        /* 전화번호 중복 검사 */
+        // 전화번호 중복 검사
         if (userRepository.existsByUserPhoneNumber(signupDTO.getUserPhoneNumber())) {
             throw new IllegalArgumentException("이미 사용 중인 전화번호입니다.");
         }
 
-        /* 닉네임 중복 검사 */
+        // 닉네임 중복 검사
         if (userRepository.existsByUserNickname(signupDTO.getUserNickname())) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
@@ -131,7 +123,7 @@ public class UserService {
 
         String encodedPassword = passwordEncoder.encode(signupDTO.getUserPassword());
 
-        /* DTO -> Entity 변환 */
+        // DTO -> Entity 변환
         UserUser newUser = UserUser.builder()
                 .userName(signupDTO.getUserName())
                 .userId(signupDTO.getUserId())
@@ -148,9 +140,7 @@ public class UserService {
         userRepository.save(newUser);
     }
 
-    /**
-     * 현재 로그인한 사용자 정보 조회
-     */
+    // 현재 로그인한 사용자 정보 조회
     public UserInformationResponseDTO getUserInformation(String loginUserId) {
 
         UserUser user = userRepository.findByUserId(loginUserId)
@@ -163,9 +153,7 @@ public class UserService {
         );
     }
 
-    /**
-     * 현재 로그인한 사용자 정보 수정
-     */
+    // 현재 로그인한 사용자 정보 수정
     @Transactional
     public void updateUserInformation(String loginUserId, UserInformationUpdateDTO updateDTO) {
 
@@ -180,7 +168,7 @@ public class UserService {
             throw new IllegalArgumentException("수정할 정보를 모두 입력해주세요.");
         }
 
-        /* 이메일 형식 검증 */
+        // 이메일 형식 검증
         if (!isValidEmailFormat(updateDTO.getUserEmail())) {
             throw new IllegalArgumentException("gmail 형식의 이메일만 입력 가능합니다.");
         }
@@ -192,9 +180,7 @@ public class UserService {
         );
     }
 
-    /**
-     * 회원 탈퇴
-     */
+    // 회원 탈퇴
     @Transactional
     public void deleteAccount(String loginUserId, DeleteUserDTO deleteUserDTO) {
 
@@ -212,9 +198,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    /**
-     * 내 정보 조회/수정 전 비밀번호 확인
-     */
+    // 내 정보 조회/수정 전 비밀번호 확인
     public void verifyUserPassword(String loginUserId, String userPassword) {
 
         UserUser user = userRepository.findByUserId(loginUserId)
@@ -229,9 +213,8 @@ public class UserService {
         }
     }
 
-    /**
+    /*
      * 로그인 실패 횟수 증가
-     *
      * 5회 이상이면 계정 잠금
      */
     @Transactional
@@ -239,12 +222,12 @@ public class UserService {
 
         UserUser user = userRepository.findByUserId(loginId).orElse(null);
 
-        /* 존재하지 않는 아이디면 종료 */
+        // 존재하지 않는 아이디면 종료
         if (user == null) {
             return;
         }
 
-        /* 이미 잠긴 계정이면 종료 */
+        // 이미 잠긴 계정이면 종료
         if (user.isAccountLocked()) {
             return;
         }
@@ -256,9 +239,7 @@ public class UserService {
         }
     }
 
-    /**
-     * 로그인 성공 시 실패 횟수 초기화
-     */
+    // 로그인 성공 시 실패 횟수 초기화
     @Transactional
     public void resetLoginFailCount(String loginId) {
 
@@ -273,7 +254,6 @@ public class UserService {
 
     /*
      * 이메일 형식 검증 메서드
-     *
      * 조건:
      * - gmail.com만 허용
      * - @ 앞은 영문 대소문자와 숫자만 허용

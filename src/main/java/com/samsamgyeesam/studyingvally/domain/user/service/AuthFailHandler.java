@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import jakarta.servlet.http.HttpSession;
 
-/**
+/*
  * 로그인 실패 시 처리하는 핸들러
  *
  * 처리 내용:
@@ -30,13 +30,13 @@ import jakarta.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class AuthFailHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    /* 사용자 관련 서비스 */
+    // 사용자 관련 서비스
     private final UserService userService;
 
-    /* 로그인 성공/실패 로그 저장용 Repository */
+    // 로그인 성공/실패 로그 저장용 Repository
     private final LoginLogRepository loginLogRepository;
 
-    /**
+    /*
      * 로그인 실패 시 실행되는 메서드
      *
      * @param request 로그인 요청 객체
@@ -48,13 +48,13 @@ public class AuthFailHandler extends SimpleUrlAuthenticationFailureHandler {
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
 
-        /* 로그인 폼에서 입력한 아이디 */
+        // 로그인 폼에서 입력한 아이디
         String loginId = request.getParameter("loginId");
 
-        /* 접속 IP 주소 */
+        // 접속 IP 주소
         String ipAddress = request.getRemoteAddr();
 
-        /* 화면에 보여줄 에러 메시지 */
+        // 화면에 보여줄 에러 메시지
         String errorMessage;
 
         /*
@@ -75,9 +75,7 @@ public class AuthFailHandler extends SimpleUrlAuthenticationFailureHandler {
         } else if (exception instanceof LockedException) {
             errorMessage = "로그인 5회 실패로 계정이 잠겼습니다. 관리자에게 문의하세요.";
 
-            /*
-             * 그 외 예외
-             */
+            // 그 외 예외
         } else if (exception instanceof DisabledException) {
         errorMessage = "비활성화된 계정입니다. 관리자에게 문의해주세요.";
 
@@ -85,7 +83,7 @@ public class AuthFailHandler extends SimpleUrlAuthenticationFailureHandler {
             errorMessage = "로그인 요청을 처리할 수 없습니다.";
         }
 
-        /* 로그인 실패 로그 저장 */
+        // 로그인 실패 로그 저장
         loginLogRepository.save(
                 new LoginLog(
                         loginId,              // 로그인 시도 아이디
@@ -98,7 +96,7 @@ public class AuthFailHandler extends SimpleUrlAuthenticationFailureHandler {
         HttpSession session = request.getSession();
         session.setAttribute("loginErrorMessage", errorMessage);
 
-        /* 로그인 페이지로 다시 이동 */
+        // 로그인 페이지로 다시 이동
         setDefaultFailureUrl("/auth/login");
 
         super.onAuthenticationFailure(request, response, exception);

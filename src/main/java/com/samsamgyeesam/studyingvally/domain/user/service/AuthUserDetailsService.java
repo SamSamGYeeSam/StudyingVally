@@ -33,7 +33,7 @@ public class AuthUserDetailsService implements UserDetailsService {
      */
     private final AdminRepository adminRepository;
 
-    /**
+    /*
      * 로그인 아이디로 사용자를 조회한다.
      *
      * @param loginId 로그인 아이디
@@ -43,10 +43,8 @@ public class AuthUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
 
-        /**
-         * 1. 관리자 계정부터 먼저 조회한다.
-         *
-         * 이유:
+        /*
+         *  관리자 계정부터 먼저 조회한다.
          * - admin 테이블이 별도로 존재한다.
          * - 관리자 계정은 별도 권한으로 처리해야 한다.
          */
@@ -56,9 +54,7 @@ public class AuthUserDetailsService implements UserDetailsService {
             return new AuthUserDetails(admin);
         }
 
-        /**
-         * 2. 관리자가 아니면 일반 사용자(user) 테이블에서 조회한다.
-         */
+        // 관리자가 아니면 일반 사용자(user) 테이블에서 조회한다.
         UserUser user = userRepository.findByUserId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException("일치하는 계정을 찾을 수 없습니다."));
 

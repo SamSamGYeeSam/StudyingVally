@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-/**
- * 로그인 성공/실패 로그를 저장하는 엔티티
- */
+// 로그인 성공/실패 로그를 저장하는 엔티티
 @Entity
 @Table(name = "login_log")
 public class LoginLog {
