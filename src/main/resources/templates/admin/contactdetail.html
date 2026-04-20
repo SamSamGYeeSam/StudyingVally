@@ -2,11 +2,9 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>사용자 관리 상세 페이지</title>
+    <title>문의 상세</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -16,160 +14,124 @@
 
         .header {
             background-color: #c9ef7a;
-            padding: 30px 40px;
+            padding: 40px 20px;
             text-align: center;
         }
 
         .header h1 {
             margin: 0;
-            font-size: 42px;
+            font-size: 52px;
+            font-weight: bold;
         }
 
         .container {
-            padding: 30px 40px 50px;
+            width: 95%;
+            max-width: 1200px;
+            margin: 30px auto;
         }
 
-        .layout {
-            display: flex;
-            gap: 20px;
-            align-items: stretch;
-        }
-
-        .left-panel {
-            width: 25%;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .center-panel {
-            width: 47%;
-            border: 3px solid #111;
+        .content-box {
+            border: 4px solid #111;
             background-color: #fff;
-            min-height: 550px;
-            padding: 24px;
+            padding: 32px;
         }
 
-        .right-panel {
-            width: 28%;
+        .content-header {
             display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .box {
-            border: 3px solid #111;
-            background-color: #fff;
-            padding: 22px;
-            text-align: center;
-        }
-
-        .photo-box {
-            height: 260px;
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
+            margin-bottom: 24px;
         }
 
-        .info-box {
-            min-height: 80px;
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .count-box {
-            min-height: 90px;
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .course-title {
-            font-size: 30px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .course-list {
-            list-style: none;
-            padding: 0;
+        .content-title {
             margin: 0;
-        }
-
-        .course-list li {
-            border: 2px solid #111;
-            margin-bottom: 12px;
-            padding: 14px 18px;
-            font-size: 18px;
-            background-color: #f9f9f9;
-        }
-
-        .empty-course {
-            text-align: center;
-            font-size: 20px;
-            margin-top: 80px;
-        }
-
-        .button-form {
-            margin: 0;
-        }
-
-        .action-btn {
-            width: 100%;
-            padding: 18px 0;
-            border: 3px solid #111;
-            background-color: #c9ef7a;
-            font-size: 22px;
+            font-size: 34px;
             font-weight: bold;
+        }
+
+        .top-button,
+        .submit-button {
+            display: inline-block;
+            background-color: #111;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none;
             cursor: pointer;
         }
 
-        .action-btn:disabled {
+        .submit-button:disabled {
             opacity: 0.7;
             cursor: not-allowed;
         }
 
-        .back-link {
-            display: block;
+        .form-table {
             width: 100%;
-            text-align: center;
-            padding: 18px 0;
-            border: 3px solid #111;
-            background-color: #c9ef7a;
-            color: #111;
-            text-decoration: none;
-            font-size: 22px;
-            font-weight: bold;
+            border-collapse: collapse;
         }
 
-        .status-text {
-            font-size: 22px;
-            font-weight: bold;
-            text-align: center;
+        .form-table th,
+        .form-table td {
+            border: 2px solid #222;
             padding: 16px;
-            border: 3px solid #111;
-            background-color: #fff;
+            vertical-align: middle;
         }
 
-        .bottom-description {
-            margin-top: 26px;
-            font-size: 18px;
+        .form-table th {
+            width: 180px;
+            background-color: #f3f3f3;
             text-align: center;
+        }
+
+        .readonly-box {
+            width: 100%;
+            min-height: 52px;
+            border: 2px solid #222;
+            background-color: #f7f7f7;
+            padding: 12px;
+            font-size: 16px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 260px;
+            border: 2px solid #222;
+            padding: 12px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            resize: vertical;
+        }
+
+        .bottom-button-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .error-text {
+            color: #c62828;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 14px;
         }
     </style>
 
     <script>
-        function submitOnce(form) {
+        function validateContactForm(form) {
+            const textarea = form.querySelector('textarea[name="questionAnswer"]');
             const button = form.querySelector('button[type="submit"]');
+
+            if (!textarea || textarea.value.trim() === "") {
+                alert("답변 내용을 입력하세요.");
+                if (textarea) {
+                    textarea.focus();
+                }
+                return false;
+            }
 
             if (button.dataset.submitted === "true") {
                 return false;
@@ -177,7 +139,7 @@
 
             button.dataset.submitted = "true";
             button.disabled = true;
-            button.textContent = "처리 중...";
+            button.textContent = "등록 중...";
             return true;
         }
     </script>
@@ -185,70 +147,82 @@
 <body>
 
 <div class="header">
-    <h1>사용자 관리 상세 페이지</h1>
+    <h1 th:text="${pageTitle}">문의 상세</h1>
 </div>
 
 <div class="container">
-    <div class="layout">
-
-        <div class="left-panel">
-            <div class="box photo-box">사진</div>
-            <div class="box info-box" th:text="${userDetail.userName}">이름</div>
-            <div class="box info-box" th:text="${userDetail.userNickname}">닉네임</div>
-            <div class="box info-box" th:text="${userDetail.userPhoneNumber}">전화번호</div>
+    <div class="content-box">
+        <div class="content-header">
+            <h2 class="content-title">문의 상세</h2>
+            <a th:href="@{/admin/callcenter/contact}" class="top-button">목록으로</a>
         </div>
 
-        <div class="center-panel">
-            <div class="course-title" th:text="${userDetail.courseSectionTitle}">강의 목록</div>
+        <div th:if="${errorMessage}" class="error-text" th:text="${errorMessage}"></div>
 
-            <ul class="course-list" th:if="${not #lists.isEmpty(userDetail.courseTitleList)}">
-                <li th:each="courseTitle : ${userDetail.courseTitleList}" th:text="${courseTitle}">
-                    강의 제목
-                </li>
-            </ul>
+        <form th:action="@{/admin/callcenter/contactdetail}" method="post" onsubmit="return validateContactForm(this);">
+            <input type="hidden" name="questionTechNo" th:value="${contactDetail.questionTechNo}">
 
-            <div class="empty-course" th:if="${#lists.isEmpty(userDetail.courseTitleList)}">
-                조회된 강의가 없습니다.
+            <table class="form-table">
+                <tr>
+                    <th>문의 제목</th>
+                    <td>
+                        <div class="readonly-box" th:text="${contactDetail.questionTitle}">문의 제목</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>작성자</th>
+                    <td>
+                        <div class="readonly-box"
+                             th:text="${contactDetail.userName + ' / ' + contactDetail.userNickname}">
+                            홍길동 / 길동이
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>처리 상태</th>
+                    <td>
+                        <div class="readonly-box" th:text="${contactDetail.questionStatusLabel}">대기</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>문의 내용</th>
+                    <td>
+                        <div class="readonly-box" th:text="${contactDetail.questionDesc}">문의 상세 내용</div>
+                    </td>
+                </tr>
+
+                <tr th:if="${contactDetail.questionAnswer != null and !#strings.isEmpty(contactDetail.questionAnswer)}">
+                    <th>답변 내용</th>
+                    <td>
+                        <div class="readonly-box" th:text="${contactDetail.questionAnswer}">
+                            등록된 답변
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${contactDetail.questionAnswer != null and !#strings.isEmpty(contactDetail.questionAnswer)}">
+                    <th>답변 일시</th>
+                    <td>
+                        <div class="readonly-box"
+                             th:text="${contactDetail.questionAnsweredAt != null ? #temporals.format(contactDetail.questionAnsweredAt, 'yyyy-MM-dd HH:mm') : '-'}">
+                            -
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${contactDetail.questionAnswer == null or #strings.isEmpty(contactDetail.questionAnswer)}">
+                    <th>답변 작성</th>
+                    <td>
+                        <textarea name="questionAnswer" class="form-textarea" placeholder="답변 내용을 입력하세요"></textarea>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="bottom-button-area"
+                 th:if="${contactDetail.questionAnswer == null or #strings.isEmpty(contactDetail.questionAnswer)}">
+                <button type="submit" class="submit-button">답변 등록</button>
             </div>
-        </div>
-
-        <div class="right-panel">
-            <div class="box count-box">
-                <div>문의 내역 수</div>
-                <div th:text="${userDetail.inquiryCount}">0</div>
-            </div>
-
-            <div class="box count-box">
-                <div>신고 내역 수</div>
-                <div th:text="${userDetail.reportCount}">0</div>
-            </div>
-
-            <div class="status-text">
-                역할:
-                <span th:text="${userDetail.userRoleLabel}">학생</span>
-            </div>
-
-            <div class="status-text">
-                계정 상태:
-                <span th:text="${userDetail.userStatusLabel}">활성화</span>
-            </div>
-
-            <form th:action="@{/admin/usercare/enable}" method="post" class="button-form" onsubmit="return submitOnce(this);">
-                <input type="hidden" name="userNo" th:value="${userDetail.userNo}">
-                <button type="submit" class="action-btn">활성화</button>
-            </form>
-
-            <form th:action="@{/admin/usercare/disable}" method="post" class="button-form" onsubmit="return submitOnce(this);">
-                <input type="hidden" name="userNo" th:value="${userDetail.userNo}">
-                <button type="submit" class="action-btn">비활성화</button>
-            </form>
-
-            <a th:href="@{/admin/usercare}" class="back-link">목록으로</a>
-        </div>
-    </div>
-
-    <div class="bottom-description">
-        사용자 기본 정보와 강의 이력, 문의/신고 내역 수를 확인하고 계정 상태를 변경할 수 있습니다.
+        </form>
     </div>
 </div>
 
