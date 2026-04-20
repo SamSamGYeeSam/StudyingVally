@@ -5,7 +5,7 @@ import com.samsamgyeesam.studyingvally.domain.admin.admincallcenter.report.dto.A
 import com.samsamgyeesam.studyingvally.domain.admin.admincallcenter.report.dto.AdminReportListDTO;
 import com.samsamgyeesam.studyingvally.domain.admin.admincallcenter.report.entity.AdminReport;
 import com.samsamgyeesam.studyingvally.domain.admin.admincallcenter.report.repository.AdminReportRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.samsamgyeesam.studyingvally.domain.admin.exception.AdminException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,25 +15,14 @@ import java.util.List;
 
 /**
  * 관리자 신고함 서비스
- *
- * 왜 필요한가:
- * - 신고 목록 조회, 상세 조회, 답변 처리 비즈니스 로직을 담당한다.
  */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AdminReportService {
 
-    /**
-     * 신고 Repository
-     */
     private final AdminReportRepository adminReportRepository;
 
-    /**
-     * 신고 목록 조회
-     *
-     * @return 신고 목록 DTO 리스트
-     */
     public List<AdminReportListDTO> findAllReportList() {
         List<AdminReport> reportList = adminReportRepository.findAllWithUserOrderByReportNoDesc();
         List<AdminReportListDTO> result = new ArrayList<>();
@@ -52,15 +41,9 @@ public class AdminReportService {
         return result;
     }
 
-    /**
-     * 신고 상세 조회
-     *
-     * @param reportNo 신고 번호
-     * @return 신고 상세 DTO
-     */
     public AdminReportDetailDTO findReportDetail(Long reportNo) {
         AdminReport report = adminReportRepository.findDetailByReportNo(reportNo)
-                .orElseThrow(() -> new EntityNotFoundException("해당 신고가 존재하지 않습니다. reportNo=" + reportNo));
+                .orElseThrow(() -> new AdminException("해당 신고가 존재하지 않습니다."));
 
         return new AdminReportDetailDTO(
                 report.getReportNo(),
@@ -75,35 +58,31 @@ public class AdminReportService {
         );
     }
 
-    /**
-     * 신고 답변 처리
-     *
-     * @param requestDTO 신고 답변 요청 DTO
-     */
     @Transactional
     public void answerReport(AdminReportAnswerRequestDTO requestDTO) {
         if (requestDTO.getReportNo() == null) {
-            throw new IllegalArgumentException("신고 번호는 필수입니다.");
+            throw new AdminException("신고 번호는 필수입니다.");
+        }
+
+        if (requestDTO.getReportAnswer() == null || requestDTO.getReportAnswer().trim().isEmpty()) {
+            throw new AdminException("답변 내용을 입력해 주세요.");
         }
 
         AdminReport report = adminReportRepository.findById(requestDTO.getReportNo())
-                .orElseThrow(() -> new EntityNotFoundException("답변할 신고가 존재하지 않습니다. reportNo=" + requestDTO.getReportNo()));
+                .orElseThrow(() -> new AdminException("답변할 신고가 존재하지 않습니다."));
+
+        if (report.getReportAnswer() != null && !report.getReportAnswer().trim().isEmpty()) {
+            throw new AdminException("이미 답변이 완료된 신고입니다.");
+        }
 
         Long adminNo = 1L;
         report.answerReport(requestDTO.getReportAnswer(), adminNo);
     }
 
-    /**
-     * 신고 상태 한글 변환
-     *
-     * @param reportStatus 원본 상태값
-     * @return 화면 출력용 한글 상태값
-     */
     private String convertReportStatusToKorean(String reportStatus) {
         if ("RESOLVED".equals(reportStatus)) {
             return "완료";
         }
-
         return "대기";
     }
 }

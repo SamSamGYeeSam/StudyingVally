@@ -13,19 +13,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/* comment.
- * 관리자 강의 관리 페이지 요청을 처리하는 컨트롤러
+/**
+ * 관리자 강의 관리 컨트롤러
+ *
+ * 왜 필요한가:
+ * - 강의 목록 조회, 상세 조회, 활성화/비활성화 요청을 처리하기 위함이다.
+ *
+ * 리팩토링 포인트:
+ * - 상세 조회 기준을 courseId 하나로 통일한다.
+ * - 화면 표시용 번호(displayNo)는 사용하지 않는다.
  */
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/coursecare")
 public class AdminCourseController {
 
+    /**
+     * 강의 관리 서비스
+     */
     private final AdminCourseService adminCourseService;
 
-    /* comment.
-     * 개설 요청된 전체 강의 목록 조회
+    /**
+     * 전체 또는 상태별 강의 목록 조회
+     *
+     * @param status 상태 필터 값
+     * @param model 뷰 전달 객체
+     * @return 강의 관리 템플릿 경로
      */
     @GetMapping("")
     public String findAllCourseAdmin(@RequestParam(value = "status", required = false) String status,
@@ -46,58 +59,64 @@ public class AdminCourseController {
         return "admin/coursecare";
     }
 
-    /* comment.
-     * 강의 상세 조회
-     * displayNo는 목록 화면의 순번을 상세 화면에 그대로 전달하기 위한 값
+    /**
+     * 강의 상세 조회(GET)
+     *
+     * @param courseId 강의 번호
+     * @param model 뷰 전달 객체
+     * @return 강의 상세 템플릿 경로
+     */
+    @GetMapping("/detail")
+    public String findCourseDetailGet(@RequestParam("courseId") Long courseId,
+                                      Model model) {
+
+        AdminCourseDetailResponseDTO courseDetail = adminCourseService.findCourseDetail(courseId);
+        model.addAttribute("courseDetail", courseDetail);
+
+        return "admin/coursedetail";
+    }
+
+    /**
+     * 강의 상세 조회(POST)
+     *
+     * 왜 필요한가:
+     * - 목록 화면의 선택 버튼이 form submit 구조이므로 기존 흐름을 유지하기 위함이다.
+     *
+     * @param courseId 강의 번호
+     * @param model 뷰 전달 객체
+     * @return 강의 상세 템플릿 경로
      */
     @PostMapping("/detail")
-    public String findCourseDetail(@RequestParam("courseId") Long courseId,
-                                   @RequestParam("displayNo") Long displayNo,
-                                   Model model) {
+    public String findCourseDetailPost(@RequestParam("courseId") Long courseId,
+                                       Model model) {
 
         AdminCourseDetailResponseDTO courseDetail = adminCourseService.findCourseDetail(courseId);
-
         model.addAttribute("courseDetail", courseDetail);
-        model.addAttribute("displayNo", displayNo);
 
         return "admin/coursedetail";
     }
 
-    /* comment.
+    /**
      * 강의 활성화 처리
-     * 상세 페이지에서 다시 돌아올 때 번호 유지
+     *
+     * @param courseId 강의 번호
+     * @return 리다이렉트 경로
      */
     @PostMapping("/open")
-    public String openCourse(@RequestParam("courseId") Long courseId,
-                             @RequestParam("displayNo") Long displayNo,
-                             Model model) {
-
+    public String openCourse(@RequestParam("courseId") Long courseId) {
         adminCourseService.openCourse(courseId);
-
-        AdminCourseDetailResponseDTO courseDetail = adminCourseService.findCourseDetail(courseId);
-
-        model.addAttribute("courseDetail", courseDetail);
-        model.addAttribute("displayNo", displayNo);
-
-        return "admin/coursedetail";
+        return "redirect:/admin/coursecare/detail?courseId=" + courseId;
     }
 
-    /* comment.
+    /**
      * 강의 비활성화 처리
-     * 상세 페이지에서 다시 돌아올 때 번호 유지
+     *
+     * @param courseId 강의 번호
+     * @return 리다이렉트 경로
      */
     @PostMapping("/close")
-    public String closeCourse(@RequestParam("courseId") Long courseId,
-                              @RequestParam("displayNo") Long displayNo,
-                              Model model) {
-
+    public String closeCourse(@RequestParam("courseId") Long courseId) {
         adminCourseService.closeCourse(courseId);
-
-        AdminCourseDetailResponseDTO courseDetail = adminCourseService.findCourseDetail(courseId);
-
-        model.addAttribute("courseDetail", courseDetail);
-        model.addAttribute("displayNo", displayNo);
-
-        return "admin/coursedetail";
+        return "redirect:/admin/coursecare/detail?courseId=" + courseId;
     }
 }

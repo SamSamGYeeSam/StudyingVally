@@ -165,7 +165,6 @@
       <td>
         <form th:action="@{/admin/coursecare/detail}" method="post" class="select-form">
           <input type="hidden" name="courseId" th:value="${course.courseId}">
-          <input type="hidden" name="displayNo" th:value="${stat.index + 1}">
           <button type="submit" class="select-btn">선택</button>
         </form>
       </td>

@@ -7,6 +7,7 @@ import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.entity.Admin
 import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.entity.AdminCourse;
 import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.repository.AdminChapterRepository;
 import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.repository.AdminCourseRepository;
+import com.samsamgyeesam.studyingvally.domain.admin.exception.AdminException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,7 +93,7 @@ public class AdminCourseService {
     @Transactional
     public void closeCourse(Long courseId) {
         AdminCourse adminCourse = adminCourseRepository.findById(courseId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 강의가 존재하지 않습니다."));
+                .orElseThrow(() -> new AdminException("해당 강의가 존재하지 않습니다."));
 
         adminCourse.changeCourseStatus("CLOSED");
     }
