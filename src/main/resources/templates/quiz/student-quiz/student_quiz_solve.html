@@ -2,194 +2,201 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>퀴즈 서바이벌</title>
+    <title>드래곤의 시련 - Valley Quiz</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
     <style>
-        body { font-family: 'Pretendard', sans-serif; color: #333; background-color: #f4f4f4; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .game-container { width: 100%; max-width: 600px; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; text-align: center; }
+        body {
+            background-color: #050505;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; margin: 0; font-family: 'DungGeunMo', sans-serif; overflow: hidden;
+        }
 
-        .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        .lives { font-size: 24px; letter-spacing: 5px; }
-        .progress { font-size: 14px; color: #888; font-weight: bold; }
+        .dungeon-container {
+            position: relative; width: 900px; height: 550px;
+            border: 8px solid #2c3e50; box-shadow: 0 0 40px rgba(0,0,0,1);
+            background-image: url('/image/quiz-bg.png'); background-size: cover; background-position: center;
+        }
 
-        /* 문제 카드 영역 */
-        .question-card { display: none; text-align: left; }
-        .question-card.active { display: block; animation: fadeIn 0.4s ease-out; }
+        .life-container {
+            position: absolute; top: 25px; right: 30px; display: flex; gap: 0; z-index: 20;
+        }
+        .heart { width: 60px; image-rendering: pixelated; transition: 0.3s; }
+        .heart.lost { filter: grayscale(100%) brightness(20%); opacity: 0.5; }
 
-        .q-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; color: #000; }
-        .q-score-badge { display: inline-block; background: #1976d2; color: white; padding: 4px 10px; border-radius: 20px; font-size: 14px; font-weight: bold; margin-bottom: 15px; }
-        .q-desc { font-size: 16px; color: #666; background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; line-height: 1.6; }
+        .dragon-layer {
+            position: absolute; inset: 0; z-index: 1;
+            display: flex; justify-content: center; align-items: flex-end;
+            pointer-events: none;
+        }
+        #dragon-img {
+            width: 450px; image-rendering: pixelated;
+            filter: drop-shadow(0 0 20px rgba(255,0,0,0.5));
+            animation: dragon-float 5s infinite ease-in-out;
+            transition: all 0.6s ease;
+            margin-bottom: -10px;
+        }
+        #dragon-img.angry { width: 820px; margin-bottom: -50px; filter: drop-shadow(0 0 50px #ff0000); animation: dragon-shaking 0.1s infinite; }
+        #dragon-img.sleeping { width: 750px; margin-bottom: -80px; filter: drop-shadow(0 0 30px rgba(0, 255, 0, 0.4)); }
 
-        .answer-input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; transition: border-color 0.3s; outline: none; margin-bottom: 20px; }
-        .answer-input:focus { border-color: #333; }
-        .next-btn { width: 100%; padding: 18px; background: #000; color: #fff; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .next-btn:hover { background: #333; }
+        #potion-img {
+            position: absolute; bottom: 80px; right: 150px;
+            width: 100px; display: none; image-rendering: pixelated; z-index: 2;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.8));
+            animation: potion-pulse 1.5s infinite ease-in-out;
+        }
 
-        /* 결과 화면 */
-        #game-screen { display: block; }
-        #result-screen { display: none; padding: 30px 0; }
-        .status-msg { font-size: 35px; font-weight: 900; margin-bottom: 10px; }
-        .character-img { font-size: 80px; margin: 20px 0; animation: bounce 1s infinite alternate; }
-        .result-text { font-size: 20px; font-weight: bold; line-height: 1.5; margin-bottom: 40px; color: #444; }
-        .action-btn { padding: 15px 40px; color: #fff; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
+        /* --- 기본 메시지 박스 --- */
+        #msg-box {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 200px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px); border: 4px solid #b71c1c;
+            border-radius: 25px; padding: 15px 40px; box-sizing: border-box;
+            z-index: 10; display: flex; flex-direction: column; justify-content: center;
+            text-align: center; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-15px); } }
+        /* ✨ 성공 시: 좌측 상단 말풍선 */
+        #msg-box.result-mode {
+            bottom: auto; top: 40px; left: 40px; transform: none;
+            width: 380px; height: auto; min-height: 120px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 3px solid #fff; color: #000; border-radius: 20px; padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        #msg-box.result-mode::after {
+            content: ''; position: absolute; bottom: -18px; left: 50px;
+            border-top: 20px solid rgba(255, 255, 255, 0.7);
+            border-left: 15px solid transparent; border-right: 15px solid transparent;
+        }
+
+        /* 💀 실패 시: 중앙에서 우측 하단으로 이동 */
+        #msg-box.fail-mode {
+            bottom: 40px; left: auto; right: 40px; transform: none; /* 우측 하단 배치 */
+            width: 420px; height: auto; min-height: 130px;
+            background: rgba(255, 255, 255, 0.75);
+            border: 4px solid #ff0000; color: #000; border-radius: 20px; padding: 20px;
+        }
+        /* 실패 말풍선 꼬리 (우측 하단 용의 시선에 맞춰 오른쪽 배치) */
+        #msg-box.fail-mode::after {
+            content: '';
+            position: absolute;
+            /* 박스 위쪽으로 꼬리를 올림 */
+            top: -22px;
+            /* 박스의 왼쪽 지점에 배치 (용이 있는 중앙 방향) */
+            left: 40px;
+            right: auto;
+            bottom: auto;
+
+            /* 삼각형이 위(용)를 향하게 border 설정 */
+            border-bottom: 20px solid rgba(255, 255, 255, 0.85);
+            border-top: none;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+        }
+        .question-card { display: none; }
+        .question-card.active { display: block; }
+        .q-title { font-size: 26px; color: #1a1a1a; font-weight: 900; margin-bottom: 15px; }
+
+        .answer-input {
+            width: 380px; height: 50px; margin: 0 auto 15px; display: block;
+            border: 2px solid #000; font-family: 'DungGeunMo'; font-size: 24px; text-align: center; border-radius: 10px;
+        }
+
+        .submit-btn, .result-btn {
+            padding: 10px 25px; background: #b71c1c; color: white; border: none; border-radius: 8px;
+            cursor: pointer; font-family: 'DungGeunMo'; font-weight: bold; text-decoration: none;
+        }
+        .result-btn { background: #2e7d32; border: 1px solid #fff; display: inline-block; }
+        .retry-btn { background: #b71c1c; border: 1px solid #fff; display: inline-block; }
+
+        @keyframes dragon-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes dragon-shaking { 0% { transform: translate(4px, 4px); } 100% { transform: translate(-4px, -4px); } }
+        @keyframes potion-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <div id="game-screen">
-        <div class="game-header">
-            <div class="progress">QUESTION <span id="current-idx-text">1</span> / <span th:text="${#lists.size(quizItems)}">0</span></div>
-            <div class="lives" id="lives-display">❤️❤️❤️</div>
-        </div>
+<div class="dungeon-container">
+    <div class="dragon-layer">
+        <img src="/image/dragon-icon.png" id="dragon-img">
+        <img src="/image/potion.png" id="potion-img">
+    </div>
 
-        <div th:if="${#lists.isEmpty(quizItems)}" style="color: gray; padding: 50px 0;">등록된 문제가 없습니다.</div>
+    <div class="life-container">
+        <img src="/image/pixel-heart.png" class="heart" id="h1">
+        <img src="/image/pixel-heart.png" class="heart" id="h2">
+        <img src="/image/pixel-heart.png" class="heart" id="h3">
+    </div>
 
+    <div class="question-area" id="msg-box">
         <div th:each="item, stat : ${quizItems}"
              th:class="${stat.index == 0 ? 'question-card active' : 'question-card'}"
              th:id="'card-' + ${stat.index}">
-
-            <div class="q-title" th:text="${item.quizTitle}">문제 제목</div>
-            <div class="q-score-badge" th:text="'배점 ' + ${item.quizScore} + '점'">배점</div>
-            <div class="q-desc" th:text="${item.quizDesc}">문제 설명</div>
-
-            <input type="text" th:id="'input-' + ${stat.index}" class="answer-input" placeholder="정답을 입력하세요" onkeypress="if(event.keyCode==13) checkAnswer()">
+            <div style="color:#b71c1c; font-size: 20px; margin-bottom: 5px;">QUEST #<span th:text="${stat.index + 1}">1</span></div>
+            <div class="q-title" th:text="${item.quizTitle}">용의 비늘은 무슨 색인가?</div>
+            <input type="text" th:id="'input-' + ${stat.index}" class="answer-input" onkeypress="if(event.keyCode==13) checkAnswer()">
             <input type="hidden" th:id="'correct-' + ${stat.index}" th:value="${item.quizAnswer}">
-
-            <input type="hidden" th:id="'score-' + ${stat.index}" th:value="${item.quizScore}">
-
-            <button type="button" class="next-btn" onclick="checkAnswer()">정답 확인 / 다음 문제</button>
+            <button type="button" class="submit-btn" onclick="checkAnswer()">⚔️ 시련에 맞서기</button>
         </div>
-    </div>
 
-    <div id="result-screen">
-        <div class="status-msg" id="status-title"></div>
-        <div class="character-img" id="status-character"></div>
-        <div class="result-text" id="status-desc"></div>
-        <a href="#" id="action-link" class="action-btn">돌아가기</a>
+        <div id="result-content" style="display: none;">
+            <div id="result-text" style="font-size: 17px; font-weight: 900; line-height: 1.5; margin-bottom: 12px; color: #000;"></div>
+            <div id="result-action"></div>
+        </div>
     </div>
 </div>
 
 <script th:inline="javascript">
-    /*<![CDATA[*/
     let currentIndex = 0;
     let lives = 3;
-
-    // ✨ 4. '맞힌 갯수'가 아닌 '누적 점수(배점의 합)'를 담는 변수로 교체
-    let earnedScore = 0;
-
     const totalQuestions = /*[[${#lists.size(quizItems)}]]*/ 0;
-    const currentQuizNo = /*[[${quizNo}]]*/ '';
+    const dragonImg = document.getElementById('dragon-img');
+    const potionImg = document.getElementById('potion-img');
+    const msgBox = document.getElementById('msg-box');
+    const resultContent = document.getElementById('result-content');
 
     function checkAnswer() {
-        if (currentIndex >= totalQuestions) return;
-
         const userInput = document.getElementById('input-' + currentIndex).value.trim();
         const correctAnswer = document.getElementById('correct-' + currentIndex).value.trim();
-
-        // 문제에 할당된 배점을 가져옵니다.
-        const questionScore = parseInt(document.getElementById('score-' + currentIndex).value) || 0;
-
-        if (userInput === correctAnswer) {
-            alert("⭕ 정답입니다! (+" + questionScore + "점)");
-            earnedScore += questionScore; // ✨ 배점만큼 점수 누적
-            nextQuestion();
-        } else {
-            reduceLife();
+        if (userInput === correctAnswer) nextQuestion();
+        else {
+            lives--;
+            const heartToLose = document.getElementById('h' + (lives + 1));
+            if(heartToLose) heartToLose.classList.add('lost');
+            if (lives <= 0) showFinalResult('fail');
+            else nextQuestion();
         }
-    }
-
-    function reduceLife() {
-        lives--;
-        updateLivesDisplay();
-
-        if (lives <= 0) {
-            // 서버에 'GAME_OVER' 상태와 현재까지 얻은 점수 전송
-            saveScoreToServer("GAME_OVER", function() {
-                showGameOver();
-            });
-        } else {
-            alert("❌ 틀렸습니다! 목숨이 " + lives + "개 남았습니다.\n다음 문제로 넘어갑니다.");
-            nextQuestion();
-        }
-    }
-
-    function updateLivesDisplay() {
-        document.getElementById('lives-display').innerText = '❤️'.repeat(lives) + '🖤'.repeat(3 - lives);
     }
 
     function nextQuestion() {
         document.getElementById('card-' + currentIndex).classList.remove('active');
         currentIndex++;
-
-        if (currentIndex < totalQuestions) {
+        if (currentIndex < totalQuestions && lives > 0) {
             document.getElementById('card-' + currentIndex).classList.add('active');
-            document.getElementById('current-idx-text').innerText = currentIndex + 1;
             document.getElementById('input-' + currentIndex).focus();
+        } else if (lives > 0) showFinalResult('success');
+    }
+
+    function showFinalResult(status) {
+        document.querySelectorAll('.question-card').forEach(c => c.style.display = 'none');
+        resultContent.style.display = 'block';
+
+        if (status === 'success') {
+            msgBox.classList.add('result-mode'); // 성공 시 좌상단
+            dragonImg.src = '/image/dragon-sleeping.png';
+            dragonImg.classList.add('sleeping');
+            potionImg.style.display = 'block';
+            document.getElementById('result-text').innerHTML = "음... 제법이군.<br>약속대로 보상을 주마.<br>다음에 또 보지...";
+            document.getElementById('result-action').innerHTML = `<a href="/student/quiz/list" class="result-btn">포션 수령</a>`;
         } else {
-            // 끝까지 풀었다면 'CLEAR' 상태와 최종 누적 점수 전송
-            saveScoreToServer("CLEAR", function() {
-                showVictory();
-            });
+            msgBox.classList.add('fail-mode'); // 실패 시 우상단(중앙 우측 하단)
+            dragonImg.src = '/image/dragon-angry.png';
+            dragonImg.classList.add('angry');
+            document.getElementById('result-text').innerHTML = "감히 나를 깨우고 오답을 내놓다니!<br>천벌을 내리겠다!";
+            document.getElementById('result-action').innerHTML = `<button onclick="location.reload()" class="retry-btn">재도전</button>`;
         }
     }
-
-    // 서버로 점수를 전송하는 AJAX 함수
-    function saveScoreToServer(resultStatus, callbackFunc) {
-        fetch('/student/quiz/submit-score', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                quizScore: earnedScore, // ✨ 계산된 배점 합산 전송 (100점 만점 기준)
-                quizResult: resultStatus,
-                quizNo: currentQuizNo
-            })
-        })
-            .then(response => response.text())
-            .then(data => {
-                console.log("점수 저장 완료:", data);
-                callbackFunc();
-            })
-            .catch(error => {
-                console.error("점수 저장 실패:", error);
-                callbackFunc();
-            });
-    }
-
-    function showGameOver() {
-        document.getElementById('game-screen').style.display = 'none';
-        document.getElementById('result-screen').style.display = 'block';
-        document.getElementById('status-title').innerText = 'GAME OVER';
-        document.getElementById('status-title').style.color = '#e74c3c';
-        document.getElementById('status-character').innerText = '🐯💢';
-        // ✨ 화면에도 최종 배점 출력
-        document.getElementById('status-desc').innerHTML = '"이 녀석! 기초가 턱없이 부족하구나!"<br>"메인으로 가서 다시 처음부터 공부하고 와라!"<br><br>최종 점수: <span style="color:#e74c3c; font-size: 26px;">' + earnedScore + ' / 100 점</span>';
-
-        const btn = document.getElementById('action-link');
-        btn.innerText = '메인으로 쫓겨나기 🏃‍♂️💨';
-        btn.href = '/student/main';
-        btn.style.background = '#e74c3c';
-    }
-
-    function showVictory() {
-        document.getElementById('game-screen').style.display = 'none';
-        document.getElementById('result-screen').style.display = 'block';
-        document.getElementById('status-title').innerText = 'MISSION COMPLETE';
-        document.getElementById('status-title').style.color = '#2ecc71';
-        document.getElementById('status-character').innerText = '🦉🎉';
-        // ✨ 화면에도 최종 배점 출력
-        document.getElementById('status-desc').innerHTML = '훌륭합니다!<br>끝까지 살아남아 모든 퀴즈를 정복하셨습니다.<br><br>최종 점수: <span style="color:#2ecc71; font-size: 26px;">' + earnedScore + ' / 100 점</span>';
-
-        const btn = document.getElementById('action-link');
-        btn.innerText = '다른 퀴즈 풀러 가기';
-        btn.href = '/student/quiz/list';
-        btn.style.background = '#2ecc71';
-    }
-    /*]]>*/
 </script>
 
 </body>
