@@ -101,7 +101,7 @@ public class CourseService {
                 courseDTO.getCourseTitle(),
                 courseDTO.getCourseDescription(),
                 "CLOSED",  // 미개설
-                0,         // 승인 요청 하기 전
+                1,         // 승인 요청
                 courseDTO.getUserNo()
         );
 
