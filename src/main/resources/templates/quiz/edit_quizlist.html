@@ -2,29 +2,170 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>문제 수정</title>
+    <title>문제 일괄 수정</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; color: #333; }
+        .question-block { border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; border-radius: 8px; background-color: #fcfcfc; position: relative; }
+        .remove-btn { color: red; cursor: pointer; font-weight: bold; border: 1px solid red; background: #fff; padding: 5px 10px; border-radius: 4px; position: absolute; right: 20px; top: 20px; }
+        .remove-btn:hover { background: #ffebee; }
+        .add-btn { padding: 12px 20px; background-color: #000; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 20px; display: block; width: 100%; font-size: 16px; }
+        .score-display { font-size: 18px; font-weight: bold; padding: 15px; background: #f9f9f9; border-left: 5px solid #1976d2; margin-bottom: 20px; border-radius: 4px; }
+        .submit-btn { padding: 15px 30px; font-size: 18px; font-weight: bold; background: #1976d2; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; }
+        label { font-weight: bold; display: inline-block; margin-top: 10px; margin-bottom: 5px; }
+        input[type="text"], textarea, input[type="number"] { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+    </style>
 </head>
 <body>
-<button type="button" onclick="history.back();" style="margin-bottom: 20px;">⬅ 수정 취소하고 돌아가기</button>
-<h2>퀴즈 문제 수정</h2>
+<button type="button" onclick="history.back();" style="margin-bottom: 20px; padding: 10px;">⬅ 수정 취소하고 퀴즈 목록으로 돌아가기</button>
 
-<form action="/teacher/quiz/update-quizlist" method="post">
-    <input type="hidden" name="quizListNo" th:value="${quizListDTO.quizListNo}">
-    <input type="hidden" name="quizNo" th:value="${quizListDTO.quizNo}">
+<h2>퀴즈 문제 일괄 수정</h2>
 
-    <label>문제 제목 :</label>
-    <input type="text" name="quizTitle" th:value="${quizListDTO.quizTitle}" required><br><br>
+<div th:if="${errorMessage}" th:text="${errorMessage}" style="color: red; margin-bottom: 15px; font-weight: bold;"></div>
 
-    <label>문제 지문 :</label>
-    <textarea name="quizDesc" rows="4" th:text="${quizListDTO.quizDesc}"></textarea><br><br>
+<div class="score-display">
+    현재 배점 합계: <span id="totalScoreText" style="color: green;">100</span> / 100점
+    <span style="font-size: 14px; font-weight: normal; color: #666; display: block; margin-top: 5px;">* 배점을 조절하여 총합을 정확히 100점으로 맞춰주세요. (최소 5문제 이상)</span>
+</div>
 
-    <label>정답 :</label>
-    <input type="text" name="quizAnswer" th:value="${quizListDTO.quizAnswer}"><br><br>
+<form action="/teacher/quiz/update-quizlist-batch" method="post" id="quizForm" onsubmit="return validateTotalScore()">
+    <input type="hidden" name="quizNo" th:value="${quizNo}">
 
-    <label>정답 해설 :</label>
-    <textarea name="quizAnswerDesc" rows="4" th:text="${quizListDTO.quizAnswerDesc}"></textarea><br><br>
+    <div id="quizContainer">
+        <div th:each="item, stat : ${quizItems}" class="question-block" th:data-index="${stat.index}">
+            <button type="button" class="remove-btn" onclick="removeQuestionBlock(this)">삭제</button>
+            <h4 class="q-number" style="margin-top: 0; color: #1976d2;" th:text="'문제 ' + ${stat.count}"></h4>
 
-    <button type="submit">수정 완료 (저장)</button>
+            <input type="hidden" class="hidden-id" th:name="|quizList[${stat.index}].quizListNo|" th:value="${item.quizListNo}">
+
+            <label>문제 제목 :</label>
+            <input type="text" th:name="|quizList[${stat.index}].quizTitle|" th:value="${item.quizTitle}" required>
+
+            <label>문제 지문 :</label>
+            <textarea th:name="|quizList[${stat.index}].quizDesc|" rows="3" th:text="${item.quizDesc}"></textarea>
+
+            <label>정답 :</label>
+            <input type="text" th:name="|quizList[${stat.index}].quizAnswer|" th:value="${item.quizAnswer}" required>
+
+            <label>정답 해설 :</label>
+            <textarea th:name="|quizList[${stat.index}].quizAnswerDesc|" rows="2" th:text="${item.quizAnswerDesc}"></textarea>
+
+            <label style="color: #d32f2f;">배점 :</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="number" th:name="|quizList[${stat.index}].quizScore|" th:value="${item.quizScore}"
+                       class="quiz-score-input" min="1" max="100" required oninput="calculateTotalScore()" style="width: 150px;"> 점
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="add-btn" onclick="addQuestionBlock()">+ 새로운 문제 추가하기</button>
+
+    <button type="submit" class="submit-btn">수정 완료 (100점 검사 후 저장)</button>
 </form>
+
+<script>
+    let questionCount = document.querySelectorAll('.question-block').length;
+
+    document.addEventListener("DOMContentLoaded", function() {
+        calculateTotalScore();
+    });
+
+    function calculateTotalScore() {
+        let inputs = document.querySelectorAll('.quiz-score-input');
+        let total = 0;
+        inputs.forEach(function(input) {
+            total += parseInt(input.value) || 0;
+        });
+
+        let textElement = document.getElementById('totalScoreText');
+        textElement.innerText = total;
+        textElement.style.color = (total === 100) ? 'green' : '#d32f2f';
+    }
+
+    function validateTotalScore() {
+        let inputs = document.querySelectorAll('.quiz-score-input');
+
+        if (inputs.length < 5) {
+            alert('❌ 서바이벌 퀴즈는 최소 5개 이상의 문제가 필요합니다. (현재 ' + inputs.length + '개)');
+            return false;
+        }
+
+        let total = 0;
+        inputs.forEach(function(input) {
+            total += parseInt(input.value) || 0;
+        });
+
+        if (total !== 100) {
+            alert('❌ 현재 총 배점은 ' + total + '점 입니다.\n수정을 완료하려면 배점 합계가 정확히 100점이 되어야 합니다.');
+            return false;
+        }
+        return true;
+    }
+
+    function addQuestionBlock() {
+        const container = document.getElementById('quizContainer');
+        const currentIndex = document.querySelectorAll('.question-block').length;
+
+        const newBlock = document.createElement('div');
+        newBlock.className = 'question-block';
+        newBlock.setAttribute('data-index', currentIndex);
+
+        // ✨ 핵심: 새 문제에는 PK(quizListNo) 히든 인풋을 넣지 않습니다!
+        newBlock.innerHTML = `
+            <button type="button" class="remove-btn" onclick="removeQuestionBlock(this)">삭제</button>
+            <h4 class="q-number" style="margin-top: 0; color: #1976d2;">문제 ${currentIndex + 1}</h4>
+
+            <label>문제 제목 :</label>
+            <input type="text" name="quizList[${currentIndex}].quizTitle" required placeholder="새 문제 제목">
+
+            <label>문제 지문 :</label>
+            <textarea name="quizList[${currentIndex}].quizDesc" rows="3" placeholder="문제 지문 및 보기"></textarea>
+
+            <label>정답 :</label>
+            <input type="text" name="quizList[${currentIndex}].quizAnswer" required placeholder="정답 입력">
+
+            <label>정답 해설 :</label>
+            <textarea name="quizList[${currentIndex}].quizAnswerDesc" rows="2" placeholder="해설 입력"></textarea>
+
+            <label style="color: #d32f2f;">배점 :</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="number" name="quizList[${currentIndex}].quizScore" class="quiz-score-input" value="0" min="1" max="100" required oninput="calculateTotalScore()" style="width: 150px;"> 점
+            </div>
+        `;
+
+        container.appendChild(newBlock);
+        reindexQuestions();
+        calculateTotalScore();
+    }
+
+    function removeQuestionBlock(buttonElement) {
+        const block = buttonElement.closest('.question-block');
+        block.remove();
+        reindexQuestions();
+        calculateTotalScore();
+    }
+
+    // 중간 문제를 삭제하더라도 Spring MVC가 배열을 읽을 수 있도록 인덱스를 0부터 다시 예쁘게 정렬해줍니다.
+    function reindexQuestions() {
+        const blocks = document.querySelectorAll('.question-block');
+
+        blocks.forEach((block, index) => {
+            block.setAttribute('data-index', index);
+            block.querySelector('.q-number').innerText = '문제 ' + (index + 1);
+
+            // 기존 문제일 경우에만 존재하는 PK 히든 인풋 이름 갱신
+            let hiddenIdInput = block.querySelector('.hidden-id');
+            if (hiddenIdInput) {
+                hiddenIdInput.name = `quizList[${index}].quizListNo`;
+            }
+
+            // 일반 인풋들 이름 갱신
+            block.querySelector('input[name*=".quizTitle"]').name = `quizList[${index}].quizTitle`;
+            block.querySelector('textarea[name*=".quizDesc"]').name = `quizList[${index}].quizDesc`;
+            block.querySelector('input[name*=".quizAnswer"]').name = `quizList[${index}].quizAnswer`;
+            block.querySelector('textarea[name*=".quizAnswerDesc"]').name = `quizList[${index}].quizAnswerDesc`;
+            block.querySelector('input[name*=".quizScore"]').name = `quizList[${index}].quizScore`;
+        });
+    }
+</script>
 </body>
 </html>

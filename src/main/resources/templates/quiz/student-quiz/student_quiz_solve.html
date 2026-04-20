@@ -7,7 +7,6 @@
         body { font-family: 'Pretendard', sans-serif; color: #333; background-color: #f4f4f4; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         .game-container { width: 100%; max-width: 600px; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; text-align: center; }
 
-        /* 헤더: 목숨 및 진행도 */
         .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
         .lives { font-size: 24px; letter-spacing: 5px; }
         .progress { font-size: 14px; color: #888; font-weight: bold; }
@@ -16,10 +15,10 @@
         .question-card { display: none; text-align: left; }
         .question-card.active { display: block; animation: fadeIn 0.4s ease-out; }
 
-        .q-title { font-size: 22px; font-weight: 800; margin-bottom: 15px; color: #000; }
+        .q-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; color: #000; }
+        .q-score-badge { display: inline-block; background: #1976d2; color: white; padding: 4px 10px; border-radius: 20px; font-size: 14px; font-weight: bold; margin-bottom: 15px; }
         .q-desc { font-size: 16px; color: #666; background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; line-height: 1.6; }
 
-        /* 입력창 및 버튼 */
         .answer-input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; transition: border-color 0.3s; outline: none; margin-bottom: 20px; }
         .answer-input:focus { border-color: #333; }
         .next-btn { width: 100%; padding: 18px; background: #000; color: #fff; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
@@ -46,13 +45,20 @@
             <div class="lives" id="lives-display">❤️❤️❤️</div>
         </div>
 
-        <div th:if="${#lists.isEmpty(quizItems)}" style="color: gray;">문제가 없습니다.</div>
+        <div th:if="${#lists.isEmpty(quizItems)}" style="color: gray; padding: 50px 0;">등록된 문제가 없습니다.</div>
 
-        <div th:each="item, stat : ${quizItems}" class="question-card" th:classappend="${stat.first} ? 'active' : ''" th:id="'card-' + ${stat.index}">
+        <div th:each="item, stat : ${quizItems}"
+             th:class="${stat.index == 0 ? 'question-card active' : 'question-card'}"
+             th:id="'card-' + ${stat.index}">
+
             <div class="q-title" th:text="${item.quizTitle}">문제 제목</div>
+            <div class="q-score-badge" th:text="'배점 ' + ${item.quizScore} + '점'">배점</div>
             <div class="q-desc" th:text="${item.quizDesc}">문제 설명</div>
+
             <input type="text" th:id="'input-' + ${stat.index}" class="answer-input" placeholder="정답을 입력하세요" onkeypress="if(event.keyCode==13) checkAnswer()">
             <input type="hidden" th:id="'correct-' + ${stat.index}" th:value="${item.quizAnswer}">
+
+            <input type="hidden" th:id="'score-' + ${stat.index}" th:value="${item.quizScore}">
 
             <button type="button" class="next-btn" onclick="checkAnswer()">정답 확인 / 다음 문제</button>
         </div>
@@ -70,10 +76,12 @@
     /*<![CDATA[*/
     let currentIndex = 0;
     let lives = 3;
-    let correctCount = 0; // 맞힌 문제 수를 저장할 변수 추가
+
+    // ✨ 4. '맞힌 갯수'가 아닌 '누적 점수(배점의 합)'를 담는 변수로 교체
+    let earnedScore = 0;
 
     const totalQuestions = /*[[${#lists.size(quizItems)}]]*/ 0;
-    const currentQuizNo = /*[[${quizNo}]]*/ ''; // 현재 풀고 있는 퀴즈 번호
+    const currentQuizNo = /*[[${quizNo}]]*/ '';
 
     function checkAnswer() {
         if (currentIndex >= totalQuestions) return;
@@ -81,9 +89,12 @@
         const userInput = document.getElementById('input-' + currentIndex).value.trim();
         const correctAnswer = document.getElementById('correct-' + currentIndex).value.trim();
 
+        // 문제에 할당된 배점을 가져옵니다.
+        const questionScore = parseInt(document.getElementById('score-' + currentIndex).value) || 0;
+
         if (userInput === correctAnswer) {
-            alert("⭕ 정답입니다!");
-            correctCount++; // 정답일 경우 점수 +1
+            alert("⭕ 정답입니다! (+" + questionScore + "점)");
+            earnedScore += questionScore; // ✨ 배점만큼 점수 누적
             nextQuestion();
         } else {
             reduceLife();
@@ -95,7 +106,7 @@
         updateLivesDisplay();
 
         if (lives <= 0) {
-            // 서버에 'GAME_OVER'로 점수 저장 후 화면 전환
+            // 서버에 'GAME_OVER' 상태와 현재까지 얻은 점수 전송
             saveScoreToServer("GAME_OVER", function() {
                 showGameOver();
             });
@@ -118,7 +129,7 @@
             document.getElementById('current-idx-text').innerText = currentIndex + 1;
             document.getElementById('input-' + currentIndex).focus();
         } else {
-            // 끝까지 풀었다면 'CLEAR'로 점수 저장 후 화면 전환
+            // 끝까지 풀었다면 'CLEAR' 상태와 최종 누적 점수 전송
             saveScoreToServer("CLEAR", function() {
                 showVictory();
             });
@@ -133,19 +144,19 @@
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                quizScore: correctCount, // 맞힌 개수
-                quizResult: resultStatus, // "CLEAR" or "GAME_OVER"
-                quizNo: currentQuizNo    // 현재 퀴즈 번호
+                quizScore: earnedScore, // ✨ 계산된 배점 합산 전송 (100점 만점 기준)
+                quizResult: resultStatus,
+                quizNo: currentQuizNo
             })
         })
             .then(response => response.text())
             .then(data => {
                 console.log("점수 저장 완료:", data);
-                callbackFunc(); // 저장이 끝나면 화면(게임오버/빅토리)을 띄움
+                callbackFunc();
             })
             .catch(error => {
                 console.error("점수 저장 실패:", error);
-                callbackFunc(); // 에러가 나도 화면은 띄워줌
+                callbackFunc();
             });
     }
 
@@ -155,7 +166,8 @@
         document.getElementById('status-title').innerText = 'GAME OVER';
         document.getElementById('status-title').style.color = '#e74c3c';
         document.getElementById('status-character').innerText = '🐯💢';
-        document.getElementById('status-desc').innerHTML = '"이 녀석! 기초가 턱없이 부족하구나!"<br>"메인으로 가서 다시 처음부터 공부하고 와라!"<br><br>맞힌 문제: ' + correctCount + '개';
+        // ✨ 화면에도 최종 배점 출력
+        document.getElementById('status-desc').innerHTML = '"이 녀석! 기초가 턱없이 부족하구나!"<br>"메인으로 가서 다시 처음부터 공부하고 와라!"<br><br>최종 점수: <span style="color:#e74c3c; font-size: 26px;">' + earnedScore + ' / 100 점</span>';
 
         const btn = document.getElementById('action-link');
         btn.innerText = '메인으로 쫓겨나기 🏃‍♂️💨';
@@ -169,7 +181,8 @@
         document.getElementById('status-title').innerText = 'MISSION COMPLETE';
         document.getElementById('status-title').style.color = '#2ecc71';
         document.getElementById('status-character').innerText = '🦉🎉';
-        document.getElementById('status-desc').innerHTML = '훌륭합니다!<br>끝까지 살아남아 모든 퀴즈를 정복하셨습니다.<br><br>맞힌 문제: ' + correctCount + '개';
+        // ✨ 화면에도 최종 배점 출력
+        document.getElementById('status-desc').innerHTML = '훌륭합니다!<br>끝까지 살아남아 모든 퀴즈를 정복하셨습니다.<br><br>최종 점수: <span style="color:#2ecc71; font-size: 26px;">' + earnedScore + ' / 100 점</span>';
 
         const btn = document.getElementById('action-link');
         btn.innerText = '다른 퀴즈 풀러 가기';

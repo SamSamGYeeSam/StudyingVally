@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuizAttemptDTO {
-    private Integer quizScore;
+    private Long quizScore;
     private String quizResult;
     private String quizNo;
     private Long userNo;
