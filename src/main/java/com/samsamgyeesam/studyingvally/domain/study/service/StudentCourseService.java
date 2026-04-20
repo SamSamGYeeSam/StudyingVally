@@ -23,6 +23,7 @@ public class StudentCourseService {
     private final StudentEnrollmentRepository studentEnrollmentRepository;
     private final StudentEvaluationRepository studentEvaluationRepository;
     private final StudentCourseQuestionRepository studentCourseQuestionRepository;
+    private final StudentUserRepository studentUserRepository;
 
     public List<StudentCourse> getOpenCourses() {
 //        return studentEnrollmentRepository.findAll().stream()
@@ -130,7 +131,6 @@ public class StudentCourseService {
 
     public List<StudentCourseNoticeDTO> getCourseNoticesForStudent(Long userNo) {
         List<StudentEnrollment> enrollments = studentEnrollmentRepository.findByUserNo(userNo);
-
         List<Long> courseIds = enrollments.stream()
                 .map(e -> e.getCourse().getCourseId())
                 .collect(Collectors.toList());
@@ -140,6 +140,17 @@ public class StudentCourseService {
         }
 
         return studentCourseRepository.findNoticesByCourseIds(courseIds);
+    }
+
+    public String getInstructorNickname(Long courseId){
+        return studentCourseRepository.findById(courseId)
+                .map(course -> {
+                    if (course.getUser() != null) {
+                        return course.getUser().getUserNickname();
+                    }
+                    return "선생님";
+                })
+                .orElse("알 수 없는 선생님");
     }
 
     @Transactional
@@ -156,6 +167,10 @@ public class StudentCourseService {
 
     public List<StudentCourseQuestion> getQuestionsByCourse(Long userNo, Long courseId) {
         return studentCourseQuestionRepository.findByUserNoAndCourseIdOrderByQuestionCourseNoDesc(userNo, courseId);
+    }
+
+    public String getInstructorGender(Long courseId) {
+        return studentUserRepository.findInstructorGenderByCourseId(courseId);
     }
 
 }

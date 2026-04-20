@@ -19,10 +19,9 @@ public interface StudentNoticeRepository extends JpaRepository<StudentAdminNotic
     List<StudentAdminNoticeDTO> findAllAdminNotices();
 
     @Query("SELECT new com.samsamgyeesam.studyingvally.domain.study.dto.StudentCourseNoticeDTO(" +
-            "cn.courseNoticeNo, str(cn.createdAt), c.courseTitle, u.userName, cn.courseNoticeTitle, cn.courseNoticeDesc) " +
+            "cn.courseNoticeNo, str(cn.createdAt), c.courseTitle, cn.userName, cn.courseNoticeTitle, cn.courseNoticeDesc) " +
             "FROM StudentCourseNotice cn " +
             "JOIN cn.course c " +
-            "JOIN cn.user u " +
             "WHERE c.courseId IN :courseIds")
     List<StudentCourseNoticeDTO> findMyCourseNotices(@Param("courseIds") List<Long> courseIds);
 }

@@ -24,11 +24,14 @@ public class StudentCourseNotice {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
-    private Course course; // 강의명 추출용
+    private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no")
-    private StudentUser user; // 작성자(강사) 정보
+    private StudentUser user;
+
+    @Column(name = "user_name")
+    private String userName;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();

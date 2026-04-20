@@ -17,14 +17,14 @@ public interface StudentCourseRepository extends JpaRepository<StudentCourse, Lo
 
         @Query("SELECT new com.samsamgyeesam.studyingvally.domain.study.dto.StudentCourseNoticeDTO(" +
                 "cn.courseNoticeNo, " +
-                "CAST(cn.createdAt AS string), " +
+                "str(cn.createdAt), " +
                 "c.courseTitle, " +
-                "u.userName, " +
+                "COALESCE(u.userNickname, '알 수 없음'), " +
                 "cn.courseNoticeTitle, " +
                 "cn.courseNoticeDesc) " +
                 "FROM StudentCourseNotice cn " +
                 "JOIN cn.course c " +
-                "JOIN cn.user u " +
+                "LEFT JOIN cn.user u " +
                 "WHERE c.courseId IN :courseIds " +
                 "AND c.courseStatus = 'OPEN'")
         List<StudentCourseNoticeDTO> findNoticesByCourseIds(@Param("courseIds") List<Long> courseIds);
