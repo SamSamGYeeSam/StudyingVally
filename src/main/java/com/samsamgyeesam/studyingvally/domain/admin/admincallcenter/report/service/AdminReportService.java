@@ -10,12 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * 관리자 신고함 서비스
- */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,21 +21,17 @@ public class AdminReportService {
     private final AdminReportRepository adminReportRepository;
 
     public List<AdminReportListDTO> findAllReportList() {
-        List<AdminReport> reportList = adminReportRepository.findAllWithUserOrderByReportNoDesc();
-        List<AdminReportListDTO> result = new ArrayList<>();
-
-        for (AdminReport report : reportList) {
-            result.add(new AdminReportListDTO(
-                    report.getReportNo(),
-                    report.getReportTitle(),
-                    report.getUser().getUserName(),
-                    report.getUser().getUserNickname(),
-                    convertReportStatusToKorean(report.getReportStatus()),
-                    report.getReportProcessedAt()
-            ));
-        }
-
-        return result;
+        return adminReportRepository.findAllWithUserOrderByReportNoDesc()
+                .stream()
+                .map(report -> new AdminReportListDTO(
+                        report.getReportNo(),
+                        report.getReportTitle(),
+                        report.getUser().getUserName(),
+                        report.getUser().getUserNickname(),
+                        convertReportStatusToKorean(report.getReportStatus()),
+                        report.getReportProcessedAt()
+                ))
+                .collect(Collectors.toList());
     }
 
     public AdminReportDetailDTO findReportDetail(Long reportNo) {
@@ -53,8 +46,7 @@ public class AdminReportService {
                 report.getUser().getUserNickname(),
                 convertReportStatusToKorean(report.getReportStatus()),
                 report.getReportAnswer(),
-                report.getReportProcessedAt(),
-                report.getReportAnswerUpdatedAt()
+                report.getReportProcessedAt()
         );
     }
 
@@ -71,12 +63,7 @@ public class AdminReportService {
         AdminReport report = adminReportRepository.findById(requestDTO.getReportNo())
                 .orElseThrow(() -> new AdminException("답변할 신고가 존재하지 않습니다."));
 
-        if (report.getReportAnswer() != null && !report.getReportAnswer().trim().isEmpty()) {
-            throw new AdminException("이미 답변이 완료된 신고입니다.");
-        }
-
-        Long adminNo = 1L;
-        report.answerReport(requestDTO.getReportAnswer(), adminNo);
+        report.answerReport(requestDTO.getReportAnswer());
     }
 
     private String convertReportStatusToKorean(String reportStatus) {

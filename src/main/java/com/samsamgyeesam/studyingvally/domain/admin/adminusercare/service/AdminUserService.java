@@ -1,15 +1,15 @@
 package com.samsamgyeesam.studyingvally.domain.admin.adminusercare.service;
 
-import com.samsamgyeesam.studyingvally.domain.admin.adminusercare.dto.AdminUserDetailResponseDTO;
-import com.samsamgyeesam.studyingvally.domain.admin.adminusercare.dto.AdminUserListResponseDTO;
-import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.entity.AdminCourse;
-import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.entity.AdminEnrollment;
-import com.samsamgyeesam.studyingvally.domain.admin.adminusercare.entity.AdminReportCount;
-import com.samsamgyeesam.studyingvally.domain.admin.adminusercare.entity.AdminUser;
-import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.repository.AdminCourseRepository;
-import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.repository.AdminEnrollmentRepository;
 import com.samsamgyeesam.studyingvally.domain.admin.admincallcenter.contact.repository.AdminQuestionTechRepository;
 import com.samsamgyeesam.studyingvally.domain.admin.admincallcenter.report.repository.AdminReportCountRepository;
+import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.entity.AdminCourse;
+import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.entity.AdminEnrollment;
+import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.repository.AdminCourseRepository;
+import com.samsamgyeesam.studyingvally.domain.admin.admincoursecare.repository.AdminEnrollmentRepository;
+import com.samsamgyeesam.studyingvally.domain.admin.adminusercare.dto.AdminUserDetailResponseDTO;
+import com.samsamgyeesam.studyingvally.domain.admin.adminusercare.dto.AdminUserListResponseDTO;
+import com.samsamgyeesam.studyingvally.domain.admin.adminusercare.entity.AdminReportCount;
+import com.samsamgyeesam.studyingvally.domain.admin.adminusercare.entity.AdminUser;
 import com.samsamgyeesam.studyingvally.domain.admin.adminusercare.repository.AdminUserRepository;
 import com.samsamgyeesam.studyingvally.domain.admin.exception.AdminException;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-/* comment.
- * 관리자 사용자 관리 서비스 클래스
- */
 
 @Service
 @RequiredArgsConstructor
@@ -35,9 +31,6 @@ public class AdminUserService {
     private final AdminQuestionTechRepository adminQuestionTechRepository;
     private final AdminReportCountRepository adminReportCountRepository;
 
-    /* comment.
-     * 전체 사용자 목록 조회 메서드
-     */
     public List<AdminUserListResponseDTO> findAllUsers() {
         return adminUserRepository.findAllByOrderByUserNoDesc()
                 .stream()
@@ -45,9 +38,6 @@ public class AdminUserService {
                 .collect(Collectors.toList());
     }
 
-    /* comment.
-     * 역할별 사용자 목록 조회 메서드
-     */
     public List<AdminUserListResponseDTO> findUsersByRole(String role) {
         return adminUserRepository.findByUserRoleOrderByUserNoDesc(role)
                 .stream()
@@ -55,12 +45,7 @@ public class AdminUserService {
                 .collect(Collectors.toList());
     }
 
-    /* comment.
-     *  사용자 상세 조회 메서드
-     *  공부하기!!!!
-     */
     public AdminUserDetailResponseDTO findUserDetail(Long userNo) {
-
         AdminUser adminUser = adminUserRepository.findById(userNo)
                 .orElseThrow(() -> new AdminException("해당 사용자가 존재하지 않습니다."));
 
@@ -72,7 +57,6 @@ public class AdminUserService {
                     .stream()
                     .map(AdminCourse::getCourseTitle)
                     .collect(Collectors.toList());
-
             courseSectionTitle = "개설한 강의";
         } else if ("STUDENT".equalsIgnoreCase(adminUser.getUserRole())) {
             List<Long> courseIds = adminEnrollmentRepository.findByUserNoOrderByEnrollmentNoDesc(userNo)
@@ -86,7 +70,6 @@ public class AdminUserService {
                         .map(AdminCourse::getCourseTitle)
                         .collect(Collectors.toList());
             }
-
             courseSectionTitle = "신청한 강의";
         }
 
@@ -112,31 +95,22 @@ public class AdminUserService {
         );
     }
 
-    /* comment.
-     * 사용자 활성화 메서드
-     */
     @Transactional
     public void enableUser(Long userNo) {
         AdminUser adminUser = adminUserRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new AdminException("해당 사용자가 존재하지 않습니다."));
 
         adminUser.changeUserStatus("ACTIVE");
     }
 
-    /* comment.
-     * 사용자 비활성화 메서드
-     */
     @Transactional
     public void disableUser(Long userNo) {
         AdminUser adminUser = adminUserRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new AdminException("해당 사용자가 존재하지 않습니다."));
 
         adminUser.changeUserStatus("INACTIVE");
     }
 
-    /* comment.
-     * 엔티티를 목록 DTO로 변환하는 메서드
-     */
     private AdminUserListResponseDTO toListDTO(AdminUser adminUser) {
         return new AdminUserListResponseDTO(
                 adminUser.getUserNo(),
@@ -150,9 +124,6 @@ public class AdminUserService {
         );
     }
 
-    /* comment.
-     * 역할 값을 한글로 변환하는 메서드
-     */
     private String convertRoleToKorean(String userRole) {
         if ("TEACHER".equalsIgnoreCase(userRole)) {
             return "선생님";
@@ -163,9 +134,6 @@ public class AdminUserService {
         return userRole;
     }
 
-    /* comment.
-     * 상태 값을 한글로 변환하는 메서드
-     */
     private String convertStatusToKorean(String userStatus) {
         if ("ACTIVE".equalsIgnoreCase(userStatus)) {
             return "활성화";

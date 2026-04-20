@@ -5,7 +5,6 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-
 @Getter
 @AllArgsConstructor
 public class AdminContactDetailDTO {
@@ -18,5 +17,4 @@ public class AdminContactDetailDTO {
     private String questionStatusLabel;
     private String questionAnswer;
     private LocalDateTime questionAnsweredAt;
-    private LocalDateTime questionAnswerUpdatedAt;
 }

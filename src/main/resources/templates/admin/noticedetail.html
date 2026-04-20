@@ -67,6 +67,11 @@
             cursor: pointer;
         }
 
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
         .form-table {
             width: 100%;
             border-collapse: collapse;
@@ -119,6 +124,35 @@
             color: #7a1111;
         }
     </style>
+
+    <script>
+        function validateNoticeUpdateForm(form) {
+            const titleInput = form.querySelector('input[name="noticeTitle"]');
+            const descTextarea = form.querySelector('textarea[name="noticeDesc"]');
+            const button = form.querySelector('button[type="submit"]');
+
+            if (!titleInput.value.trim()) {
+                alert("공지 제목을 입력하세요.");
+                titleInput.focus();
+                return false;
+            }
+
+            if (!descTextarea.value.trim()) {
+                alert("공지 내용을 입력하세요.");
+                descTextarea.focus();
+                return false;
+            }
+
+            if (button.dataset.submitted === "true") {
+                return false;
+            }
+
+            button.dataset.submitted = "true";
+            button.disabled = true;
+            button.textContent = "수정 중...";
+            return true;
+        }
+    </script>
 </head>
 <body>
 
@@ -138,9 +172,7 @@
             </div>
         </div>
 
-        <!-- 공지사항 수정 폼 -->
-        <form th:action="@{/admin/callcenter/noticedetail}" method="post">
-            <!-- 수정 대상을 구분하기 위한 hidden 값 -->
+        <form th:action="@{/admin/callcenter/noticedetail}" method="post" onsubmit="return validateNoticeUpdateForm(this);">
             <input type="hidden" name="noticeNo" th:value="${noticeDetail.noticeNo}">
 
             <table class="form-table">
@@ -173,7 +205,7 @@
             </table>
 
             <div class="bottom-button-area">
-                <button type="submit" class="submit-button">완료</button>
+                <button type="submit" class="submit-button">수정하기</button>
             </div>
         </form>
     </div>

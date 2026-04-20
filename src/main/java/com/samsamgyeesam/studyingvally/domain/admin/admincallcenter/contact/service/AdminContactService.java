@@ -10,12 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * 관리자 문의함 서비스
- */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,21 +21,17 @@ public class AdminContactService {
     private final AdminQuestionTechRepository adminQuestionTechRepository;
 
     public List<AdminContactListDTO> findAllContactList() {
-        List<AdminQuestionTech> contactList = adminQuestionTechRepository.findAllWithUserOrderByQuestionTechNoDesc();
-        List<AdminContactListDTO> result = new ArrayList<>();
-
-        for (AdminQuestionTech contact : contactList) {
-            result.add(new AdminContactListDTO(
-                    contact.getQuestionTechNo(),
-                    contact.getQuestionTitle(),
-                    contact.getUser().getUserName(),
-                    contact.getUser().getUserNickname(),
-                    convertQuestionStatusToKorean(contact.getQuestionStatus()),
-                    contact.getQuestionAnsweredAt()
-            ));
-        }
-
-        return result;
+        return adminQuestionTechRepository.findAllWithUserOrderByQuestionTechNoDesc()
+                .stream()
+                .map(contact -> new AdminContactListDTO(
+                        contact.getQuestionTechNo(),
+                        contact.getQuestionTitle(),
+                        contact.getUser().getUserName(),
+                        contact.getUser().getUserNickname(),
+                        convertQuestionStatusToKorean(contact.getQuestionStatus()),
+                        contact.getQuestionAnsweredAt()
+                ))
+                .collect(Collectors.toList());
     }
 
     public AdminContactDetailDTO findContactDetail(Long questionTechNo) {
@@ -53,8 +46,7 @@ public class AdminContactService {
                 contact.getUser().getUserNickname(),
                 convertQuestionStatusToKorean(contact.getQuestionStatus()),
                 contact.getQuestionAnswer(),
-                contact.getQuestionAnsweredAt(),
-                contact.getQuestionAnswerUpdatedAt()
+                contact.getQuestionAnsweredAt()
         );
     }
 
@@ -71,12 +63,7 @@ public class AdminContactService {
         AdminQuestionTech contact = adminQuestionTechRepository.findById(requestDTO.getQuestionTechNo())
                 .orElseThrow(() -> new AdminException("답변할 문의가 존재하지 않습니다."));
 
-        if (contact.getQuestionAnswer() != null && !contact.getQuestionAnswer().trim().isEmpty()) {
-            throw new AdminException("이미 답변이 완료된 문의입니다.");
-        }
-
-        Long adminNo = 1L;
-        contact.answerQuestion(requestDTO.getQuestionAnswer(), adminNo);
+        contact.answerQuestion(requestDTO.getQuestionAnswer());
     }
 
     private String convertQuestionStatusToKorean(String questionStatus) {

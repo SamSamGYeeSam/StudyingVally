@@ -62,6 +62,10 @@
             cursor: pointer;
         }
 
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
 
         .form-table {
             width: 100%;
@@ -102,7 +106,6 @@
             resize: vertical;
         }
 
-
         .bottom-button-area {
             display: flex;
             justify-content: flex-end;
@@ -115,8 +118,31 @@
             font-weight: bold;
             margin-bottom: 14px;
         }
-
     </style>
+
+    <script>
+        function validateReportForm(form) {
+            const textarea = form.querySelector('textarea[name="reportAnswer"]');
+            const button = form.querySelector('button[type="submit"]');
+
+            if (!textarea || textarea.value.trim() === "") {
+                alert("답변 내용을 입력하세요.");
+                if (textarea) {
+                    textarea.focus();
+                }
+                return false;
+            }
+
+            if (button.dataset.submitted === "true") {
+                return false;
+            }
+
+            button.dataset.submitted = "true";
+            button.disabled = true;
+            button.textContent = "등록 중...";
+            return true;
+        }
+    </script>
 </head>
 <body>
 
@@ -133,7 +159,7 @@
 
         <div th:if="${errorMessage}" class="error-text" th:text="${errorMessage}"></div>
 
-        <form th:action="@{/admin/callcenter/reportdetail}" method="post">
+        <form th:action="@{/admin/callcenter/reportdetail}" method="post" onsubmit="return validateReportForm(this);">
             <input type="hidden" name="reportNo" th:value="${reportDetail.reportNo}">
 
             <table class="form-table">
@@ -165,7 +191,6 @@
                     </td>
                 </tr>
 
-                <!-- 답변이 이미 있는 경우: 읽기 전용 답변만 표시 -->
                 <tr th:if="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)}">
                     <th>답변 내용</th>
                     <td>
@@ -175,21 +200,27 @@
                     </td>
                 </tr>
 
-                <!-- 답변이 없는 경우: 작성 영역 표시 -->
+                <tr th:if="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)}">
+                    <th>처리 일시</th>
+                    <td>
+                        <div class="readonly-box"
+                             th:text="${reportDetail.reportProcessedAt != null ? #temporals.format(reportDetail.reportProcessedAt, 'yyyy-MM-dd HH:mm') : '-'}">
+                            -
+                        </div>
+                    </td>
+                </tr>
+
                 <tr th:if="${reportDetail.reportAnswer == null or #strings.isEmpty(reportDetail.reportAnswer)}">
                     <th>답변 작성</th>
                     <td>
-                <textarea name="reportAnswer"
-                          class="form-textarea"
-                          placeholder="신고에 대한 처리 답변을 입력하세요."></textarea>
+                        <textarea name="reportAnswer" class="form-textarea" placeholder="답변 내용을 입력하세요"></textarea>
                     </td>
                 </tr>
             </table>
 
-            <!-- 답변이 없는 경우에만 완료 버튼 표시 -->
             <div class="bottom-button-area"
                  th:if="${reportDetail.reportAnswer == null or #strings.isEmpty(reportDetail.reportAnswer)}">
-                <button type="submit" class="submit-button">답변 완료</button>
+                <button type="submit" class="submit-button">답변 등록</button>
             </div>
         </form>
     </div>
