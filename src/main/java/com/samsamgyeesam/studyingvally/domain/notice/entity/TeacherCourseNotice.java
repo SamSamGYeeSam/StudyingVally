@@ -30,16 +30,20 @@ public class TeacherCourseNotice extends BaseTimeEntity {
     @Column(name = "course_id")
     private Long courseId;
 
+    @Column(name = "user_no")
+    private Long userNo;
+
     // 강의랑 관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", insertable = false, updatable = false)
     private Course course;
 
     // 등록용 생성자
-    public TeacherCourseNotice(String courseNoticeTitle, String courseNoticeDesc, Long courseId) {
+    public TeacherCourseNotice(String courseNoticeTitle, String courseNoticeDesc, Long courseId, Long userNo) {
         this.courseNoticeTitle = courseNoticeTitle;
         this.courseNoticeDesc = courseNoticeDesc;
         this.courseId = courseId;
+        this.userNo = userNo;
     }
 
     // 강의소식 수정 메서드
