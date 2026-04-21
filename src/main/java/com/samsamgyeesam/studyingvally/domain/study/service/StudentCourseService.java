@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,13 +27,7 @@ public class StudentCourseService {
     private final StudentUserRepository studentUserRepository;
 
     public List<StudentCourse> getOpenCourses() {
-//        return studentEnrollmentRepository.findAll().stream()
-//                .filter(enrollment -> enrollment.getCourse() != null &&
-//                        "open".equalsIgnoreCase(enrollment.getCourse().getCourseStatus()))
-//                .map(StudentEnrollment::getCourse)
-//                .distinct()
-//                .collect(Collectors.toList());
-        return studentCourseRepository.findByCourseStatusIgnoreCase("OPEN");
+        return studentCourseRepository.findByCourseStatusIgnoreCaseOrderByCourseCreatedAtDesc("OPEN");
     }
 
 
@@ -162,8 +157,9 @@ public class StudentCourseService {
 
         question.setUserNo(userNo);
         question.setCourseId(courseId);
-        question.setQuestionCourseTitle(title); // DB: question_course_title
+        question.setQuestionCourseTitle(title);
         question.setQuestionCourseDesc(desc);
+        question.setCreatedDate(LocalDateTime.now());
 
         studentCourseQuestionRepository.save(question);
     }

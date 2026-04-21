@@ -32,7 +32,12 @@ public class StudentCourseQuestion {
     @Column(name = "course_id")
     private Long courseId;
 
-    @Column(name = "answer_date")
-    private LocalDateTime answerDate;
+    @Column(updatable = false)
+    private LocalDateTime createdDate;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdDate = LocalDateTime.now();
+    }
 
 }
