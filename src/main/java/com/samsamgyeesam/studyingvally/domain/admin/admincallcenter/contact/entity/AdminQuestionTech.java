@@ -26,9 +26,6 @@ public class AdminQuestionTech extends BaseOnlyCreateTime {
     @Column(name = "question_desc", nullable = false)
     private String questionDesc;
 
-    @Column(name = "course_id")
-    private Long courseId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no")
     private AdminUser user;
