@@ -105,6 +105,9 @@
         .pixel-btn:disabled { background: #999; cursor: not-allowed; transform: none; box-shadow: none; }
 
     </style>
+
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+
 </head>
 <body>
 
@@ -113,7 +116,6 @@
 
         <div class="video-header">
             <h2 class="video-title" th:text="'📺 ' + ${chapter.chapTitle}">챕터 제목</h2>
-            <div style="color: #8d6e63; font-size: 11px;">[Course ID: <span th:text="${courseId}">0</span>]</div>
         </div>
 
         <!-- 비디오가 차지하는 영역을 대폭 키움 -->
@@ -131,10 +133,14 @@
     </div>
 </div>
 
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+
 <script th:inline="javascript">
     function markAsComplete(btn) {
         const chapNo = [[${chapter.chapNo}]];
         const courseId = [[${courseId}]];
+
+        //
 
         btn.disabled = true;
         btn.innerText = "도장 찍는 중...";
@@ -160,6 +166,9 @@
             });
     }
 </script>
+
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
 
 </body>
 </html>

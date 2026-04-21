@@ -1,14 +1,13 @@
 package com.samsamgyeesam.studyingvally.domain.study.service;
 
+import com.samsamgyeesam.studyingvally.domain.quiz.entity.QuizAttempt;
 import com.samsamgyeesam.studyingvally.domain.study.dto.StudentAdminNoticeDTO;
 import com.samsamgyeesam.studyingvally.domain.study.dto.StudentCourseNoticeDTO;
 import com.samsamgyeesam.studyingvally.domain.study.entity.StudentEnrollment;
-import com.samsamgyeesam.studyingvally.domain.study.repository.StudentEnrollmentRepository;
+import com.samsamgyeesam.studyingvally.domain.study.entity.StudentQuizAttempt;
+import com.samsamgyeesam.studyingvally.domain.study.repository.*;
 import com.samsamgyeesam.studyingvally.domain.study.dto.StudentDTO;
 import com.samsamgyeesam.studyingvally.domain.study.entity.StudentUser;
-import com.samsamgyeesam.studyingvally.domain.study.repository.StudentEvaluationRepository;
-import com.samsamgyeesam.studyingvally.domain.study.repository.StudentNoticeRepository;
-import com.samsamgyeesam.studyingvally.domain.study.repository.StudentUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +26,7 @@ public class StudentService {
     private final StudentEnrollmentRepository studentEnrollmentRepository;
     private final StudentNoticeRepository studentnoticeRepository;
     private final StudentEvaluationRepository studentEvaluationRepository;
+    private final StudentQuizAttemptRepository studentQuizAttemptRepository;
 
     public Long findUserNoByUserId(String userId) {
         return studentUserRepository.findByUserId(userId)
@@ -44,13 +44,17 @@ public class StudentService {
                     boolean exists = studentEvaluationRepository.existsByUser_UserNoAndStudentCourse_CourseId(
                             userNo, en.getCourse().getCourseId()
                     );
+                    Integer quizScore = studentQuizAttemptRepository.findTopByUserNoAndQuiz_Chapter_Course_CourseIdOrderByAttemptIdDesc(userNo, en.getCourse().getCourseId())
+                            .map(StudentQuizAttempt::getScore)
+                            .orElse(null);
 
                     return StudentDTO.EnrolledCourseDTO.builder()
                             .courseId(en.getCourse().getCourseId())
                             .courseTitle(en.getCourse().getCourseTitle())
                             .courseStatus(en.getCourse().getCourseStatus())
                             .progress(en.getEnrollmentProcess().intValue())
-                            .hasEvaluation(exists) // 이제 정상적으로 적용됩니다.
+                            .hasEvaluation(exists)
+                            .score(quizScore)
                             .targetUrl("/student/course/" + en.getCourse().getCourseId())
                             .build();
                 })

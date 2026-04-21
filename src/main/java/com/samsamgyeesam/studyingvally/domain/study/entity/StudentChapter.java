@@ -24,7 +24,8 @@ public class StudentChapter {
     @Column(name = "chap_url")
     private String chapUrl;
 
-    @Column(name = "course_id")
-    private Long courseId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id")
+    private StudentCourse course;
 
 }
