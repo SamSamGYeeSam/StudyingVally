@@ -99,6 +99,8 @@
             font-size: 18px;
         }
     </style>
+
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
@@ -167,5 +169,7 @@
 
 </div>
 
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
 </body>
 </html>

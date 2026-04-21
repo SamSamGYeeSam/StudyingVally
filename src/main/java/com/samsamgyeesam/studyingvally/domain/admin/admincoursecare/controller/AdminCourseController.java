@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -52,14 +53,16 @@ public class AdminCourseController {
     }
 
     @PostMapping("/open")
-    public String openCourse(@RequestParam("courseId") Long courseId) {
+    public String openCourse(@RequestParam("courseId") Long courseId, RedirectAttributes redirectAttributes) {
         adminCourseService.openCourse(courseId);
+        redirectAttributes.addFlashAttribute("successMessage", "강의가 활성화 되었습니다.");
         return "redirect:/admin/coursecare/detail?courseId=" + courseId;
     }
 
     @PostMapping("/close")
-    public String closeCourse(@RequestParam("courseId") Long courseId) {
+    public String closeCourse(@RequestParam("courseId") Long courseId, RedirectAttributes redirectAttributes) {
         adminCourseService.closeCourse(courseId);
+        redirectAttributes.addFlashAttribute("successMessage", "강의가 비활성화 되었습니다.");
         return "redirect:/admin/coursecare/detail?courseId=" + courseId;
     }
 }

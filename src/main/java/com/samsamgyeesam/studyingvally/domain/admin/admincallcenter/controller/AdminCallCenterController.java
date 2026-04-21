@@ -15,16 +15,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * 관리자 고객센터 컨트롤러
- *
- * 왜 필요한가:
- * - 고객센터 메인, 공지사항, 문의함, 신고함 화면 요청을 처리하기 위함이다.
- *
- * 주의할 점:
- * - 예외 처리는 컨트롤러에서 직접 하지 않고 AdminExceptionHandler에서 일괄 처리한다.
- */
+
 @Controller
 @RequestMapping("/admin/callcenter")
 @RequiredArgsConstructor
@@ -55,8 +48,9 @@ public class AdminCallCenterController {
     }
 
     @PostMapping("/noticeregist")
-    public String registNotice(@ModelAttribute("noticeRegistRequest") AdminNoticeRegistRequestDTO requestDTO) {
+    public String registNotice(@ModelAttribute("noticeRegistRequest") AdminNoticeRegistRequestDTO requestDTO, RedirectAttributes redirectAttributes ) {
         adminNoticeService.registNotice(requestDTO);
+         redirectAttributes.addFlashAttribute("successMessage", "공지사항 등록이 완료되었습니다.");
         return "redirect:/admin/callcenter/notice";
     }
 
@@ -69,8 +63,9 @@ public class AdminCallCenterController {
     }
 
     @PostMapping("/noticedetail")
-    public String updateNotice(@ModelAttribute AdminNoticeUpdateRequestDTO requestDTO) {
+    public String updateNotice(@ModelAttribute AdminNoticeUpdateRequestDTO requestDTO, RedirectAttributes redirectAttributes) {
         adminNoticeService.updateNotice(requestDTO);
+        redirectAttributes.addFlashAttribute("successMessage", "공지사항 수정이 완료되었습니다.");
         return "redirect:/admin/callcenter/notice";
     }
 
@@ -90,8 +85,9 @@ public class AdminCallCenterController {
     }
 
     @PostMapping("/contactdetail")
-    public String answerContact(@ModelAttribute AdminContactAnswerRequestDTO requestDTO) {
+    public String answerContact(@ModelAttribute AdminContactAnswerRequestDTO requestDTO, RedirectAttributes redirectAttributes) {
         adminContactService.answerContact(requestDTO);
+        redirectAttributes.addFlashAttribute("successMessage", "문의 답변 등록이 완료되었습니다.");
         return "redirect:/admin/callcenter/contact";
     }
 
@@ -111,8 +107,9 @@ public class AdminCallCenterController {
     }
 
     @PostMapping("/reportdetail")
-    public String answerReport(@ModelAttribute AdminReportAnswerRequestDTO requestDTO) {
+    public String answerReport(@ModelAttribute AdminReportAnswerRequestDTO requestDTO, RedirectAttributes redirectAttributes) {
         adminReportService.answerReport(requestDTO);
+        redirectAttributes.addFlashAttribute("successMessage", "신고 답변 등록이 완료되었습니다.");
         return "redirect:/admin/callcenter/report";
     }
 }

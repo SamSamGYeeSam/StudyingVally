@@ -14,9 +14,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/* comment.
- * 관리자 강의 관리 기능에서 course 테이블을 조회하기 위한 전용 엔티티 클래스
- */
 
 @Entity
 @Table(name = "course")
