@@ -26,30 +26,29 @@ public class QuizStudentService {
 
     private final QuizEnrollmentRepository quizEnrollmentRepository;
     private final QuizAttemptRepository quizAttemptRepository;
-
     private final QuizChapterRepository quizChapterRepository;
     private final QuizRepository quizRepository;
-
     private final ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
-    public List<QuizEnrolledCourseDTO> getEnrolledCourses(Long userNo) {
+    public List<QuizEnrolledCourseDTO> findEnrolledCourses(Long userNo) {
         return quizEnrollmentRepository.findEnrolledCoursesByUserNo(userNo);
     }
 
     @Transactional(readOnly = true)
-    public Map<Long, Integer> getUserQuizScoreMap(Long userNo) {
+    public Map<Long, Integer> findUserQuizScoreMap(Long userNo) {
         List<QuizAttempt> attempts = quizAttemptRepository.findByUserNo(userNo);
+        // 이미 Long 타입이므로 Long.valueOf 제거
         return attempts.stream()
                 .collect(Collectors.toMap(
-                        attempt -> Long.valueOf(attempt.getQuizNo()),
+                        QuizAttempt::getQuizNo,
                         QuizAttempt::getQuizScore,
                         (existing, replacement) -> existing
                 ));
     }
 
     @Transactional
-    public void saveQuizAttempt(QuizAttemptDTO attemptDTO) {
+    public void registQuizAttempt(QuizAttemptDTO attemptDTO) {
         Optional<QuizAttempt> existingAttemptOpt =
                 quizAttemptRepository.findByQuizNoAndUserNo(attemptDTO.getQuizNo(), attemptDTO.getUserNo());
 
@@ -64,12 +63,10 @@ public class QuizStudentService {
     }
 
     @Transactional(readOnly = true)
-    public double getCourseAverageScore(Long courseId, Long userNo) {
-        // 1. 강의에 속한 모든 챕터 조회
+    public double findCourseAverageScore(Long courseId, Long userNo) {
         List<QuizChapter> chapters = quizChapterRepository.findByCourseId(courseId);
-
-        // 2. 챕터들에 속한 모든 퀴즈 번호(quizNo) 수집
         List<Long> quizNosInCourse = new ArrayList<>();
+
         for (QuizChapter chapter : chapters) {
             List<QuizQuiz> quizzes = quizRepository.findByChapNo(chapter.getChapNo());
             for (QuizQuiz quiz : quizzes) {
@@ -77,25 +74,21 @@ public class QuizStudentService {
             }
         }
 
-        // 퀴즈가 하나도 없다면 0점 처리
         if (quizNosInCourse.isEmpty()) {
             return 0.0;
         }
 
-        // 3. 해당 유저가 푼 '모든' 퀴즈 기록 조회
         List<QuizAttempt> attempts = quizAttemptRepository.findByUserNo(userNo);
-
-        // 4. 이 강의(Course)에 속한 퀴즈들의 점수만 골라서 합산
         int totalEarnedScore = 0;
+
         for (QuizAttempt attempt : attempts) {
-            Long attemptQuizNo = Long.valueOf(attempt.getQuizNo());
+            // 이미 Long 타입이므로 바로 가져옴
+            Long attemptQuizNo = attempt.getQuizNo();
             if (quizNosInCourse.contains(attemptQuizNo)) {
                 totalEarnedScore += attempt.getQuizScore();
             }
         }
 
-        // 5. 평균 계산: (내가 얻은 총 점수 / (전체 퀴즈 개수 * 100)) * 100
-        // 결국 수식은 "총 점수 / 전체 퀴즈 개수" 와 동일합니다.
         return (double) totalEarnedScore / quizNosInCourse.size();
     }
 }

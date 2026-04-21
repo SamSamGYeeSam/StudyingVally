@@ -10,8 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuizAttemptDTO {
-    private Long quizScore;
+    private Integer quizScore;
     private String quizResult;
-    private String quizNo;
+    private Long quizNo; // String -> Long 변경
     private Long userNo;
 }

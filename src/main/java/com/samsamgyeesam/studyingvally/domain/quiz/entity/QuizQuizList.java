@@ -11,7 +11,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-
 @Entity
 @Table(name = "quiz_list")
 public class QuizQuizList extends BaseTimeEntity {
@@ -36,6 +35,5 @@ public class QuizQuizList extends BaseTimeEntity {
     private Long quizScore;
 
     @Column(name = "quiz_no")
-    private String quizNo;
-
+    private Long quizNo; // String -> Long 변경
 }

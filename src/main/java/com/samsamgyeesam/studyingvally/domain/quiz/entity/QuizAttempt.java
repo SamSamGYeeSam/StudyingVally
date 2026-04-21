@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
@@ -21,13 +23,13 @@ public class QuizAttempt extends BaseTimeEntity {
     private Long quizAttemptId;
 
     @Column(name = "quiz_score")
-    private Integer quizScore; // 맞힌 문제 수 (점수)
+    private Integer quizScore;
 
     @Column(name = "quiz_result")
-    private String quizResult; // "CLEAR" 또는 "GAME_OVER"
+    private String quizResult;
 
     @Column(name = "quiz_no")
-    private String quizNo;
+    private Long quizNo;
 
     @Column(name = "user_no")
     private Long userNo;
