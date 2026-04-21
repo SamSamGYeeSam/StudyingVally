@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface QuizListRepository extends JpaRepository<QuizQuizList, Long> {
 
-    List<QuizQuizList> findByQuizNo(String quizNo);
+    // 파라미터 String quizNo -> Long quizNo 변경
+    List<QuizQuizList> findByQuizNo(Long quizNo);
 
 }

@@ -55,14 +55,16 @@ public class QuizController {
     // ==========================================
     // 3. 퀴즈별 문제 목록 보기
     // ==========================================
+    // String -> Long 변경
     @PostMapping("/teacher/quiz/find-quizlist-by-quiz-post")
-    public String findQuizListByQuizPost(@RequestParam(name = "quizNo") String quizNo, Model model) {
+    public String findQuizListByQuizPost(@RequestParam(name = "quizNo") Long quizNo, Model model) {
         model.addAttribute("quizNo", quizNo);
         return "redirect:/teacher/quiz/find-quizlist-by-quiz";
     }
 
+    // String -> Long 변경
     @GetMapping("/teacher/quiz/find-quizlist-by-quiz")
-    public String findQuizListByQuiz(@ModelAttribute("quizNo") String quizNo, Model model) {
+    public String findQuizListByQuiz(@ModelAttribute("quizNo") Long quizNo, Model model) {
         List<QuizListDTO> quizItems = quizService.getQuizListItemsByQuizNo(quizNo);
         model.addAttribute("quizItems", quizItems);
         return "quiz/quizlist_items";
@@ -96,21 +98,24 @@ public class QuizController {
     // ==========================================
     // 5. 퀴즈 문제들 "일괄" 만들기 (폼 & 처리)
     // ==========================================
+    // String -> Long 변경
     @PostMapping("/teacher/quiz/regist-quizlist-form-post")
-    public String findRegistQuizListFormPost(@RequestParam(name = "quizNo", required = false) String quizNo, Model model) {
+    public String findRegistQuizListFormPost(@RequestParam(name = "quizNo", required = false) Long quizNo, Model model) {
         model.addAttribute("quizNo", quizNo);
         return "redirect:/teacher/quiz/regist-quizlist-form";
     }
 
+    // String -> Long 변경
     @GetMapping("/teacher/quiz/regist-quizlist-form")
-    public String findRegistQuizListForm(@ModelAttribute("quizNo") String quizNo) {
+    public String findRegistQuizListForm(@ModelAttribute("quizNo") Long quizNo) {
         return "quiz/registquizlist";
     }
 
     @PostMapping("/teacher/quiz/create-quizlist-batch")
     public String createQuizListBatch(@ModelAttribute QuizListFormDTO formDTO, RedirectAttributes redirectAttributes) {
         try {
-            String quizNo = formDTO.getQuizNo();
+            // String -> Long 변경
+            Long quizNo = formDTO.getQuizNo();
             List<QuizListDTO> dtoList = formDTO.getQuizList();
 
             if (dtoList == null || dtoList.isEmpty()) {
@@ -138,14 +143,16 @@ public class QuizController {
     // ==========================================
     // 6. 퀴즈 문제 수정 (폼 & 처리)
     // ==========================================
+    // String -> Long 변경
     @PostMapping("/teacher/quiz/update-quizlist-form-post")
-    public String findUpdateQuizListFormPost(@RequestParam(name = "quizNo") String quizNo, Model model) {
+    public String findUpdateQuizListFormPost(@RequestParam(name = "quizNo") Long quizNo, Model model) {
         model.addAttribute("quizNo", quizNo);
         return "redirect:/teacher/quiz/update-quizlist-form";
     }
 
+    // String -> Long 변경
     @GetMapping("/teacher/quiz/update-quizlist-form")
-    public String findUpdateQuizListForm(@ModelAttribute("quizNo") String quizNo, Model model) {
+    public String findUpdateQuizListForm(@ModelAttribute("quizNo") Long quizNo, Model model) {
         List<QuizListDTO> quizItems = quizService.getQuizListItemsByQuizNo(quizNo);
         model.addAttribute("quizItems", quizItems);
         model.addAttribute("quizNo", quizNo);
@@ -156,7 +163,8 @@ public class QuizController {
     public String updateQuizListBatch(@ModelAttribute QuizListFormDTO formDTO, RedirectAttributes redirectAttributes) {
         try {
             List<QuizListDTO> dtoList = formDTO.getQuizList();
-            String quizNo = formDTO.getQuizNo();
+            // String -> Long 변경
+            Long quizNo = formDTO.getQuizNo();
 
             for (QuizListDTO dto : dtoList) {
                 dto.setQuizNo(quizNo);
@@ -174,5 +182,4 @@ public class QuizController {
             return "redirect:/teacher/quiz/update-quizlist-form";
         }
     }
-
 }

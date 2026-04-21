@@ -29,16 +29,12 @@ public class QuizService {
     // ==========================================
     // [등록 로직]
     // ==========================================
-
-    // 100점 만점 검증로직
     @Transactional
     public void registQuizListBatch(List<QuizListDTO> quizListDTOs) {
-        // 1. 5문제 검증 로직
         if (quizListDTOs == null || quizListDTOs.size() < 5) {
             throw new IllegalArgumentException("서바이벌 퀴즈 밸런스를 위해 최소 5개 이상의 문제를 등록해야 합니다. (현재: " + (quizListDTOs == null ? 0 : quizListDTOs.size()) + "개)");
         }
 
-        // 2. 배점 총합 100점 검사
         long totalScore = quizListDTOs.stream()
                 .mapToLong(dto -> dto.getQuizScore() != null ? dto.getQuizScore() : 0L).sum();
 
@@ -108,8 +104,9 @@ public class QuizService {
                 .collect(Collectors.toList());
     }
 
+    // 파라미터 String -> Long 변경
     @Transactional(readOnly = true)
-    public List<QuizListDTO> getQuizListItemsByQuizNo(String quizNo) {
+    public List<QuizListDTO> getQuizListItemsByQuizNo(Long quizNo) {
         List<QuizQuizList> quizLists = quizListRepository.findByQuizNo(quizNo);
         return quizLists.stream()
                 .map(item -> modelMapper.map(item, QuizListDTO.class))
@@ -142,25 +139,21 @@ public class QuizService {
             throw new IllegalArgumentException("수정 시에도 문제 배점의 총합은 정확히 100점이어야 합니다. (현재: " + totalScore + "점)");
         }
 
-        // 객체가 아닌 String 타입의 퀴즈 번호를 그대로 꺼냅니다.
-        String quizNo = quizListDTOs.get(0).getQuizNo();
+        // String -> Long 변경
+        Long quizNo = quizListDTOs.get(0).getQuizNo();
 
-        // 1. DB에 저장되어 있던 원래 문제 목록을 전부 불러옵니다.
         List<QuizQuizList> existingEntities = quizListRepository.findByQuizNo(quizNo);
 
-        // 2. 강사가 수정한 폼에서 넘어온 문제들의 PK(quizListNo) 목록을 모읍니다.
         java.util.Set<Long> incomingIds = quizListDTOs.stream()
                 .map(QuizListDTO::getQuizListNo)
                 .filter(java.util.Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        // 3. [DELETE 처리] 기존 문제 중, 폼에서 날아오지 않은 문제(강사가 삭제한 문제)를 찾아서 지웁니다.
         List<QuizQuizList> itemsToDelete = existingEntities.stream()
                 .filter(entity -> !incomingIds.contains(entity.getQuizListNo()))
                 .collect(Collectors.toList());
         quizListRepository.deleteAll(itemsToDelete);
 
-        // 4. [UPDATE & INSERT 처리] 남은 문제들을 저장합니다.
         List<QuizQuizList> entitiesToSave = quizListDTOs.stream().map(dto -> new QuizQuizList(
                 dto.getQuizListNo(),
                 dto.getQuizTitle(),

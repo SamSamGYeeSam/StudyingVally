@@ -13,6 +13,6 @@ public class QuizListDTO {
     private String quizDesc;
     private String quizAnswer;
     private String quizAnswerDesc;
-    private Long quizScore; // 배점 필드 추가
-    private String quizNo;
+    private Long quizScore;
+    private Long quizNo; // String -> Long 변경
 }
