@@ -70,7 +70,7 @@ public class FileService {
             videoFile.transferTo(new File(filePath + "/" + savedName));
 
             // db에 저장할 경로 반환
-            return "static/videos/" + savedName;
+            return "/videos/" + savedName;
 
         }catch(IOException e){
             throw new CourseException("영상 파일 업로드 중 오류가 발생했습니다. 다시 시도해주세요.");
