@@ -5,9 +5,7 @@ import lombok.Getter;
 
 import java.util.List;
 
-/* comment.
- * 관리자 사용자 상세 화면에 전달할 DTO 클래스
- */
+
 
 @Getter
 @AllArgsConstructor

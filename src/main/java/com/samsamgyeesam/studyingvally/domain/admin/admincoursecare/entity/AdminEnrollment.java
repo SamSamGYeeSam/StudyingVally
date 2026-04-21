@@ -8,10 +8,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/* comment.
- * 관리자 사용자 상세 조회에서 수강 정보를 조회하기 위한 엔티티 클래스
- */
-
 @Entity
 @Table(name = "enrollment")
 @Getter

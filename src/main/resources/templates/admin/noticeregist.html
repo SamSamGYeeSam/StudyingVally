@@ -172,13 +172,13 @@
             const button = form.querySelector('button[type="submit"]');
 
             if (!titleInput.value.trim()) {
-                alert("공지 제목을 입력하세요.");
+                showModal("공지 제목을 입력하세요." , "error");
                 titleInput.focus();
                 return false;
             }
 
             if (!descTextarea.value.trim()) {
-                alert("공지 내용을 입력하세요.");
+                showModal("공지 내용을 입력하세요." , "error");
                 descTextarea.focus();
                 return false;
             }
@@ -193,6 +193,8 @@
             return true;
         }
     </script>
+
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
@@ -233,5 +235,7 @@
     </div>
 </div>
 
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
 </body>
 </html>
