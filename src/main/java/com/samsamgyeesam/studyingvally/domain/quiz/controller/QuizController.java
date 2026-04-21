@@ -168,19 +168,11 @@ public class QuizController {
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/teacher/quiz/update-quizlist-form";
+            return "redirect:/teacher/quiz/update   -quizlist-form";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "수정 중 서버 오류가 발생했습니다.");
             return "redirect:/teacher/quiz/update-quizlist-form";
         }
-    }
-
-    // ==========================================
-    // 7. [TEST용] 임시 테스트 시작 페이지
-    // ==========================================
-    @GetMapping("/teacher/quiz/test-start")
-    public String findTestStartPage() {
-        return "quiz/test_start";
     }
 
 }
