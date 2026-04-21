@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Valley</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background: url('/image/basicbackground.png') no-repeat center center fixed;
+            background-size: cover;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .title-container {
+            margin-top: 140px;
+            text-align: center;
+        }
+
+        .title-container img {
+            width: 1300px;
+            max-width: 80%;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+        }
+
+        .enter-text {
+            margin-top: 40px;
+            font-size: 28px;
+            color: white;
+            text-shadow: 3px 2px 5px rgba(0,0,0,0.7);
+            animation: blink 2.0s infinite;
+        }
+
+        /* 깜빡이는 효과 */
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="title-container">
+    <img src="/image/studying_valley_title.png" alt="Studying Valley">
+</div>
+
+<div class="enter-text">
+    아무 키를 눌러 스터딩벨리에 입장해주세요
+</div>
+
+<script>
+    document.addEventListener("keydown", function () {
+        window.location.href = "/main";
+    });
+
+    document.addEventListener("click", function () {
+        window.location.href = "/main";
+    });
+</script>
+
+</body>
+</html>

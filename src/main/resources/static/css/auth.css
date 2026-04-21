@@ -24,12 +24,19 @@
 body {
     margin: 0;
     font-family: "Verdana", "Geneva", sans-serif;
-    background: linear-gradient(to bottom, var(--sky-top) 0%, var(--sky-bottom) 58%, #b9ecff 58%, #c8f3b5 100%);
     min-height: 100vh;
     overflow: hidden;
     color: var(--text-main);
     image-rendering: pixelated;
+    background: url('/image/mainbackground.png') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }
+
 
 .game-screen {
     position: relative;
@@ -382,7 +389,7 @@ body {
     font-size: 18px;
     font-weight: bold;
     padding: 16px 12px;
-    margin: 12px 0;
+    margin: 8px 0;
     border: 4px solid var(--btn-shadow);
     box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.15);
     transition: transform 0.08s ease, background 0.15s ease;
@@ -566,3 +573,8 @@ body {
 .cloud.c1 { --scale: 1; }
 .cloud.c2 { --scale: 1.1; }
 .cloud.c3 { --scale: 0.95; }
+
+.helper-links {
+margin-top:7px;
+    text-align: center;
+}

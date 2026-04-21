@@ -13,7 +13,7 @@ public class IndexController {
      */
     @GetMapping("/")
     public String root() {
-        return "redirect:/main";
+        return "redirect:/basic";
     }
 
     /*
@@ -21,6 +21,11 @@ public class IndexController {
      * templates/main/main.html 과 연결된다.
      * @return main/main
      */
+    @GetMapping("/basic")
+    public String basicPage() {
+        return "main/basic";
+    }
+
     @GetMapping("/main")
     public String mainPage() {
         return "main/main";

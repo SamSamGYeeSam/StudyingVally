@@ -43,6 +43,7 @@ public class SecurityConfig {
                         // 비로그인도 접근 가능한 공개 페이지
                         .requestMatchers(
                                 "/",
+                                "/basic",
                                 "/main",
                                 "/auth/**",
                                 "/image/**"
