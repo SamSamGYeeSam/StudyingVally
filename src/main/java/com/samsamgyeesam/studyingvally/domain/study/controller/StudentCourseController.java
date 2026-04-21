@@ -18,8 +18,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import jakarta.servlet.http.HttpServletRequest;
-
-import static javax.swing.text.html.CSS.getAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/student")
@@ -81,7 +80,7 @@ public class StudentCourseController {
         String userId = principal.getName();
         Long userNo = studentService.findUserNoByUserId(userId);
 
-        List<StudentChapter> chapters = studentChapterRepository.findByCourseId(courseId);
+        List<StudentChapter> chapters = studentChapterRepository.findByCourse_CourseId(courseId);
         List<Long> completedChapterIds = studentChapterAttemptRepository.findCompletedChapterNos(userNo, courseId);
 
         double progress = chapters.isEmpty() ? 0 : (double) completedChapterIds.size() / chapters.size() * 100;
@@ -111,22 +110,29 @@ public class StudentCourseController {
                 .orElseThrow(() -> new IllegalArgumentException("해당 강의가 없습니다."));
 
         model.addAttribute("chapter", chapter);
-        model.addAttribute("courseId", courseId); // 기존 변수명 유지
+        model.addAttribute("courseId", courseId);
         return "student/chapterclass";
     }
 
     @PostMapping("/chapter/complete/{courseId}/{chapNo}")
     @ResponseBody
-    public ResponseEntity<String> completeChapter(@PathVariable Long courseId,
-                                                  @PathVariable Long chapNo,
-                                                  Principal principal) {
-        if (principal == null) return ResponseEntity.status(401).body("unauthorized");
+    public String completeChapter(@PathVariable Long courseId,
+                                  @PathVariable Long chapNo,
+                                  Principal principal,
+                                  RedirectAttributes redirectAttributes) {
+        if (principal == null) return "redirect:/auth/login";
 
-        String userId = principal.getName();
-        Long userNo = studentService.findUserNoByUserId(userId);
+        try{
+            String userId = principal.getName();
+            Long userNo = studentService.findUserNoByUserId(userId);
 
-        studentCourseService.completeChapter(userNo, chapNo, courseId);
-        return ResponseEntity.ok("success");
+            studentCourseService.completeChapter(userNo, chapNo, courseId);
+
+            redirectAttributes.addFlashAttribute("successMessage", "강의 수강이 완료되었습니다!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "수강 처리 중 오류가 발생했습니다.");
+        }
+        return "redirect:/student/chapter";
     }
 
     @PostMapping("/evaluation/save")
@@ -134,8 +140,7 @@ public class StudentCourseController {
             @RequestParam("courseId") Long courseId,
             @RequestParam("rating") int rating,
             @RequestParam("content") String content,
-            Principal principal, HttpServletRequest request)
-    {
+            Principal principal, HttpServletRequest request) {
         if (principal == null) return "redirect:/auth/login";
         String userId = principal.getName();
         Long userNo = studentService.findUserNoByUserId(userId);
@@ -144,13 +149,6 @@ public class StudentCourseController {
         System.out.println("리뷰 저장됨: 강의=" + courseId + ", 별점=" + rating + ", 내용=" + content);
 
         return "redirect:/student/course";
-//        String referer = request.getHeader("Referer");
-//
-//        if (referer != null && !referer.isEmpty()) {
-//            return "redirect:/student/chapter/class";
-//        }
-//
-//        return "redirect:/student/home";
     }
 
     @GetMapping("/course/talk")

@@ -36,12 +36,15 @@ public class StudentCourseService {
     }
 
 
+    public List<StudentChapter> getChapters(Long courseId) {
+        return studentChapterRepository.findByCourse_CourseId(courseId);
+    }
 
 //    ==================================================================================================
 
     @Transactional
     public double updateAndGetProgress(Long userNo, Long courseId) {
-        long totalChapters = studentChapterRepository.countByCourseId(courseId);
+        long totalChapters = studentChapterRepository.countByCourse_CourseId(courseId);
         if (totalChapters == 0) return 0.0;
 
         long completedChapters = studentChapterAttemptRepository.countCompletedChapters(userNo, courseId);
@@ -75,7 +78,7 @@ public class StudentCourseService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("강의를 찾을 수 없습니다."));
 
-        List<StudentChapter> chapters = studentChapterRepository.findByCourseId(courseId);
+        List<StudentChapter> chapters = studentChapterRepository.findByCourse_CourseId(courseId);
         List<Long> completedChapNos = studentChapterAttemptRepository.findCompletedChapNosByUser(userNo, courseId);
         double progress = updateAndGetProgress(userNo, courseId);
 

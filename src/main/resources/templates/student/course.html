@@ -136,10 +136,10 @@
     <div id="npcModal">
         <div style="display: flex; align-items: center;">
             <img th:src="@{/image/{gender}-npc.png(gender=${instructorGender == 'M' ? 'm' : 'f'})}"
-                 alt="NPC Icon" style="width: 50px; height: 50px; margin-right: 15px; image-rendering: pixelated;">
+                 alt="NPC Icon" style="width: 50px; height: 75px; margin-right: 15px; image-rendering: pixelated;">
             <div id="npcContent">
                 <strong style="color: #ffca28;"th:text="${instructorNickname}">강사 닉네임</strong>
-                <p id="npcMessage" style="margin: 5px 0; font-size: 14px;">무엇을 도와드릴까요?</p>
+                <p id="npcMessage" style="margin: 5px 0; font-size: 14px;">무엇을 도와줄까?</p>
                 <div id="npcChoices" style="margin-top: 10px;">
                     <button onclick="startRandomTalk()" class="pixel-btn" style="display:inline-block; margin-right:5px; padding:4px 10px; font-size:12px; background:#4caf50;">대화하기</button>
                     <button onclick="goToQuestionPage()" class="pixel-btn" style="display:inline-block; padding:4px 10px; font-size:12px; background:#2196f3;">질문하기</button>

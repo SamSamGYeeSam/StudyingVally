@@ -101,11 +101,12 @@
 <body>
 
 <div class="form-container">
-  <img src="/image/npc1.png" alt="NPC" class="npc-mini-icon">
+  <img th:src="@{/image/{gender}-npc.png(gender=${instructorGender == 'M' ? 'm' : 'f'})}"
+       alt="NPC" class="npc-image" id="npcImgElement">
 
-  <h2>스프링클 선생님께 질문하기</h2>
+  <h2>마법사에게 질문하기</h2>
 
-  <form th:action="@{/student/course/question/save}" method="post">
+  <form th:action="@{/student/course/question/save}" method="post" novalidate>
     <input type="hidden" name="courseId" th:value="${courseId}">
 
     <div class="input-group">
