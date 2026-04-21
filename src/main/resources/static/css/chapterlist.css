@@ -1,0 +1,93 @@
+/* 기본 배경 및 폰트 설정 */
+body {
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'DungGeunMo', sans-serif;
+    overflow: hidden;
+}
+
+/* 800x600 고정 룸 컨테이너 */
+.room-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background-image: url('/image/home_bg.png');
+    background-position: center;
+    background-size: cover;
+    border: 6px solid #5d4037;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.pixel-title {
+    color: #ffca28;
+    font-size: 24px;
+    text-align: center;
+    text-shadow: 2px 2px 0 #000;
+    margin-bottom: 10px;
+}
+
+/* 테이블 영역 (스크롤 포함) */
+.table-wrapper {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.7);
+    border: 3px solid #5d4037;
+    overflow-y: auto;
+    border-radius: 4px;
+}
+
+.chapter-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #fff;
+    font-size: 13px;
+}
+
+.chapter-table thead th {
+    position: sticky;
+    top: 0;
+    background: #5d4037;
+    color: #ffca28;
+    padding: 10px;
+    z-index: 5;
+}
+
+.chapter-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* 픽셀 버튼 스타일 */
+.pixel-btn {
+    padding: 6px 12px;
+    background: #8d6e63;
+    color: white;
+    border: 2px solid #000;
+    cursor: pointer;
+    font-family: 'DungGeunMo';
+    font-size: 12px;
+    box-shadow: 2px 2px 0 #000;
+    margin: 2px;
+}
+
+.pixel-btn:active { transform: translate(1px, 1px); box-shadow: 0 0 0 #000; }
+.pixel-btn.danger { background: #e74c3c; }
+.pixel-btn.success { background: #27ae60; }
+
+.footer-btns {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+/* 스크롤바 디자인 */
+.table-wrapper::-webkit-scrollbar { width: 8px; }
+.table-wrapper::-webkit-scrollbar-thumb { background: #5d4037; }

@@ -1,30 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Studying Valley - 강의 등록</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+
+    <link rel="stylesheet" th:href="@{/css/registcourse.css}">
+
     <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
-<h1>강의 등록 페이지</h1>
-<form action="/teacher/registcourse" method="post" novalidate>
+<div class="room-container">
+    <h1 class="pixel-title">📜 신규 강의 등록</h1>
 
-    <label>강의 제목</label><br>
-    <input type="text" name="courseTitle" th:value="${courseTitle}" placeholder="제목을 입력하십시오" required ><br>
-    <label>강의 설명</label><br>
-    <textarea rows="10" name="courseDescription" cols="50" th:text="${courseDescription}" placeholder="강의 설명을 입력하십시오" required></textarea>
-    <br>
+    <div class="form-wrapper">
+        <form action="/teacher/registcourse" method="post">
+            <div class="input-group">
+                <label>강의 제목</label>
+                <input type="text" name="courseTitle"
+                       class="pixel-input"
+                       th:value="${courseTitle}"
+                       placeholder="제목을 입력하십시오" required>
+            </div>
 
-    <input type="submit" value="강의 등록하기">
-</form>
+            <div class="input-group">
+                <label>강의 설명</label>
+                <textarea name="courseDescription"
+                          class="pixel-textarea"
+                          th:text="${courseDescription}"
+                          placeholder="내용을 입력하십시오" required></textarea>
+            </div>
 
-<a href="/teacher/teachermain">
-    <button type="button">이전으로</button>
-</a>
+            <div class="btn-group">
+                <button type="submit" class="pixel-btn btn-regist">등록하기</button>
+                <a href="/teacher/teachermain" class="pixel-btn btn-back">이전으로</a>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div th:replace="~{modal/modal :: modalHtml}"></div>
-
 <script th:replace="~{modal/modal :: modalScript}"></script>
+
 </body>
 </html>

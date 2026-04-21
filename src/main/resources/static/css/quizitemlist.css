@@ -1,0 +1,122 @@
+/* 기본 배경 및 레이아웃 */
+body {
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'DungGeunMo', sans-serif;
+    overflow: hidden;
+}
+
+/* 800x600 고정 컨테이너 */
+.room-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background-image: url('/image/home_bg.png');
+    background-position: center;
+    background-size: cover;
+    border: 6px solid #5d4037;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    padding: 35px;
+    box-sizing: border-box;
+}
+
+.pixel-title {
+    color: #ffca28;
+    font-size: 24px;
+    text-align: center;
+    text-shadow: 2px 2px 0 #000;
+    margin-bottom: 15px;
+}
+
+/* 점수 현황판 - 반투명 검정 */
+.total-score-panel {
+    background: rgba(0, 0, 0, 0.75);
+    border: 3px solid #5d4037;
+    padding: 12px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 18px;
+    color: #ffffff;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+    border-radius: 4px;
+}
+
+.score-ok { color: #4caf50; font-weight: bold; }
+.score-warn { color: #ff5252; font-weight: bold; }
+
+/* 리스트 영역 - 반투명 검정 */
+.list-wrapper {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.75);
+    border: 3px solid #5d4037;
+    padding: 20px;
+    overflow-y: auto;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+ul { list-style: none; padding: 0; margin: 0; }
+
+.quiz-item {
+    color: white;
+    padding: 12px;
+    border-bottom: 1px dashed rgba(255,255,255,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+}
+
+.quiz-item:last-child { border-bottom: none; }
+.quiz-score-tag { color: #ffca28; font-weight: bold; }
+
+/* 하단 고정 버튼 영역 */
+.footer-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+/* [중요] 버튼 공통 및 개별 색상 설정 */
+.pixel-btn {
+    min-width: 120px;
+    height: 45px;
+    padding: 0 20px;
+    color: white;
+    border: 2px solid #000;
+    cursor: pointer;
+    font-family: 'DungGeunMo';
+    font-size: 14px;
+    box-shadow: 3px 3px 0 #000;
+    transition: 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.pixel-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 #000;
+}
+
+/* 이전으로 버튼 색상 복구 */
+.prev-btn {
+    background: #8d6e63 !important;
+}
+
+/* 액션 버튼 색상 유지 */
+.btn-edit { background: #1976d2; flex: 1; }
+.btn-add { background: #27ae60; flex: 1; }
+
+/* 스크롤바 */
+.list-wrapper::-webkit-scrollbar { width: 8px; }
+.list-wrapper::-webkit-scrollbar-thumb { background: #5d4037; border-radius: 4px; }
+.list-wrapper::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }

@@ -1,47 +1,57 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>강의 삭제 확인</title>
-
+    <title>Studying Vally - 강의 삭제 확인</title>
+    <link rel="stylesheet" th:href="@{/css/coursedelete.css}">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
-<div class="container">
-    <h2>강의 삭제 확인</h2>
+<div class="room-container">
+    <h2 class="pixel-title">⚠️ 강의 삭제 최종 확인</h2>
 
-    <div class="course-info">
-        <div class="info-row">
-            <span class="label">강의명:</span>
-            <span th:text="${course.courseTitle}"></span>
+    <div class="delete-wrapper">
+        <div class="course-info">
+            <div class="info-row">
+                <span class="label">📍 강의명:</span>
+                <span th:text="${course.courseTitle}"></span>
+            </div>
+            <div class="info-row">
+                <span class="label">📝 강의 설명:</span>
+                <span th:text="${course.courseDescription}"></span>
+            </div>
+            <div class="info-row">
+                <span class="label">📊 상태:</span>
+                <span th:text="${course.courseStatus == 'OPEN' ? '개설됨' : '미개설'}"></span>
+            </div>
         </div>
-        <div class="info-row">
-            <span class="label">강의 설명:</span>
-            <span th:text="${course.courseDescription}"></span>
-        </div>
-        <div class="info-row">
-            <span class="label">상태:</span>
-            <span th:text="${course.courseStatus == 'OPEN' ? '개설' : '미개설'}"></span>
+
+        <div class="warning-box">
+            <strong>❌ 주의!</strong> 이 작업은 되돌릴 수 없습니다.<br>
+            강의와 관련된 모든 퀴즈, 학생 진척도 데이터가 영구적으로 삭제됩니다.
         </div>
     </div>
 
-    <div class="warning">
-        <strong>⚠ 경고:</strong> 이 작업은 되돌릴 수 없습니다.<br>
-        강의와 관련된 모든 데이터 함께 삭제됩니다.
-    </div>
-
-    <div>
-
-        <form th:action="@{/teacher/course/delete}" method="post" style="display:inline;">
-            <input type="hidden" name="courseId" th:value="${course.courseId}">
-            <button type="submit">삭제하기</button>
-        </form>
-
-        <a href="/teacher/course">
-            <button type="button">취소</button>
+    <!-- 하단 고정 버튼 영역 -->
+    <div class="footer-area">
+        <!-- 취소 버튼 (다른 페이지의 이전 버튼 위치) -->
+        <a href="/teacher/course" class="pixel-btn prev-btn">
+            🔙 취소 (돌아가기)
         </a>
+
+        <!-- 삭제 실행 폼 -->
+        <form th:action="@{/teacher/course/delete}" method="post" style="flex: 1;">
+            <input type="hidden" name="courseId" th:value="${course.courseId}">
+            <button type="submit" class="pixel-btn delete-btn" style="width: 100%;">
+                🔥 강의 영구 삭제
+            </button>
+        </form>
     </div>
 </div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
 
 </body>
 </html>

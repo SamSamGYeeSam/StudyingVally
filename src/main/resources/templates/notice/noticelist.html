@@ -1,43 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Studying Vally - 전체 공지사항</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" th:href="@{/css/noticelist.css}">
 </head>
-
 <body>
-<h1>전체 공지사항</h1>
 
-<div class="notice-list">
-    <div th:if="${!notices.isEmpty()}">
-        <table>
+<div class="room-container">
+    <div class="header-area">
+        <h3 class="pixel-title">📜 전체 공지사항</h3>
+    </div>
+
+    <div class="board-content">
+        <table class="course-table">
             <thead>
             <tr>
-                <th>날짜</th>
-                <th>공지 제목</th>
-                <th>공지 내용</th>
+                <th style="width: 25%;">작성일</th>
+                <th style="width: 75%;">공지 제목</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="notice : ${notices}">
-                <td th:text="${#temporals.format(notice.createdDate, 'yyyy-MM-dd')}">2024-01-01</td>
-                <td th:text="${notice.noticeTitle}">공지사항 제목</td>
-                <td th:text="${notice.noticeDesc}">공지사항 내용</td>
+                <td th:text="${#temporals.format(notice.createdDate, 'yyyy-MM-dd')}">2026-04-21</td>
+                <td class="clickable-title"
+                    th:text="${notice.noticeTitle}"
+                    th:data-title="${notice.noticeTitle}"
+                    th:data-desc="${notice.noticeDesc}"
+                    onclick="openDetail(this.getAttribute('data-title'), this.getAttribute('data-desc'))">
+                    공지 제목
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(notices)}">
+                <td colspan="2" style="padding:50px; text-align: center; color: #aaa;">등록된 공지사항이 없습니다.</td>
             </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- 공지사항이 없을 때 -->
-    <div th:if="${notices.isEmpty()}" class="no-data">
-        등록된 공지사항이 없습니다.
+    <div class="footer-area">
+        <a href="/teacher/teachermain" class="pixel-btn">🔙 메인으로</a>
     </div>
 </div>
 
-<a href="/teacher/teachermain">
-    <button type="button">이전으로</button>
-</a>
+<script>
+    function openDetail(title, content) {
+        Swal.fire({
+            title: title,
+            html: content.replace(/\n/g, '<br>'),
+            confirmButtonText: '확인',
+            confirmButtonColor: '#8d6e63',
+            customClass: {
+                popup: 'swal-pixel-popup',
+                title: 'swal-pixel-title',
+                htmlContainer: 'swal-pixel-content'
+            }
+        });
+    }
+</script>
 
 </body>
-
 </html>

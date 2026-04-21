@@ -1,65 +1,72 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>질문 목록</title>
+    <title>Studying Vally - 강의 질문 목록</title>
+    <link rel="stylesheet" th:href="@{/css/questionlist.css}">
     <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
-<h1>강의 질문 목록</h1>
+<div class="room-container">
+    <h2 class="pixel-title">❓ 강의 질문 목록</h2>
 
-<div class="question-list">
-    <div th:if="${!questions.isEmpty()}">
-        <table>
-            <thead>
-            <tr>
-                <th>작성일</th>
-                <th>질문제목</th>
-                <th>질문내용</th>
-                <th>답변</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="question : ${questions}">
-                <td th:text="${#temporals.format(question.createdDate, 'yyyy-MM-dd')}">2024-01-01</td>
-                <td th:text="${question.questionCourseTitle}">질문 제목</td>
-                <td th:text="${question.questionCourseDesc}">질문 내용</td>
-                <td th:text="${question.questionCourseAnswer != null ? question.questionCourseAnswer : '답변 대기 중'}">답변 내용</td>
-                <td>
-                    <form th:if="${question.questionCourseAnswer == null}"
-                          action="/teacher/course/question/answerPage"
-                          method="post"
-                          style="display:inline;">
-                        <input type="hidden" name="questionCourseNo" th:value="${question.questionCourseNo}">
-                        <input type="hidden" name="courseId" th:value="${courseId}">
-                        <button type="submit">답변등록</button>
-                    </form>
-                    <form th:if="${question.questionCourseAnswer != null}"
-                          action="/teacher/course/question/updateanswerPage"
-                          method="post"
-                          style="display:inline;">
-                        <input type="hidden" name="questionCourseNo" th:value="${question.questionCourseNo}">
-                        <input type="hidden" name="courseId" th:value="${courseId}">
-                        <button type="submit">답변수정</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="list-wrapper">
+        <div th:if="${!questions.isEmpty()}">
+            <table>
+                <thead>
+                <tr>
+                    <th>작성일</th>
+                    <th>질문 제목</th>
+                    <th>질문 내용</th>
+                    <th>답변 상태</th>
+                    <th>작업</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="question : ${questions}">
+                    <td th:text="${#temporals.format(question.createdDate, 'yyyy-MM-dd')}">2024-01-01</td>
+                    <td th:text="${question.questionCourseTitle}">질문 제목</td>
+                    <td th:text="${question.questionCourseDesc}">질문 내용</td>
+                    <td>
+                        <span th:if="${question.questionCourseAnswer == null}" class="status-waiting">답변 대기</span>
+                        <span th:if="${question.questionCourseAnswer != null}" class="status-done">답변 완료</span>
+                    </td>
+                    <td>
+                        <!-- 답변 등록 버튼 -->
+                        <form th:if="${question.questionCourseAnswer == null}"
+                              action="/teacher/course/question/answerPage"
+                              method="post" style="display:inline;">
+                            <input type="hidden" name="questionCourseNo" th:value="${question.questionCourseNo}">
+                            <input type="hidden" name="courseId" th:value="${courseId}">
+                            <button type="submit" class="table-btn btn-reg">답변등록</button>
+                        </form>
+                        <!-- 답변 수정 버튼 -->
+                        <form th:if="${question.questionCourseAnswer != null}"
+                              action="/teacher/course/question/updateanswerPage"
+                              method="post" style="display:inline;">
+                            <input type="hidden" name="questionCourseNo" th:value="${question.questionCourseNo}">
+                            <input type="hidden" name="courseId" th:value="${courseId}">
+                            <button type="submit" class="table-btn btn-upd">답변수정</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${questions.isEmpty()}" class="no-data">
+            아직 도착한 질문이 없습니다. 🌵
+        </div>
     </div>
 
-    <div th:if="${questions.isEmpty()}" class="no-data">
-        등록된 질문이 없습니다.
+    <!-- 하단 고정 버튼 영역 -->
+    <div class="footer-area">
+        <a href="/teacher/course" class="pixel-btn">
+            🔙 이전으로
+        </a>
     </div>
 </div>
-
-<br>
-
-<a href="/teacher/course">
-    <button type="button">이전으로</button>
-</a>
 
 <div th:replace="~{modal/modal :: modalHtml}"></div>
 <script th:replace="~{modal/modal :: modalScript}"></script>
