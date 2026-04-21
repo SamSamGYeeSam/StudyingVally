@@ -143,8 +143,6 @@
 <div class="header">
     <div class="header-inner">
 
-        <div class="header-path">/admin/callcenter</div>
-
         <h1 class="header-title" th:text="${pageTitle}">
             고객센터 관리 페이지
         </h1>
@@ -163,13 +161,11 @@
 
     <a th:href="@{/admin/callcenter/notice}" class="menu-link">
         <div class="menu-left">
-            <div class="menu-path">/admin/callcenter/notice</div>
             <div class="menu-title">1. 공지사항</div>
         </div>
         <div class="menu-right">
             <div>
                 <div class="menu-desc-title">공지사항</div>
-                <div class="menu-desc">공지사항 목록 조회 및 공지 등록 기능으로 이동</div>
             </div>
             <span class="move-button">이동</span>
         </div>
@@ -177,13 +173,11 @@
 
     <a th:href="@{/admin/callcenter/contact}" class="menu-link">
         <div class="menu-left">
-            <div class="menu-path">/admin/callcenter/contact</div>
             <div class="menu-title">2. 문의함</div>
         </div>
         <div class="menu-right">
             <div>
                 <div class="menu-desc-title">문의함</div>
-                <div class="menu-desc">문의 목록 조회 페이지로 이동</div>
             </div>
             <span class="move-button">이동</span>
         </div>
@@ -191,13 +185,11 @@
 
     <a th:href="@{/admin/callcenter/report}" class="menu-link">
         <div class="menu-left">
-            <div class="menu-path">/admin/callcenter/report</div>
             <div class="menu-title">3. 신고함</div>
         </div>
         <div class="menu-right">
             <div>
                 <div class="menu-desc-title">신고함</div>
-                <div class="menu-desc">신고 목록 조회 페이지로 이동</div>
             </div>
             <span class="move-button">이동</span>
         </div>
@@ -205,9 +197,6 @@
 
 </div>
 
-<div class="bottom-text">
-    고객센터에 들어가면 공지사항, 문의함, 신고함으로 이동할 수 있다
-</div>
 
 </body>
 </html>
