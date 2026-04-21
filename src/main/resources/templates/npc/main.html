@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>NPC 센터 - Valley Guild</title>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
     <style>
         body {
@@ -148,7 +149,8 @@
     </div>
 
 </div>
-
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
 <script>
     function openDialogue() {
         document.getElementById('dialogueModal').style.display = 'block';

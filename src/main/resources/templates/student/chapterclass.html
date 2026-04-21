@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title th:text="${chapter.chapTitle}">강의 시청 - Valley Quest</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             background-color: #2c3e50;
@@ -124,42 +125,17 @@
         </div>
 
         <div class="video-footer">
-            <button class="pixel-btn btn-complete" onclick="markAsComplete(this)">✅ 수강 완료 도장</button>
+            <form th:action="@{/student/chapter/complete/{courseId}/{chapNo}(courseId=${courseId}, chapNo=${chapter.chapNo})}" method="post">
+                <button type="submit" class="pixel-btn btn-complete">
+                    ✅ 수강 완료 도장
+                </button>
+            </form>
             <button class="pixel-btn btn-back" th:onclick="|location.href='/student/course'|">🔙 뒤로가기</button>
         </div>
 
     </div>
 </div>
 
-<script th:inline="javascript">
-    function markAsComplete(btn) {
-        const chapNo = [[${chapter.chapNo}]];
-        const courseId = [[${courseId}]];
-
-        btn.disabled = true;
-        btn.innerText = "도장 찍는 중...";
-
-        fetch(`/student/chapter/complete/${courseId}/${chapNo}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        })
-            .then(response => {
-                if(response.ok) {
-                    alert("훌륭해! 도장을 쾅 찍었어! 💮");
-                    location.href = "/student/course";
-                } else {
-                    alert("오류가 났네? 다시 한번 눌러줘!");
-                    btn.disabled = false;
-                    btn.innerText = "✅ 수강 완료 도장";
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("서버 연결 실패!");
-                btn.disabled = false;
-            });
-    }
-</script>
 
 </body>
 </html>

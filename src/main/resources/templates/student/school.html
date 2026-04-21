@@ -18,7 +18,7 @@
         }
 
         .room-container {
-            position: relative;
+            position: fixed;
             width: 800px;
             height: 600px;
             background-image: url('/image/school-bg.png');
@@ -133,6 +133,7 @@
             font-family: 'DungGeunMo' !important;
         }
     </style>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
@@ -182,6 +183,9 @@
     </div>
 </div>
 
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
 <script th:inline="javascript">
     // 공통 게임 스타일 팝업 호출 함수
     function gameAlert(title, html) {
@@ -191,6 +195,9 @@
             confirmButtonText: '확인',
             confirmButtonColor: '#8d6e63',
             scrollbarPadding: false,
+            scrollbarPadding: false,
+            allowOutsideClick: true,
+            heightAuto: false,
             customClass: {
                 popup: 'game-popup',
                 title: 'game-popup-title'

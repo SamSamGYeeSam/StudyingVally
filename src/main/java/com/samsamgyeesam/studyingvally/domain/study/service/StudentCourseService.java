@@ -91,17 +91,6 @@ public class StudentCourseService {
         return data;
     }
 
-    @Transactional
-    public void saveStudentEvaluation(Long userNo, Long courseId, int rating, String content) {
-        StudentEvaluation studentEvaluation = StudentEvaluation.builder()
-                .userNo(userNo)
-                .courseId(courseId)
-                .evaluationScore((double) rating)
-                .evaluationDesc(content)
-                .build();
-
-        studentEvaluationRepository.save(studentEvaluation);
-    }
 
     @Transactional
     public List<Map<String, Object>> getStudentCourseStatus(Long userNo) {

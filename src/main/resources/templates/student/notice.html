@@ -20,7 +20,7 @@
 
         /* 메인 컨테이너 (800x600 고정) */
         .room-container {
-            position: relative;
+            position: fixed;
             width: 800px;
             height: 600px;
             background: #f0f0f0;
@@ -266,6 +266,7 @@
             // [중요] 팝업 시 화면 꿀렁임(스크롤바 사라짐) 방지
             scrollbarPadding: false,
             allowOutsideClick: true,
+            heightAuto: false,
             customClass: {
                 popup: 'swal-pixel-popup',
                 title: 'swal-pixel-title',
