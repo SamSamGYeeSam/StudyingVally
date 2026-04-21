@@ -8,9 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/* comment.
- * 관리자 강의 상세 조회에서 챕터 정보를 조회하기 위한 엔티티 클래스
- */
+
 
 @Entity
 @Table(name = "chapter")
