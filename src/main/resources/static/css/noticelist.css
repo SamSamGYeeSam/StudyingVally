@@ -12,7 +12,7 @@ body {
 
 /* 800x600 고정 컨테이너 */
 .room-container {
-    position: relative;
+    position: fixed;
     width: 800px;
     height: 600px;
     background-image: url('/image/board-bg.png'); /* 배경 경로 확인 */

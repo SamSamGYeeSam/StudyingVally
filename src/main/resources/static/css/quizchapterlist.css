@@ -25,13 +25,21 @@ body {
     padding: 40px;
     box-sizing: border-box;
 }
+/* 상단 헤더 영역 - 좌측 상단 고정 */
+.header-area {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px; /* 여백 살짝 조정 */
+    z-index: 10;
+}
 
 .pixel-title {
     color: #ffca28;
     font-size: 26px;
-    text-align: center;
-    text-shadow: 2px 2px 0 #000;
-    margin-bottom: 20px;
+    /* [기준] 노란 글씨에 4방향 검은색 테두리 효과 */
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+    margin: 0;
 }
 
 /* 리스트 영역 */

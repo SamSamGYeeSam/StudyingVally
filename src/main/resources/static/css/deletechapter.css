@@ -24,6 +24,14 @@ body {
     box-sizing: border-box;
     align-items: center;
 }
+/* 상단 헤더 영역 - 좌측 상단 고정 */
+.header-area {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px; /* 여백 살짝 조정 */
+    z-index: 10;
+}
 
 .pixel-title {
     color: #e74c3c;
