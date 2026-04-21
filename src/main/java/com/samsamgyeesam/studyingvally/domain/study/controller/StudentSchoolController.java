@@ -75,6 +75,7 @@ public class StudentSchoolController {
                                  RedirectAttributes rttr) { // RedirectAttributes 추가
 
         if (principal == null) {
+            rttr.addFlashAttribute("errorMessage", "로그인이 필요합니다.");
             return "redirect:/auth/login";
         }
 
@@ -83,7 +84,7 @@ public class StudentSchoolController {
 
         studentSchoolService.registerCourse(userNo, courseId);
 
-        rttr.addFlashAttribute("message", "수강신청이 완료되었습니다!");
+        rttr.addFlashAttribute("successMessage", "수강신청이 완료되었습니다!");
         return "redirect:/student/school";
     }
 

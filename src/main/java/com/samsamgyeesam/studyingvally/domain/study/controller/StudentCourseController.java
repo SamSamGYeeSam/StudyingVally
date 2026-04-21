@@ -99,8 +99,9 @@ public class StudentCourseController {
         return "redirect:/student/chapter/class";
     }
 
+    // 수강완료 처리
     @GetMapping("/chapter/class")
-    public String watchChapter(HttpSession session, Model model) {
+    public String watchChapter(HttpSession session, Model model, RedirectAttributes rttr) {
         Long courseId = (Long) session.getAttribute("currentCourseId");
         Long chapNo = (Long) session.getAttribute("currentChapNo");
 
@@ -110,46 +111,27 @@ public class StudentCourseController {
                 .orElseThrow(() -> new IllegalArgumentException("해당 강의가 없습니다."));
 
         model.addAttribute("chapter", chapter);
-        model.addAttribute("courseId", courseId);
+        model.addAttribute("courseId", courseId); // 기존 변수명 유지
+        rttr.addFlashAttribute("successMessage", "훌륭해! 도장을 쾅 찍었어! 👍 ");
         return "student/chapterclass";
     }
 
     @PostMapping("/chapter/complete/{courseId}/{chapNo}")
-    @ResponseBody
-    public String completeChapter(@PathVariable Long courseId,
-                                  @PathVariable Long chapNo,
-                                  Principal principal,
-                                  RedirectAttributes redirectAttributes) {
-        if (principal == null) return "redirect:/auth/login";
+    public String  completeChapter(@PathVariable Long courseId,
+                                                  @PathVariable Long chapNo,
+                                                  Principal principal,
+                                                  RedirectAttributes rttr) {
+//        if (principal == null) return ResponseEntity.status(401).body("unauthorized");
 
-        try{
-            String userId = principal.getName();
-            Long userNo = studentService.findUserNoByUserId(userId);
-
-            studentCourseService.completeChapter(userNo, chapNo, courseId);
-
-            redirectAttributes.addFlashAttribute("successMessage", "강의 수강이 완료되었습니다!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "수강 처리 중 오류가 발생했습니다.");
-        }
-        return "redirect:/student/chapter";
-    }
-
-    @PostMapping("/evaluation/save")
-    public String saveStudentEvaluation(
-            @RequestParam("courseId") Long courseId,
-            @RequestParam("rating") int rating,
-            @RequestParam("content") String content,
-            Principal principal, HttpServletRequest request) {
-        if (principal == null) return "redirect:/auth/login";
         String userId = principal.getName();
         Long userNo = studentService.findUserNoByUserId(userId);
 
-        studentCourseService.saveStudentEvaluation(userNo, courseId, rating, content);
-        System.out.println("리뷰 저장됨: 강의=" + courseId + ", 별점=" + rating + ", 내용=" + content);
+        studentCourseService.completeChapter(userNo, chapNo, courseId);
+        rttr.addFlashAttribute("successMessage", "도장을 쾅 찍었어! 💮");
 
         return "redirect:/student/course";
     }
+
 
     @GetMapping("/course/talk")
     public String questionForm(HttpSession session, Model model) {

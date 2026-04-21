@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title th:text="${chapter.chapTitle}">강의 시청 - Valley Quest</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             background-color: #2c3e50;
@@ -126,7 +127,11 @@
         </div>
 
         <div class="video-footer">
-            <button class="pixel-btn btn-complete" onclick="markAsComplete(this)">✅ 수강 완료 도장</button>
+            <form th:action="@{/student/chapter/complete/{courseId}/{chapNo}(courseId=${courseId}, chapNo=${chapter.chapNo})}" method="post">
+                <button type="submit" class="pixel-btn btn-complete">
+                    ✅ 수강 완료 도장
+                </button>
+            </form>
             <button class="pixel-btn btn-back" th:onclick="|location.href='/student/course'|">🔙 뒤로가기</button>
         </div>
 

@@ -1,10 +1,12 @@
 package com.samsamgyeesam.studyingvally.domain.study.controller;
 
+import com.samsamgyeesam.studyingvally.domain.study.dto.StudentDTO;
 import com.samsamgyeesam.studyingvally.domain.study.dto.StudentEvaluationResponseDTO;
 import com.samsamgyeesam.studyingvally.domain.study.entity.StudentEvaluation;
 import com.samsamgyeesam.studyingvally.domain.study.repository.StudentEvaluationRepository;
 import com.samsamgyeesam.studyingvally.domain.study.service.StudentEvaluationService;
 import com.samsamgyeesam.studyingvally.domain.study.service.StudentService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +31,7 @@ public class StudentEvaluationController {
     private final StudentEvaluationService studentEvaluationService;
     private final StudentService studentService;
 
+
     @GetMapping("/{courseId}")
     @ResponseBody
     public List<StudentEvaluationResponseDTO> getEvaluation(@PathVariable Long courseId) {
@@ -34,31 +39,57 @@ public class StudentEvaluationController {
     }
 
     @PostMapping("/write")
-    public String evaluationForm(jakarta.servlet.http.HttpSession session, Model model) {
+    public String evaluationForm(HttpSession session,
+                                 Principal principal,
+                                 Model model,
+                                 RedirectAttributes rttr) {
+
         Long courseId = (Long) session.getAttribute("currentCourseId");
-        if (courseId == null) {
-            return "redirect:/student/home";
+        if (courseId == null) return "redirect:/student/home";
+
+        Long userNo = studentService.findUserNoByUserId(principal.getName());
+
+        if (studentEvaluationService.getProgress(userNo, courseId) < 100) {
+            rttr.addFlashAttribute("errorMessage", "챕터를 다 들으면 강의평을 쓸 수 있어! 💪");
+            rttr.addAttribute("courseId", courseId);
+            return "redirect:/student/course";
         }
+
         model.addAttribute("courseId", courseId);
         return "student/evaluation";
     }
 
-    @PostMapping("/submit")
-    public String saveEvaluation(@RequestParam("courseId") Long courseId,
-                                 @RequestParam("rating") Double rating,
-                                 @RequestParam("content") String content,
-                                 HttpSession session) {
-        Long userNo = (Long) session.getAttribute("userNo");
 
-        return "redirect:/student/home";
+    @PostMapping("/save")
+    public String saveStudentEvaluation(
+            @RequestParam("courseId") Long courseId,
+            @RequestParam("rating") int rating,
+            @RequestParam("content") String content,
+            Principal principal, RedirectAttributes rttr)
+    {
+        if (principal == null) return "redirect:/auth/login";
+        String userId = principal.getName();
+        Long userNo = studentService.findUserNoByUserId(userId);
+
+        studentEvaluationService.saveStudentEvaluation(userNo, courseId, rating, content);
+
+        rttr.addFlashAttribute("successMessage", "강의평 작성 완료! 네 열정에 박수를 보낼게! 👏");
+        rttr.addAttribute("courseId", courseId);
+
+        return "redirect:/student/course";
+//        String referer = request.getHeader("Referer");
+//
+//        if (referer != null && !referer.isEmpty()) {
+//            return "redirect:/student/chapter/class";
+//        }
+//
+//        return "redirect:/student/home";
     }
 
 
-
     @PostMapping("/detail")
-    public String viewMyEvaluation(HttpSession session, Model model) {
-        Long courseId = (Long) session.getAttribute("currentCourseId");
-        return "student/evaluation";
+    public String viewMyEvaluation() {
+        return "student/course";
     }
 
     @Autowired
