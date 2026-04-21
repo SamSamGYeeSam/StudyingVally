@@ -3,21 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <title>관리자 오류</title>
+  <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+  />
   <style>
-    * { box-sizing: border-box; }
+    :root {
+      --wood-dark: #3e2723;
+      --wood-medium: #5d4037;
+      --wood-light: #8d6e63;
+      --gold: #ffca28;
+      --paper: #fff8e1;
+    }
+
+    * { 
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
     body {
+      font-family: 'DungGeunMo', sans-serif;
+      background-color: #f5efe6;
       margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #efefef;
     }
 
     .wrapper {
       width: 95%;
       max-width: 900px;
       margin: 80px auto;
-      background-color: #fff;
-      border: 4px solid #111;
+      background: var(--paper);
+      border: 3px solid var(--wood-medium);
+      outline: 1px solid var(--wood-dark);
       padding: 40px;
       text-align: center;
     }
@@ -26,6 +43,8 @@
       font-size: 40px;
       font-weight: bold;
       margin-bottom: 24px;
+      color: var(--wood-dark);
+      text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
     }
 
     .message {
@@ -33,16 +52,29 @@
       color: #c62828;
       margin-bottom: 32px;
       white-space: pre-wrap;
+      line-height: 1.6;
     }
 
     .btn-back {
       display: inline-block;
-      background-color: #111;
-      color: #fff;
-      text-decoration: none;
+      background: var(--wood-dark);
+      color: var(--paper);
+      text-decoration: none !important;
       padding: 14px 24px;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: bold;
+      font-family: 'DungGeunMo';
+      transition: 0.1s;
+    }
+
+    .btn-back:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0 var(--wood-medium);
+    }
+
+    .btn-back:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--wood-medium);
     }
   </style>
 </head>
@@ -50,7 +82,7 @@
 <div class="wrapper">
   <div class="title">관리자 오류</div>
   <div class="message" th:text="${errorMessage}">오류 메시지</div>
-  <a th:href="@{/admin/main}" class="btn-back">관리자 메인으로 돌아가기</a>
+  <a th:href="@{/admin/main}" class="btn-back">메인으로</a>
 </div>
 </body>
 </html>

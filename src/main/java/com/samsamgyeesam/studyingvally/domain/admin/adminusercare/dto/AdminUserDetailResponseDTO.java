@@ -17,6 +17,7 @@ public class AdminUserDetailResponseDTO {
     private String userName;
     private String userNickname;
     private String userPhoneNumber;
+    private String userGender;
 
     private String userRole;
     private String userStatus;

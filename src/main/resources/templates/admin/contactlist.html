@@ -3,170 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <title>문의함 목록</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+    />
     <style>
-        * { box-sizing: border-box; }
+        :root {
+          --wood-dark: #3e2723;
+          --wood-medium: #5d4037;
+          --wood-light: #8d6e63;
+          --gold: #ffca28;
+          --paper: #fff8e1;
+        }
+
+        * { 
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
+            font-family: 'DungGeunMo', sans-serif;
+            background-color: #f5efe6;
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #efefef;
         }
 
         .header {
-            background-color: #c9ef7a;
-            padding: 40px 20px;
-            text-align: center;
+            background: var(--paper);
+            border-bottom: 3px solid var(--wood-medium);
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .header h1 {
             margin: 0;
-            font-size: 52px;
+            font-size: 53px;
+            color: var(--wood-dark);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            color: var(--wood-dark);
+            text-decoration: none !important;
             font-weight: bold;
+            font-size: 20px;
+            font-family: 'DungGeunMo';
+            transition: 0.1s;
+        }
+
+        .back-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--wood-dark);
+        }
+
+        .back-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
         }
 
         .container {
-            width: 95%;
-            max-width: 1400px;
-            margin: 30px auto;
+            padding: 30px 40px 60px;
         }
 
-        .content-box {
-            border: 4px solid #111;
-            background-color: #fff;
-            padding: 24px;
-        }
-
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .content-title {
-            margin: 0;
-            font-size: 34px;
-            font-weight: bold;
-        }
-
-        .top-button,
-        .select-button {
-            display: inline-block;
-            background-color: #111;
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            font-size: 15px;
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .select-button {
-            padding: 8px 16px;
-            font-size: 14px;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        .list-table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1100px;
+            background: var(--paper);
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
         }
 
-        .list-table th,
-        .list-table td {
-            border: 2px solid #222;
-            padding: 12px;
+        th, td {
+            border: 2px solid var(--wood-dark);
             text-align: center;
-            vertical-align: middle;
+            padding: 18px 12px;
+            font-size: 20px;
+            color: var(--wood-dark);
         }
 
-        .list-table th {
-            background-color: #f3f3f3;
+        th {
+            background: var(--wood-light);
+            color: var(--paper);
+            font-weight: bold;
         }
 
         .left {
             text-align: left !important;
         }
 
-        .empty-text {
-            text-align: center;
-            font-size: 20px;
-            color: #666;
-            padding: 40px 0;
+        .select-btn {
+            padding: 10px 18px;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'DungGeunMo';
+            color: var(--wood-dark);
+            transition: 0.1s;
+            text-decoration: none !important;
+            display: inline-block;
+        }
+
+        .select-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--wood-dark);
+        }
+
+        .select-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
         }
 
         .status-pending {
             font-weight: bold;
+            color: var(--wood-dark);
         }
 
         .status-resolved {
             font-weight: bold;
+            color: var(--wood-dark);
+        }
+
+        .description {
+            margin-top: 40px;
+            font-size: 20px;
+            color: var(--wood-dark);
         }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 th:text="${pageTitle}">문의함 목록</h1>
+    <h1>문의함 목록</h1>
+    <a th:href="@{/admin/callcenter}" class="back-btn">이전으로</a>
 </div>
 
 <div class="container">
-    <div class="content-box">
-        <div class="content-header">
-            <h2 class="content-title">문의함 목록</h2>
-            <a th:href="@{/admin/callcenter}" class="top-button">돌아가기</a>
-        </div>
 
-        <div class="table-wrapper" th:if="${!#lists.isEmpty(contactList)}">
-            <table class="list-table">
-                <thead>
-                <tr>
-                    <th style="width: 90px;">번호</th>
-                    <th>문의 제목</th>
-                    <th style="width: 140px;">유저 이름</th>
-                    <th style="width: 140px;">유저 닉네임</th>
-                    <th style="width: 120px;">처리 상태</th>
-                    <th style="width: 180px;">답변 일시</th>
-                    <th style="width: 120px;">선택</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="contact, status : ${contactList}">
-                    <td th:text="${status.count}">1</td>
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 8%;">번호</th>
+            <th>문의 제목</th>
+            <th style="width: 12%;">유저 이름</th>
+            <th style="width: 12%;">유저 닉네임</th>
+            <th style="width: 10%;">처리 상태</th>
+            <th style="width: 16%;">답변 일시</th>
+            <th style="width: 8%;">상세 보기</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(contactList)}">
+            <td colspan="7">조회된 문의가 없습니다.</td>
+        </tr>
 
-                    <td class="left" th:text="${contact.questionTitle}">문의 제목</td>
-                    <td th:text="${contact.userName}">홍길동</td>
-                    <td th:text="${contact.userNickname}">길동이</td>
+        <tr th:each="contact, status : ${contactList}">
+            <td th:text="${status.count}">1</td>
 
-                    <td th:text="${contact.questionStatusLabel}"
-                        th:classappend="${contact.questionStatusLabel == '완료'} ? ' status-resolved' : ' status-pending'">
-                        대기
-                    </td>
+            <td class="left" th:text="${contact.questionTitle}">문의 제목</td>
+            <td th:text="${contact.userName}">홍길동</td>
+            <td th:text="${contact.userNickname}">길동이</td>
 
-                    <td th:text="${contact.questionAnsweredAt != null ? #temporals.format(contact.questionAnsweredAt, 'yyyy-MM-dd HH:mm') : '-'}">
-                        -
-                    </td>
+            <td th:text="${contact.questionStatusLabel}"
+                th:classappend="${contact.questionStatusLabel == '완료'} ? ' status-resolved' : ' status-pending'">
+                대기
+            </td>
 
-                    <td>
-                        <a th:href="@{/admin/callcenter/contactdetail(questionTechNo=${contact.questionTechNo})}"
-                           class="select-button">
-                            선택
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+            <td th:text="${contact.questionAnsweredAt != null ? #temporals.format(contact.questionAnsweredAt, 'yyyy-MM-dd HH:mm') : '-'}">
+                -
+            </td>
 
-        <div class="empty-text" th:if="${#lists.isEmpty(contactList)}">
-            조회된 문의가 없습니다.
-        </div>
-    </div>
+            <td>
+                <a th:href="@{/admin/callcenter/contactdetail(questionTechNo=${contact.questionTechNo})}"
+                   class="select-btn">
+                    선택
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
 </div>
 
 </body>

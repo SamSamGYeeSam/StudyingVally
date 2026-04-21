@@ -3,26 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <title>사용자 관리 상세 페이지</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+    />
     <style>
+        :root {
+          --wood-dark: #3e2723;
+          --wood-medium: #5d4037;
+          --wood-light: #8d6e63;
+          --gold: #ffca28;
+          --paper: #fff8e1;
+        }
+
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
+            font-family: 'DungGeunMo', sans-serif;
+            background-color: #f5efe6;
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #efefef;
         }
 
         .header {
-            background-color: #c9ef7a;
+            background: var(--paper);
+            border-bottom: 3px solid var(--wood-medium);
             padding: 30px 40px;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .header h1 {
             margin: 0;
-            font-size: 42px;
+            font-size: 53px;
+            color: var(--wood-dark);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            color: var(--wood-dark);
+            text-decoration: none !important;
+            font-weight: bold;
+            font-size: 20px;
+            font-family: 'DungGeunMo';
+            transition: 0.1s;
+        }
+
+        .back-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--wood-dark);
+        }
+
+        .back-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
         }
 
         .container {
@@ -44,8 +86,9 @@
 
         .center-panel {
             width: 47%;
-            border: 3px solid #111;
-            background-color: #fff;
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
+            background: var(--paper);
             min-height: 550px;
             padding: 24px;
         }
@@ -58,8 +101,9 @@
         }
 
         .box {
-            border: 3px solid #111;
-            background-color: #fff;
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
+            background: var(--paper);
             padding: 22px;
             text-align: center;
         }
@@ -71,6 +115,7 @@
             justify-content: center;
             font-size: 28px;
             font-weight: bold;
+            color: var(--wood-dark);
         }
 
         .info-box {
@@ -80,6 +125,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--wood-dark);
         }
 
         .count-box {
@@ -90,6 +136,7 @@
             flex-direction: column;
             justify-content: center;
             gap: 10px;
+            color: var(--wood-dark);
         }
 
         .course-title {
@@ -97,6 +144,7 @@
             font-weight: bold;
             margin-bottom: 20px;
             text-align: center;
+            color: var(--wood-dark);
         }
 
         .course-list {
@@ -106,17 +154,19 @@
         }
 
         .course-list li {
-            border: 2px solid #111;
+            border: 2px solid var(--wood-dark);
             margin-bottom: 12px;
             padding: 14px 18px;
-            font-size: 18px;
-            background-color: #f9f9f9;
+            font-size: 20px;
+            background: #fff;
+            color: var(--wood-dark);
         }
 
         .empty-course {
             text-align: center;
             font-size: 20px;
             margin-top: 80px;
+            color: var(--wood-dark);
         }
 
         .button-form {
@@ -126,11 +176,24 @@
         .action-btn {
             width: 100%;
             padding: 18px 0;
-            border: 3px solid #111;
-            background-color: #c9ef7a;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
             font-size: 22px;
             font-weight: bold;
             cursor: pointer;
+            font-family: 'DungGeunMo';
+            color: var(--wood-dark);
+            transition: 0.1s;
+        }
+
+        .action-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--wood-dark);
+        }
+
+        .action-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
         }
 
         .action-btn:disabled {
@@ -143,12 +206,23 @@
             width: 100%;
             text-align: center;
             padding: 18px 0;
-            border: 3px solid #111;
-            background-color: #c9ef7a;
-            color: #111;
-            text-decoration: none;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            color: var(--wood-dark);
+            text-decoration: none !important;
             font-size: 22px;
             font-weight: bold;
+            transition: 0.1s;
+        }
+
+        .back-link:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--wood-dark);
+        }
+
+        .back-link:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
         }
 
         .status-text {
@@ -156,15 +230,34 @@
             font-weight: bold;
             text-align: center;
             padding: 16px;
-            border: 3px solid #111;
-            background-color: #fff;
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
+            background: var(--paper);
+            color: var(--wood-dark);
         }
 
         .bottom-description {
             margin-top: 26px;
-            font-size: 18px;
+            font-size: 20px;
             text-align: center;
+            color: var(--wood-dark);
         }
+
+
+.photo-box {
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.user-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
     </style>
 
     <script>
@@ -186,14 +279,25 @@
 
 <div class="header">
     <h1>사용자 관리 상세 페이지</h1>
+    <a th:href="@{/admin/usercare}" class="back-btn">이전으로</a>
 </div>
 
 <div class="container">
     <div class="layout">
 
         <div class="left-panel">
-            <div class="box photo-box">사진</div>
+            <div class="box photo-box">
+                <img th:if="${userDetail != null and 'F'.equals(#strings.trim(userDetail.userGender))}"
+                     th:src="@{/image/f-front.png}" alt="Female" class="user-photo">
+
+                <img th:if="${userDetail != null and 'M'.equals(#strings.trim(userDetail.userGender))}"
+                     th:src="@{/image/m-front.png}" alt="Male" class="user-photo">
+            </div>
             <div class="box info-box" th:text="${userDetail.userName}">이름</div>
+            <div class="box info-box"
+                 th:text="${userDetail.userGender == 'M' ? '남성' : '여성'}">
+                성별
+            </div>
             <div class="box info-box" th:text="${userDetail.userNickname}">닉네임</div>
             <div class="box info-box" th:text="${userDetail.userPhoneNumber}">전화번호</div>
         </div>
@@ -242,8 +346,6 @@
                 <input type="hidden" name="userNo" th:value="${userDetail.userNo}">
                 <button type="submit" class="action-btn">비활성화</button>
             </form>
-
-            <a th:href="@{/admin/usercare}" class="back-link">목록으로</a>
         </div>
     </div>
 </div>

@@ -3,26 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <title>강의 관리 상세 페이지</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+    />
     <style>
+        :root {
+          --wood-dark: #3e2723;
+          --wood-medium: #5d4037;
+          --wood-light: #8d6e63;
+          --gold: #ffca28;
+          --paper: #fff8e1;
+        }
+
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
+            font-family: 'DungGeunMo', sans-serif;
+            background-color: #f5efe6;
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #efefef;
         }
 
         .header {
-            background-color: #c9ef7a;
+            background: var(--paper);
+            border-bottom: 3px solid var(--wood-medium);
             padding: 30px 40px;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .header h1 {
             margin: 0;
-            font-size: 42px;
+            font-size: 53px;
+            color: var(--wood-dark);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            color: var(--wood-dark);
+            text-decoration: none !important;
+            font-weight: bold;
+            font-size: 20px;
+            font-family: 'DungGeunMo';
+            transition: 0.1s;
+        }
+
+        .back-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--wood-dark);
+        }
+
+        .back-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
         }
 
         .container {
@@ -50,8 +92,9 @@
         }
 
         .box {
-            border: 3px solid #111;
-            background-color: #fff;
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
+            background: var(--paper);
             padding: 22px;
         }
 
@@ -63,13 +106,24 @@
             font-size: 22px;
             font-weight: bold;
             text-align: center;
+            color: var(--wood-dark);
         }
 
         .desc-box {
             min-height: 302px;
-            font-size: 18px;
+            font-size: 20px;
             line-height: 1.7;
             white-space: pre-wrap;
+            color: var(--wood-dark);
+        }
+
+        .desc-box strong {
+            color: var(--wood-dark);
+        }
+
+        .desc-box hr {
+            border: 1px solid var(--wood-dark);
+            margin: 14px 0;
         }
 
         .status-box {
@@ -83,25 +137,31 @@
             font-size: 28px;
             font-weight: bold;
             text-align: center;
+            color: var(--wood-dark);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            background-color: #fff;
+            background: var(--paper);
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
             table-layout: fixed;
         }
 
         th, td {
-            border: 3px solid #111;
+            border: 2px solid var(--wood-dark);
             text-align: center;
             padding: 14px 10px;
-            font-size: 16px;
+            font-size: 18px;
             vertical-align: middle;
+            color: var(--wood-dark);
         }
 
         th {
-            background-color: #f7f7f7;
+            background: var(--wood-light);
+            color: var(--paper);
+            font-weight: bold;
         }
 
         .chapter-desc {
@@ -127,13 +187,25 @@
             min-width: 160px;
             text-align: center;
             padding: 16px 22px;
-            border: 3px solid #111;
-            background-color: #c9ef7a;
-            color: #111;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            color: var(--wood-dark);
             font-size: 20px;
             font-weight: bold;
-            text-decoration: none;
+            text-decoration: none !important;
             cursor: pointer;
+            font-family: 'DungGeunMo';
+            transition: 0.1s;
+        }
+
+        .action-btn:hover, .back-link:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--wood-dark);
+        }
+
+        .action-btn:active, .back-link:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
         }
 
         .action-btn:disabled {
@@ -143,8 +215,9 @@
 
         .bottom-description {
             margin-top: 30px;
-            font-size: 18px;
+            font-size: 20px;
             text-align: center;
+            color: var(--wood-dark);
         }
     </style>
 
@@ -167,6 +240,7 @@
 
 <div class="header">
     <h1>강의 관리 상세 페이지</h1>
+    <a th:href="@{/admin/coursecare}" class="back-btn">이전으로</a>
 </div>
 
 <div class="container">
@@ -197,7 +271,7 @@
         <div class="right-panel">
             <div class="box desc-box">
                 <strong>강의 설명</strong>
-                <hr style="border: 1px solid #111; margin: 14px 0;">
+                <hr>
                 <div th:text="${courseDetail.courseDescription}">
                     강의 설명
                 </div>
@@ -242,8 +316,6 @@
             <input type="hidden" name="courseId" th:value="${courseDetail.courseId}">
             <button type="submit" class="action-btn">비활성화</button>
         </form>
-
-        <a th:href="@{/admin/coursecare}" class="back-link">목록으로</a>
     </div>
 
 </div>
