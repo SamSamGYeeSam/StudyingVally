@@ -1,54 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Studying Valley - Teacher Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'DungGeunMo', sans-serif; background: #2c3e50; }
+        #viewport { width: 100vw; height: 100vh; position: relative; }
+        .section {
+            width: 100vw; height: 100vh; position: relative;
+            background-image: url('/image/stardew-main2.png') !important;
+            background-repeat: no-repeat !important; background-position: center !important; background-size: cover !important;
+        }
+        #character {
+            position: fixed; width: 64px; height: 128px;
+            background-repeat: no-repeat; background-position: center; background-size: contain;
+            transform: translate(-50%, -85%); z-index: 1000; pointer-events: none; image-rendering: pixelated;
+        }
+        .entity { position: absolute; display: flex; flex-direction: column; align-items: center; cursor: pointer; z-index: 900; }
+        .entity img { image-rendering: pixelated; filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.2)); pointer-events: none; }
+        .entity-label {
+            background: #fdf1d5; color: #4e342e; padding: 4px 10px; border: 3px solid #5d4037;
+            border-radius: 6px; font-size: 15px; font-weight: bold; opacity: 0; transition: 0.2s; white-space: nowrap; margin-bottom: 5px;
+        }
+        .entity:hover .entity-label { opacity: 1; transform: translateY(-2px); }
+        #course-news img { width: 340px; } #register img { width: 540px; } #notice img { width: 170px; } #home img { width: 280px; } #npc img { width: 400px; }
+        #logout-btn { position: fixed; top: 15px; left: 15px; z-index: 2000; background: #b71c1c; color: white; padding: 8px 15px; border: 3px solid #5d4037; border-radius: 8px; text-decoration: none; }
+    </style>
 </head>
 <body>
-<div id="field">
 
-    <a href="/teacher/notice">
-        <button type="button" class="entity" id="notice">
-            <div class="entity-label">공지 사항</div>
-        </button>
-    </a>
+<a href="/auth/logout" id="logout-btn">🏃 로그아웃</a>
 
-    <a href="/teacher/register">
-        <button type="button" class="entity" id="register">
-            <div class="entity-label">강의 등록</div>
-        </button>
-    </a>
-
-    <a href="/teacher/coursenotice">
-        <button type="button" class="entity" id="teachernotice">
-            <div class="entity-label">강의 소식</div>
-        </button>
-    </a>
-
-    <a href="/teacher/course">
-        <button type="button" class="entity" id="course">
-            <div class="entity-label">강의 목록</div>
-        </button>
-    </a>
-
-    <a href="/teacher/mypage">
-        <button type="button" class="entity" id="mypage">
-            <div class="entity-label">마이페이지</div>
-        </button>
-    </a>
-
-    <a href="/npc">
-        <button type="button" class="entity" id="npc">
-            <div class="entity-label">npc</div>
-        </button>
-    </a>
-
-    <form action="/auth/logout" method="post" style="display:inline;">
-        <button type="submit" class="entity" id="logout">
-            <div class="entity-label">로그아웃</div>
-        </button>
-    </form>
-
+<div id="character"
+     th:with="gender=${teacher?.userGender == 'M' ? 'm' : 'f'}"
+     th:data-gender="${gender}"
+     th:style="|background-image: url('/image/${gender}-front.png');|">
 </div>
+
+<div id="viewport">
+    <div id="field" class="section">
+        <div class="entity" data-url="/teacher/coursenotice" style="top: 50%; left: 10%;" id="course-news">
+            <div class="entity-label">🔔 강의 소식</div>
+            <img src="/image/room-icon.png">
+        </div>
+        <div class="entity" data-url="/teacher/register" style="top: -15%; left: 57%;" id="register">
+            <div class="entity-label">🏫 강의 등록</div>
+            <img src="/image/school-icon.png">
+        </div>
+        <div class="entity" data-url="/teacher/notice" style="top: 22%; left: 45%;" id="notice">
+            <div class="entity-label">📜 공지 사항</div>
+            <img src="/image/notice-icon.png">
+        </div>
+        <div class="entity" data-url="/teacher/course" style="top: 45%; left: 35%;" id="home">
+            <div class="entity-label">🏠 내 강의 관리</div>
+            <img src="/image/home-icon.png">
+        </div>
+        <div class="entity" data-url="/npc" style="top: 47%; left: 70%;" id="npc">
+            <div class="entity-label">🤖 도우미 NPC</div>
+            <img src="/image/npc-icon.png">
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const character = document.getElementById('character');
+    const gender = character.dataset.gender || 'f';
+    const entities = document.querySelectorAll('.entity');
+
+    let isRedirecting = false;
+    let keys = {};
+    let charX = window.innerWidth * 0.5;
+    let charY = window.innerHeight * 0.8;
+    const speed = 6;
+
+    character.style.left = charX + 'px';
+    character.style.top = charY + 'px';
+
+    // 뒤로가기 시 상태 강제 초기화
+    window.onpageshow = function(event) {
+        isRedirecting = false;
+    };
+
+    // [수정된 이동 함수] 1500ms 쿨타임 적용
+    function navigate(url) {
+        if (isRedirecting || !url) return;
+
+        isRedirecting = true;
+        console.log("이동 시도:", url);
+        window.location.href = url;
+
+        // 혹시나 페이지 이동이 실패하거나 지연될 경우를 대비해 1.5초 후 잠금 해제
+        setTimeout(() => {
+            isRedirecting = false;
+            console.log("쿨타임 종료: 다시 이동 가능");
+        }, 1500);
+    }
+
+    entities.forEach(entity => {
+        entity.addEventListener('click', () => {
+            navigate(entity.getAttribute('data-url'));
+        });
+    });
+
+    window.addEventListener('keydown', (e) => { keys[e.key.toLowerCase()] = true; });
+    window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+
+    function gameLoop() {
+        let dx = 0, dy = 0;
+        let direction = "front";
+
+        if (keys['arrowleft'] || keys['a']) { dx -= speed; direction = "left"; }
+        else if (keys['arrowright'] || keys['d']) { dx += speed; direction = "right"; }
+        else if (keys['arrowup'] || keys['w']) { dy -= speed; direction = "back"; }
+        else if (keys['arrowdown'] || keys['s']) { dy += speed; direction = "front"; }
+
+        if (dx !== 0 || dy !== 0) {
+            charX += dx; charY += dy;
+            charX = Math.max(20, Math.min(window.innerWidth - 20, charX));
+            charY = Math.max(20, Math.min(window.innerHeight - 20, charY));
+            character.style.left = charX + 'px';
+            character.style.top = charY + 'px';
+
+            let imgDir = (direction === "left") ? "right" : direction;
+            character.style.backgroundImage = `url('/image/${gender}-${imgDir}.png')`;
+            character.style.transform = (direction === "left") ? `translate(-50%, -85%) scaleX(-1)` : `translate(-50%, -85%) scaleX(1)`;
+            checkCollision();
+        } else {
+            character.style.backgroundImage = `url('/image/${gender}-front.png')`;
+        }
+        requestAnimationFrame(gameLoop);
+    }
+
+    function checkCollision() {
+        if (isRedirecting) return;
+        const charRect = character.getBoundingClientRect();
+        const footX = charRect.left + (charRect.width / 2);
+        const footY = charRect.bottom - 15;
+
+        entities.forEach(target => {
+            const rect = target.getBoundingClientRect();
+            const targetCenterX = rect.left + (rect.width / 2);
+            const targetCenterY = rect.top + (rect.height / 2);
+            const distance = Math.sqrt(Math.pow(footX - targetCenterX, 2) + Math.pow(footY - targetCenterY, 2));
+
+            if (distance < 75) { navigate(target.getAttribute('data-url')); }
+        });
+    }
+
+    requestAnimationFrame(gameLoop);
+</script>
 </body>
 </html>

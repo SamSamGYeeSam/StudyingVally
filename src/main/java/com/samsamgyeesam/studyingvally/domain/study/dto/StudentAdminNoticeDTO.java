@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class StudentAdminNoticeDTO {
     private Long noticeNo;
-    private String formattedDate;
-    private String title;
-    private String desc;
+    private String createdDate;
+    private String noticeTitle;
+    private String noticeDesc;
 }

@@ -14,10 +14,11 @@ import java.util.List;
 public interface StudentCourseRepository extends JpaRepository<StudentCourse, Long> {
 
         List<StudentCourse> findByCourseStatusIgnoreCase(String courseStatus);
-
+        List<StudentCourse> findAllByOrderByCourseCreatedAtDesc();
+        List<StudentCourse> findByCourseStatusIgnoreCaseOrderByCourseCreatedAtDesc(String courseStatus);
         @Query("SELECT new com.samsamgyeesam.studyingvally.domain.study.dto.StudentCourseNoticeDTO(" +
                 "cn.courseNoticeNo, " +
-                "str(cn.createdAt), " +
+                "str(cn.createdDate), " +
                 "c.courseTitle, " +
                 "COALESCE(u.userNickname, '알 수 없음'), " +
                 "cn.courseNoticeTitle, " +
@@ -26,6 +27,7 @@ public interface StudentCourseRepository extends JpaRepository<StudentCourse, Lo
                 "JOIN cn.course c " +
                 "LEFT JOIN cn.user u " +
                 "WHERE c.courseId IN :courseIds " +
-                "AND c.courseStatus = 'OPEN'")
+                "AND c.courseStatus = 'OPEN' " +
+                "ORDER BY cn.createdDate DESC")
         List<StudentCourseNoticeDTO> findNoticesByCourseIds(@Param("courseIds") List<Long> courseIds);
 }
