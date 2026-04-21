@@ -1,270 +1,312 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>관리자 메인 페이지</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+    />
     <style>
-        /* comment.
-         * 전체 페이지 기본 스타일
-         */
+        :root {
+          --wood-dark: #3e2723;
+          --wood-medium: #5d4037;
+          --wood-light: #8d6e63;
+          --gold: #ffca28;
+          --paper: #fff8e1;
+        }
+
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+        }
+
         body {
-            margin: 0;
-            padding: 0;
-            font-family: "Malgun Gothic", sans-serif;
-            background: linear-gradient(to bottom, #cfeea6 0%, #bde08f 35%, #d7c39c 100%);
-            min-height: 100vh;
-            color: #2d2418;
+          font-family: 'DungGeunMo', sans-serif;
+          background-color: #f5efe6;
+          height: 100vh;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 40px 0 50px;
+          position: relative;
         }
 
-        /* comment.
-         * 전체 컨텐츠 래퍼
-         */
-        .wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 50px 20px 70px;
-        }
-
-        /* comment.
-         * 상단 액션 버튼 영역
-         * 로그아웃 버튼을 우측 정렬하기 위한 영역이다.
-         */
         .top-action-bar {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 20px;
+          position: fixed;
+          top: 38px;
+          right: 50px;
+          z-index: 100;
         }
 
-        /* comment.
-         * 로그아웃 폼 기본 여백 제거
-         */
         .logout-form {
-            margin: 0;
+          margin: 0;
         }
 
-        /* comment.
-         * 로그아웃 버튼 스타일
-         */
         .logout-button {
-            border: 3px solid #6b4f2a;
-            background-color: #fff8e8;
-            color: #4e3e2b;
-            padding: 12px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 12px;
+          background: var(--paper);
+          color: var(--wood-dark);
+          border: 3px solid var(--wood-dark);
+          padding: 10px 18px;
+          font-size: 18px;
+          font-weight: bold;
+          cursor: pointer;
+          font-family: 'DungGeunMo';
+          transition: 0.1s;
+          width: 120px;
+        }
+        .logout-button:hover {
+          transform: translate(-2px, -2px);
+          box-shadow: 5px 5px 0 var(--wood-dark);
+        }
+        .logout-button:active {
+          transform: translate(1px, 1px);
+          box-shadow: 1px 1px 0 var(--wood-dark);
         }
 
-        /* comment.
-         * 상단 타이틀 박스
-         */
         .title-box {
-            background-color: rgba(255, 248, 220, 0.9);
-            border: 4px solid #6b4f2a;
-            border-radius: 18px;
-            box-shadow: 0 8px 0 #8b6a3d;
-            text-align: center;
-            padding: 28px 20px;
-            margin-bottom: 50px;
+          width: 80%;
+          background: var(--paper);
+          border: 3px solid var(--wood-medium);
+          outline: 2px solid var(--wood-dark);
+          text-align: center;
+          padding: 40px 20px;
+          flex-shrink: 0;
         }
 
-        /* comment.
-         * 관리자 메인 제목 스타일
-         */
         .title-box h1 {
-            margin: 0;
-            font-size: 42px;
-            font-weight: 800;
-            letter-spacing: 1px;
+          font-size: 53px;
+          color: var(--wood-dark);
+          text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+          letter-spacing: 1px;
         }
 
-        /* comment.
-         * 관리자 메인 부제목 스타일
-         */
-        .title-box p {
-            margin: 12px 0 0;
-            font-size: 18px;
-            color: #5a4a34;
-        }
-
-        /* comment.
-         * 메뉴 카드 그리드
-         */
         .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(320px, 1fr));
-            gap: 28px;
-            justify-content: center;
+          width: 80%;
+          display: flex;
+          flex-direction: row;
+          gap: 14px;
+          margin-top: 20px;
+          flex: 1;
         }
 
-        /* comment.
-         * 마지막 카드(고객센터)를 아래 가운데 정렬
-         */
-        .menu-card:last-child {
-            grid-column: 1 / span 2;
-            max-width: 580px;
-            justify-self: center;
-            width: 100%;
-        }
-
-        /* comment.
-         * 메뉴 카드 기본 스타일
-         */
         .menu-card {
-            display: block;
-            text-decoration: none;
-            color: #fff8e8;
-            background: linear-gradient(to bottom, #9b6b3f 0%, #7a522f 100%);
-            border: 4px solid #53351b;
-            border-radius: 22px;
-            box-shadow: 0 10px 0 #5f3f22;
-            padding: 32px 28px;
-            min-height: 180px;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            position: relative;
-            overflow: hidden;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 20px;
+          background: var(--paper);
+          border: 3px solid var(--wood-medium);
+          outline: 1px solid var(--wood-dark);
+          padding: 22px 28px;
+          text-decoration: none !important;
+          color: var(--wood-dark);
+          transition: 0.1s;
         }
-
-        /* comment.
-         * 카드 상단 하이라이트 효과
-         */
-        .menu-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 45%;
-            background: rgba(255, 255, 255, 0.08);
-            pointer-events: none;
-        }
-
-        /* comment.
-         * 카드 호버 효과
-         */
         .menu-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 0 #5f3f22;
+          transform: translate(-3px, -3px);
+          box-shadow: 7px 7px 0 var(--wood-dark);
+          color: var(--wood-dark);
+        }
+        .menu-card:active {
+          transform: translate(2px, 2px);
+          box-shadow: 1px 1px 0 var(--wood-dark);
         }
 
-        /* comment.
-         * 카드 제목 스타일
-         */
         .menu-title {
-            font-size: 30px;
-            font-weight: 800;
-            margin-bottom: 14px;
+          font-size: 35px;
+          font-weight: 700;
+          color: var(--wood-dark);
+          text-align: center;
         }
 
-        /* comment.
-         * 카드 설명 스타일
-         */
-        .menu-desc {
-            font-size: 17px;
-            line-height: 1.7;
-            color: #f9edd3;
-        }
-
-        /* comment.
-         * 하단 안내 박스
-         */
-        .footer-note {
-            margin-top: 45px;
-            background-color: rgba(255, 248, 220, 0.92);
-            border: 3px solid #6b4f2a;
-            border-radius: 16px;
-            padding: 18px 20px;
-            text-align: center;
-            font-size: 17px;
-            color: #4e3e2b;
-        }
-
-        /* comment.
-         * 반응형 처리
-         */
-        @media (max-width: 900px) {
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .menu-card:last-child {
-                grid-column: auto;
-                max-width: none;
-            }
-
-            .title-box h1 {
-                font-size: 34px;
-            }
-
-            .menu-title {
-                font-size: 26px;
-            }
-
-            .top-action-bar {
-                justify-content: center;
-            }
+        .card-icon svg {
+          width: 80px;
+          height: 80px;
         }
     </style>
 </head>
 <body>
-
-<div class="wrapper">
-
-    <!-- comment.
-         관리자 메인 화면 상단 로그아웃 영역
-         Spring Security 로그아웃 URL로 POST 요청을 보낸다.
-         주의:
-         - 로그아웃은 GET 링크가 아니라 form submit 방식으로 보내는 것이 안전하다.
-         - CSRF가 활성화된 경우 hidden CSRF 토큰을 반드시 포함해야 한다.
-    -->
-    <div class="top-action-bar">
-        <form th:action="@{/auth/logout}" method="post" class="logout-form">
-            <!-- comment.
-                 CSRF 활성화 환경에서 필요한 토큰 값
-                 Security 설정에서 CSRF를 끄지 않았다면 반드시 필요하다.
-            -->
-            <input type="hidden"
-                   th:if="${_csrf != null}"
-                   th:name="${_csrf.parameterName}"
-                   th:value="${_csrf.token}">
-
-            <button type="submit" class="logout-button">로그아웃</button>
-        </form>
-    </div>
-
-    <!-- comment.
-         관리자 메인 상단 제목 영역
-    -->
-    <div class="title-box">
-        <h1>관리자 메인 페이지</h1>
-
-    </div>
-
-    <!-- comment.
-         관리자 주요 메뉴 카드 영역
-    -->
-    <div class="menu-grid">
-
-        <a th:href="@{/admin/usercare}" class="menu-card">
-            <div class="menu-title">사용자 관리</div>
-
-        </a>
-
-        <a th:href="@{/admin/coursecare}" class="menu-card">
-            <div class="menu-title">강의 관리</div>
-
-        </a>
-
-        <a th:href="@{/admin/callcenter}" class="menu-card">
-            <div class="menu-title">고객센터</div>
-
-        </a>
-
-    </div>
-
-
+<div class="top-action-bar">
+    <form th:action="@{/auth/logout}" method="post" class="logout-form">
+        <input
+                type="hidden"
+                th:if="${_csrf != null}"
+                th:name="${_csrf.parameterName}"
+                th:value="${_csrf.token}"
+        />
+        <button type="submit" class="logout-button">로그아웃</button>
+    </form>
 </div>
 
+<div class="title-box">
+    <h1>관리자 메인 페이지</h1>
+</div>
+
+<div class="menu-grid">
+    <!-- 사용자 관리 -->
+    <a th:href="@{/admin/usercare}" class="menu-card">
+        <div class="card-icon">
+            <svg
+                    viewBox="0 0 60 60"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+                <circle
+                        cx="30"
+                        cy="18"
+                        r="12"
+                        stroke="#5d4037"
+                        stroke-width="3"
+                        fill="none"
+                />
+                <path
+                        d="M6 54 C6 36 54 36 54 54"
+                        stroke="#5d4037"
+                        stroke-width="3"
+                        fill="none"
+                        stroke-linecap="round"
+                />
+            </svg>
+        </div>
+        <div class="menu-title">사용자 관리</div>
+    </a>
+
+    <!-- 강의 관리 -->
+    <a th:href="@{/admin/coursecare}" class="menu-card">
+        <div class="card-icon">
+            <svg
+                    viewBox="0 0 60 60"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+                <rect
+                        x="4"
+                        y="6"
+                        width="52"
+                        height="34"
+                        stroke="#5d4037"
+                        stroke-width="3"
+                        fill="none"
+                />
+                <line
+                        x1="14"
+                        y1="18"
+                        x2="28"
+                        y2="18"
+                        stroke="#5d4037"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                />
+                <line
+                        x1="14"
+                        y1="26"
+                        x2="22"
+                        y2="26"
+                        stroke="#5d4037"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                />
+                <line
+                        x1="34"
+                        y1="16"
+                        x2="46"
+                        y2="28"
+                        stroke="#5d4037"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                />
+                <line
+                        x1="46"
+                        y1="16"
+                        x2="34"
+                        y2="28"
+                        stroke="#5d4037"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                />
+                <line
+                        x1="22"
+                        y1="40"
+                        x2="18"
+                        y2="54"
+                        stroke="#5d4037"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                />
+                <line
+                        x1="38"
+                        y1="40"
+                        x2="42"
+                        y2="54"
+                        stroke="#5d4037"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                />
+                <line
+                        x1="14"
+                        y1="54"
+                        x2="46"
+                        y2="54"
+                        stroke="#5d4037"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                />
+            </svg>
+        </div>
+        <div class="menu-title">강의 관리</div>
+    </a>
+
+    <!-- 고객센터 -->
+    <a th:href="@{/admin/callcenter}" class="menu-card">
+        <div class="card-icon">
+            <svg
+                    viewBox="0 0 60 60"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                        d="M10 30 C10 14 50 14 50 30"
+                        stroke="#5d4037"
+                        stroke-width="3"
+                        fill="none"
+                        stroke-linecap="round"
+                />
+                <rect
+                        x="5"
+                        y="28"
+                        width="10"
+                        height="14"
+                        rx="2"
+                        stroke="#5d4037"
+                        stroke-width="3"
+                        fill="none"
+                />
+                <rect
+                        x="45"
+                        y="28"
+                        width="10"
+                        height="14"
+                        rx="2"
+                        stroke="#5d4037"
+                        stroke-width="3"
+                        fill="none"
+                />
+                <path
+                        d="M45 40 C45 48 36 50 30 50"
+                        stroke="#5d4037"
+                        stroke-width="3"
+                        fill="none"
+                        stroke-linecap="round"
+                />
+            </svg>
+        </div>
+        <div class="menu-title">고객센터</div>
+    </a>
+</div>
 </body>
 </html>

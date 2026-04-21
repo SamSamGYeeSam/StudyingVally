@@ -3,115 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <title>공지사항 목록</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+    />
     <style>
-        * { box-sizing: border-box; }
+        :root {
+          --wood-dark: #3e2723;
+          --wood-medium: #5d4037;
+          --wood-light: #8d6e63;
+          --gold: #ffca28;
+          --paper: #fff8e1;
+        }
+
+        * { 
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
+            font-family: 'DungGeunMo', sans-serif;
+            background-color: #f5efe6;
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #efefef;
         }
 
         .header {
-            background-color: #c9ef7a;
-            padding: 40px 20px;
-            text-align: center;
+            background: var(--paper);
+            border-bottom: 3px solid var(--wood-medium);
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .header h1 {
             margin: 0;
-            font-size: 52px;
-            font-weight: bold;
+            font-size: 53px;
+            color: var(--wood-dark);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
         }
 
-        .container {
-            width: 95%;
-            max-width: 1400px;
-            margin: 30px auto;
-        }
-
-        .content-box {
-            border: 4px solid #111;
-            background-color: #fff;
-            padding: 24px;
-        }
-
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .content-title {
-            margin: 0;
-            font-size: 34px;
-            font-weight: bold;
-        }
-
-        .button-group {
+        .header-buttons {
             display: flex;
             gap: 10px;
         }
 
-        .top-button {
+        .back-btn {
             display: inline-block;
-            background-color: #111;
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            font-size: 15px;
+            padding: 14px 28px;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            color: var(--wood-dark);
+            text-decoration: none !important;
             font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        .list-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .list-table th,
-        .list-table td {
-            border: 2px solid #222;
-            padding: 12px;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .list-table th {
-            background-color: #f3f3f3;
-        }
-
-        .left {
-            text-align: left !important;
-        }
-
-        .empty-text {
-            text-align: center;
             font-size: 20px;
-            color: #666;
-            padding: 40px 0;
+            font-family: 'DungGeunMo';
+            transition: 0.1s;
         }
 
-        .select-button {
-            display: inline-block;
-            background-color: #111;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
+        .back-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--wood-dark);
+        }
+
+        .back-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
+        }
+
+        .container {
+            padding: 30px 40px 60px;
         }
 
         .message-box {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             padding: 14px 16px;
             font-weight: bold;
         }
@@ -127,6 +93,65 @@
             border: 2px solid #d14d4d;
             color: #7a1111;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--paper);
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
+        }
+
+        th, td {
+            border: 2px solid var(--wood-dark);
+            text-align: center;
+            padding: 18px 12px;
+            font-size: 20px;
+            color: var(--wood-dark);
+        }
+
+        th {
+            background: var(--wood-light);
+            color: var(--paper);
+            font-weight: bold;
+        }
+
+        .left {
+            text-align: left !important;
+        }
+
+        .select-form {
+            margin: 0;
+        }
+
+        .select-btn {
+            padding: 10px 18px;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'DungGeunMo';
+            color: var(--wood-dark);
+            transition: 0.1s;
+            text-decoration: none !important;
+            display: inline-block;
+        }
+
+        .select-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--wood-dark);
+        }
+
+        .select-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
+        }
+
+        .description {
+            margin-top: 40px;
+            font-size: 20px;
+            color: var(--wood-dark);
+        }
     </style>
 
     <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
@@ -134,65 +159,56 @@
 <body>
 
 <div class="header">
-    <h1 th:text="${pageTitle}">공지사항 목록</h1>
+    <h1>공지사항 목록</h1>
+    <div class="header-buttons">
+        <a th:href="@{/admin/callcenter/noticeregist}" class="back-btn">추가하기</a>
+        <a th:href="@{/admin/callcenter}" class="back-btn">이전으로</a>
+    </div>
 </div>
 
 <div class="container">
-    <div class="content-box">
 
-        <script>
-            const params = new URLSearchParams(window.location.search);
-            const result = params.get("result");
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const result = params.get("result");
 
-            if (result === "success") {
-                // 여기 나중에 모달 UI 넣으면 됨
-                alert("수정 완료");
-            }
-        </script>
+        if (result === "success") {
+            // 여기 나중에 모달 UI 넣으면 됨
+            alert("수정 완료");
+        }
+    </script>
 
+    <!-- 실패 메시지 출력 영역 -->
+    <div th:if="${errorMessage}" class="message-box error" th:text="${errorMessage}"></div>
 
-        <!-- 실패 메시지 출력 영역 -->
-        <div th:if="${errorMessage}" class="message-box error" th:text="${errorMessage}"></div>
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 10%;">번호</th>
+            <th>공지 제목</th>
+            <th style="width: 20%;">작성 일자</th>
+            <th style="width: 10%;">상세 보기</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(noticeList)}">
+            <td colspan="4">조회된 공지사항이 없습니다.</td>
+        </tr>
 
-        <div class="content-header">
-            <h2 class="content-title">공지사항 목록</h2>
-            <div class="button-group">
-                <a th:href="@{/admin/callcenter}" class="top-button">돌아가기</a>
-                <a th:href="@{/admin/callcenter/noticeregist}" class="top-button">추가하기</a>
-            </div>
-        </div>
+        <tr th:each="notice, status : ${noticeList}">
+            <td th:text="${status.count}">1</td>
+            <td class="left" th:text="${notice.noticeTitle}">환불 규정</td>
+            <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-17</td>
+            <td>
+                <a th:href="@{/admin/callcenter/noticedetail(noticeNo=${notice.noticeNo})}"
+                   class="select-btn">
+                    선택
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-        <div class="table-wrapper" th:if="${!#lists.isEmpty(noticeList)}">
-            <table class="list-table">
-                <thead>
-                <tr>
-                    <th style="width: 90px;">번호</th>
-                    <th>공지 제목</th>
-                    <th style="width: 180px;">작성 일자</th>
-                    <th style="width: 120px;">선택</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="notice, status : ${noticeList}">
-                    <!-- 프론트에서 순번 생성 -->
-                    <td th:text="${status.count}">1</td>
-                    <td class="left" th:text="${notice.noticeTitle}">환불 규정</td>
-                    <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-17</td>
-                    <td>
-                        <a th:href="@{/admin/callcenter/noticedetail(noticeNo=${notice.noticeNo})}"
-                           class="select-button">
-                            선택
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="empty-text" th:if="${#lists.isEmpty(noticeList)}">
-            조회된 공지사항이 없습니다.
-        </div>
-    </div>
 </div>
 
 <div th:replace="~{modal/modal :: modalHtml}"></div>

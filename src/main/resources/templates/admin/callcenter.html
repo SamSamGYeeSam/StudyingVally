@@ -3,196 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <title>고객센터 관리 페이지</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+    />
     <style>
+        :root {
+          --wood-dark: #3e2723;
+          --wood-medium: #5d4037;
+          --wood-light: #8d6e63;
+          --gold: #ffca28;
+          --paper: #fff8e1;
+        }
+
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
+            font-family: 'DungGeunMo', sans-serif;
+            background-color: #f5efe6;
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #efefef;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .header {
-            background-color: #c9ef7a;
-            padding: 40px 20px;
-            text-align: center;
-        }
-
-        .header-inner {
-            position: relative;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header-path {
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 28px;
-        }
-
-        .header-title {
-            margin: 0;
-            font-size: 52px;
-            font-weight: bold;
-        }
-
-        /* 🔥 추가된 버튼 영역 */
-        .header-buttons {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
+            background: var(--paper);
+            border-bottom: 3px solid var(--wood-medium);
+            padding: 30px 40px;
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .back-button {
-            background-color: #666;
-            color: white;
-            border: none;
-            padding: 12px 18px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
+        .header h1 {
+            margin: 0;
+            font-size: 53px;
+            color: var(--wood-dark);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
         }
 
-        .admin-main-button {
-            background-color: #111;
-            color: white;
-            text-decoration: none;
-            padding: 12px 18px;
-            font-size: 15px;
+        .back-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            color: var(--wood-dark);
+            text-decoration: none !important;
             font-weight: bold;
+            font-size: 20px;
+            font-family: 'DungGeunMo';
+            transition: 0.1s;
+        }
+
+        .back-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--wood-dark);
+        }
+
+        .back-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
         }
 
         .container {
-            width: 95%;
-            max-width: 1400px;
+           width: 80%;
+          max-width: 1600px;
             margin: 30px auto;
             display: flex;
-            flex-direction: column;
-            gap: 30px;
+            flex-direction: row;
+            gap: 25px;
+            flex: 1;
+            margin-bottom: 30px;
         }
 
         .menu-link {
             display: flex;
-            text-decoration: none;
-            color: black;
+            height: 100%;
+            text-decoration: none !important;
+            color: var(--wood-dark);
+            transition: 0.1s;
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
+            background: var(--paper);
+            flex:1;
+        }
+
+        .menu-link:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0 var(--wood-dark);
+        }
+
+        .menu-link:active {
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0 var(--wood-dark);
         }
 
         .menu-left {
-            width: 360px;
-            background-color: #e7d469;
-            min-height: 160px;
-            padding: 18px 24px;
-        }
-
-        .menu-right {
-            flex: 1;
-            background-color: white;
-            border: 4px solid #111;
-            min-height: 160px;
-            padding: 24px 30px;
+            width: 100%;
+            min-height: 130px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+            padding: 0;
         }
 
-        .menu-path {
-            font-size: 24px;
-            margin-bottom: 16px;
+        .menu-icon {
+        width: 70px;
+        height: 70px;
+        /* margin-left: 15px; */
+         flex-shrink: 0;
         }
+
 
         .menu-title {
-            font-size: 54px;
-            font-weight: bold;
+            font-size: 40px;
+            font-weight: 600;
+            color: var(--wood-dark);
         }
 
-        .menu-desc-title {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
 
-        .menu-desc {
-            font-size: 20px;
-            color: #333;
-        }
-
-        .move-button {
-            background-color: #111;
-            color: white;
-            padding: 12px 20px;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .bottom-text {
-            text-align: center;
-            font-size: 28px;
-            margin: 28px 0 20px;
-        }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="header-inner">
-
-        <h1 class="header-title" th:text="${pageTitle}">
-            고객센터 관리 페이지
-        </h1>
-
-        <div class="header-buttons">
-            <a th:href="@{/admin/main}" class="back-button">
-                뒤로가기
-            </a>
-
-        </div>
-
-    </div>
+    <h1>고객센터 관리 페이지</h1>
+    <a th:href="@{/admin/main}" class="back-btn">메인으로</a>
 </div>
 
 <div class="container">
 
     <a th:href="@{/admin/callcenter/notice}" class="menu-link">
         <div class="menu-left">
-            <div class="menu-title">1. 공지사항</div>
-        </div>
-        <div class="menu-right">
-            <div>
-                <div class="menu-desc-title">공지사항</div>
-            </div>
-            <span class="move-button">이동</span>
+            <div class="menu-title">공지사항</div>
+            <svg class="menu-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L13 6M19 12L13 18"
+                      stroke="#3e2723"
+                      stroke-width="1.5"
+                      stroke-linecap="square"
+                      stroke-linejoin="bevel"/>
+            </svg>
         </div>
     </a>
 
     <a th:href="@{/admin/callcenter/contact}" class="menu-link">
         <div class="menu-left">
-            <div class="menu-title">2. 문의함</div>
+            <div class="menu-title">문의함</div>
+            <svg class="menu-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L13 6M19 12L13 18"
+                      stroke="#3e2723"
+                      stroke-width="1.5"
+                      stroke-linecap="square"
+                      stroke-linejoin="bevel"/>
+            </svg>
+
         </div>
-        <div class="menu-right">
-            <div>
-                <div class="menu-desc-title">문의함</div>
-            </div>
-            <span class="move-button">이동</span>
-        </div>
+
     </a>
 
     <a th:href="@{/admin/callcenter/report}" class="menu-link">
         <div class="menu-left">
-            <div class="menu-title">3. 신고함</div>
+            <div class="menu-title">신고함</div>
+            <svg class="menu-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L13 6M19 12L13 18"
+                      stroke="#3e2723"
+                      stroke-width="1.5"
+                      stroke-linecap="square"
+                      stroke-linejoin="bevel"/>
+            </svg>
+
         </div>
-        <div class="menu-right">
-            <div>
-                <div class="menu-desc-title">신고함</div>
-            </div>
-            <span class="move-button">이동</span>
-        </div>
+
     </a>
 
 </div>

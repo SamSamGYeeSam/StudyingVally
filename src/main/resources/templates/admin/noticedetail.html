@@ -3,25 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>공지사항 상세</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+    />
     <style>
-        * { box-sizing: border-box; }
+        :root {
+          --wood-dark: #3e2723;
+          --wood-medium: #5d4037;
+          --wood-light: #8d6e63;
+          --gold: #ffca28;
+          --paper: #fff8e1;
+        }
+
+        * { 
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
+            font-family: 'DungGeunMo', sans-serif;
+            background-color: #f5efe6;
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #efefef;
         }
 
         .header {
-            background-color: #c9ef7a;
-            padding: 40px 20px;
-            text-align: center;
+            background: var(--paper);
+            border-bottom: 3px solid var(--wood-medium);
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .header h1 {
             margin: 0;
-            font-size: 52px;
+            font-size: 53px;
             font-weight: bold;
+            color: var(--wood-dark);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
         }
 
         .container {
@@ -31,8 +52,9 @@
         }
 
         .content-box {
-            border: 4px solid #111;
-            background-color: #fff;
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
+            background: var(--paper);
             padding: 32px;
         }
 
@@ -47,6 +69,7 @@
             margin: 0;
             font-size: 34px;
             font-weight: bold;
+            color: var(--wood-dark);
         }
 
         .button-group {
@@ -57,14 +80,28 @@
         .top-button,
         .submit-button {
             display: inline-block;
-            background-color: #111;
-            color: #fff;
+            background: var(--wood-dark);
+            color: var(--paper);
             border: none;
             padding: 12px 20px;
             font-size: 15px;
             font-weight: bold;
-            text-decoration: none;
+            text-decoration: none !important;
             cursor: pointer;
+            font-family: 'DungGeunMo';
+            transition: 0.1s;
+        }
+
+        .top-button:hover,
+        .submit-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--wood-medium);
+        }
+
+        .top-button:active,
+        .submit-button:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-medium);
         }
 
         .submit-button:disabled {
@@ -79,34 +116,46 @@
 
         .form-table th,
         .form-table td {
-            border: 2px solid #222;
+            border: 2px solid var(--wood-dark);
             padding: 16px;
             vertical-align: middle;
         }
 
         .form-table th {
             width: 180px;
-            background-color: #f3f3f3;
+            background: var(--wood-light);
+            color: var(--paper);
             text-align: center;
+            font-weight: bold;
+        }
+
+        .form-table td {
+            color: var(--wood-dark);
         }
 
         .form-input,
         .form-textarea,
         .readonly-input {
             width: 100%;
-            border: 2px solid #222;
+            border: 2px solid var(--wood-dark);
             padding: 12px;
-            font-size: 16px;
-            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-family: 'DungGeunMo';
+            color: var(--wood-dark);
         }
 
         .readonly-input {
             background-color: #f7f7f7;
         }
 
+        .form-input {
+            background: #fff;
+        }
+
         .form-textarea {
             min-height: 320px;
             resize: vertical;
+            background: #fff;
         }
 
         .bottom-button-area {
@@ -158,20 +207,16 @@
 <body>
 
 <div class="header">
-    <h1 th:text="${pageTitle}">공지사항 상세</h1>
+    <h1>공지사항 상세</h1>
+    <div class="button-group">
+        <a th:href="@{/admin/callcenter/notice}" class="top-button">이전으로</a>
+    </div>
 </div>
 
 <div class="container">
     <div class="content-box">
 
         <div th:if="${errorMessage}" class="message-box" th:text="${errorMessage}"></div>
-
-        <div class="content-header">
-            <h2 class="content-title">공지사항 상세</h2>
-            <div class="button-group">
-                <a th:href="@{/admin/callcenter/notice}" class="top-button">목록으로</a>
-            </div>
-        </div>
 
         <form th:action="@{/admin/callcenter/noticedetail}" method="post" onsubmit="return validateNoticeUpdateForm(this);">
             <input type="hidden" name="noticeNo" th:value="${noticeDetail.noticeNo}">
