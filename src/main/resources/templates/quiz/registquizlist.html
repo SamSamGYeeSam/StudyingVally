@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>문제 신규 일괄 등록</title>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
     <style>
         body { font-family: sans-serif; padding: 20px; color: #333; }
         .question-block { border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; border-radius: 8px; background-color: #fcfcfc; position: relative; }
@@ -24,14 +25,12 @@
 
 <h2>새 문제 일괄 만들기 (100점 맞추기)</h2>
 
-<div th:if="${errorMessage}" th:text="${errorMessage}" style="color: red; margin-bottom: 15px; font-weight: bold;"></div>
-
 <div class="score-display">
     현재 배점 합계: <span id="totalScoreText" style="color: #d32f2f;">0</span> / 100점
     <span style="font-size: 14px; font-weight: normal; color: #666; display: block; margin-top: 5px;">* 모든 문제의 배점 합계가 정확히 100점이 되어야 등록할 수 있습니다.</span>
 </div>
 
-<form action="/teacher/quiz/create-quizlist-batch" method="post" id="quizForm" onsubmit="return validateTotalScore()">
+<form action="/teacher/quiz/create-quizlist-batch" method="post" id="quizForm" novalidate>
     <input type="hidden" name="quizNo" th:value="${quizNo}">
 
     <div id="quizContainer">
@@ -65,7 +64,6 @@
 <script>
     let questionCount = 1;
 
-    // 배점 입력 시 실시간으로 합계를 계산해서 상단에 보여주는 함수
     function calculateTotalScore() {
         let inputs = document.querySelectorAll('.quiz-score-input');
         let total = 0;
@@ -75,30 +73,12 @@
 
         let textElement = document.getElementById('totalScoreText');
         textElement.innerText = total;
-
-        // 100점이면 초록색, 아니면 빨간색으로 변경
         textElement.style.color = (total === 100) ? 'green' : '#d32f2f';
     }
 
-    // [제출 버튼 클릭 시] 진짜 100점인지 검사하고 폼 전송을 허락하는 함수
-    function validateTotalScore() {
-        let inputs = document.querySelectorAll('.quiz-score-input');
-        let total = 0;
-        inputs.forEach(function(input) {
-            total += parseInt(input.value) || 0;
-        });
-
-        if (total !== 100) {
-            alert('❌ 현재 총 배점은 ' + total + '점 입니다.\n등록을 완료하려면 배점 합계가 정확히 100점이 되어야 합니다.');
-            return false; // 폼 전송 취소 (서버로 안 넘어감)
-        }
-        return true; // 100점이면 폼 전송 승인
-    }
-
-    // [+] 문제 추가 블록 생성 함수
     function addQuestionBlock() {
         const container = document.getElementById('quizContainer');
-        const currentIndex = questionCount; // Spring 바인딩을 위한 DTO 리스트 인덱스 번호
+        const currentIndex = questionCount;
 
         const newBlock = document.createElement('div');
         newBlock.className = 'question-block';
@@ -130,24 +110,21 @@
         questionCount++;
     }
 
-    // [-] 문제 삭제 함수 및 인덱스 재정렬
     function removeQuestionBlock(buttonElement) {
         const block = buttonElement.closest('.question-block');
         block.remove();
-        reindexQuestions(); // 중간 문제를 지우면 0, 1, 3 처럼 번호가 꼬이므로 다시 0, 1, 2로 맞춰줌
-        calculateTotalScore(); // 문제가 지워졌으니 점수도 다시 계산
+        reindexQuestions();
+        calculateTotalScore();
     }
 
-    // Spring 바인딩을 위해 name 속성의 숫자를 0번부터 순서대로 다시 매겨주는 함수
     function reindexQuestions() {
         const blocks = document.querySelectorAll('.question-block');
-        questionCount = blocks.length; // 전체 문제 수 업데이트
+        questionCount = blocks.length;
 
         blocks.forEach((block, index) => {
             block.setAttribute('data-index', index);
             block.querySelector('.q-number').innerText = '문제 ' + (index + 1);
 
-            // name 속성 재할당
             block.querySelector('input[name*=".quizTitle"]').name = `quizList[${index}].quizTitle`;
             block.querySelector('textarea[name*=".quizDesc"]').name = `quizList[${index}].quizDesc`;
             block.querySelector('input[name*=".quizAnswer"]').name = `quizList[${index}].quizAnswer`;
@@ -156,5 +133,8 @@
         });
     }
 </script>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@ package com.samsamgyeesam.studyingvally.domain.quiz.controller;
 import com.samsamgyeesam.studyingvally.domain.quiz.dto.QuizChapterDTO;
 import com.samsamgyeesam.studyingvally.domain.quiz.dto.QuizDTO;
 import com.samsamgyeesam.studyingvally.domain.quiz.dto.QuizListDTO;
-import com.samsamgyeesam.studyingvally.domain.quiz.dto.QuizListFormDTO; // ✨ 필수: 폼 데이터를 리스트로 받을 바구니 DTO
+import com.samsamgyeesam.studyingvally.domain.quiz.dto.QuizListFormDTO;
 import com.samsamgyeesam.studyingvally.domain.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,6 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-// 👇 강사 측 폼 유지 및 리다이렉트를 위한 필수 세션 키들
 @SessionAttributes({"courseId", "chapNo", "quizNo", "quizListNo"})
 public class QuizController {
 
@@ -84,13 +83,18 @@ public class QuizController {
     }
 
     @PostMapping("/teacher/chapter/create-quiz")
-    public String registQuiz(@ModelAttribute QuizDTO quizDTO) {
-        quizService.registQuiz(quizDTO);
+    public String registQuiz(@ModelAttribute QuizDTO quizDTO, RedirectAttributes redirectAttributes) {
+        try {
+            quizService.registQuiz(quizDTO);
+            redirectAttributes.addFlashAttribute("successMessage", "퀴즈가 성공적으로 생성되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "퀴즈 생성 중 오류가 발생했습니다.");
+        }
         return "redirect:/teacher/quiz/find-quiz-by-chap";
     }
 
     // ==========================================
-    // 5. 퀴즈 문제들 "일괄" 만들기 (폼 & 처리) ✨ 수정된 부분 ✨
+    // 5. 퀴즈 문제들 "일괄" 만들기 (폼 & 처리)
     // ==========================================
     @PostMapping("/teacher/quiz/regist-quizlist-form-post")
     public String findRegistQuizListFormPost(@RequestParam(name = "quizNo", required = false) String quizNo, Model model) {
@@ -100,12 +104,11 @@ public class QuizController {
 
     @GetMapping("/teacher/quiz/regist-quizlist-form")
     public String findRegistQuizListForm(@ModelAttribute("quizNo") String quizNo) {
-        return "quiz/registquizlist"; // 이 화면이 앞서 수정한 일괄 등록 HTML 화면입니다.
+        return "quiz/registquizlist";
     }
 
-    // 👇 404 에러의 주범이었던 메서드를 다건 등록(batch) 전용으로 교체했습니다!
     @PostMapping("/teacher/quiz/create-quizlist-batch")
-    public String createQuizListBatch(@ModelAttribute QuizListFormDTO formDTO, RedirectAttributes rttr) {
+    public String createQuizListBatch(@ModelAttribute QuizListFormDTO formDTO, RedirectAttributes redirectAttributes) {
         try {
             String quizNo = formDTO.getQuizNo();
             List<QuizListDTO> dtoList = formDTO.getQuizList();
@@ -114,24 +117,20 @@ public class QuizController {
                 throw new IllegalArgumentException("등록할 문제가 하나도 없습니다.");
             }
 
-            // 문제 배열 각각에 부모 퀴즈 번호(quizNo)를 심어줍니다.
             for (QuizListDTO dto : dtoList) {
                 dto.setQuizNo(quizNo);
             }
 
-            // 서비스로 넘겨 100점 만점 검증 및 DB 저장을 수행합니다.
             quizService.registQuizListBatch(dtoList);
 
-            // 성공 시 알림 메시지를 가지고 퀴즈 문제 목록 화면으로 리다이렉트합니다.
-            rttr.addFlashAttribute("successMessage", "문제가 성공적으로 일괄 등록되었습니다!");
+            redirectAttributes.addFlashAttribute("successMessage", "문제가 성공적으로 일괄 등록되었습니다!");
             return "redirect:/teacher/quiz/find-quizlist-by-quiz";
 
         } catch (IllegalArgumentException e) {
-            // 배점이 100점이 아니어서 튕겼을 때 에러 메시지를 가지고 원래 폼으로 돌아갑니다.
-            rttr.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/teacher/quiz/regist-quizlist-form";
         } catch (Exception e) {
-            rttr.addFlashAttribute("errorMessage", "문제 등록 중 서버 오류가 발생했습니다.");
+            redirectAttributes.addFlashAttribute("errorMessage", "문제 등록 중 서버 오류가 발생했습니다.");
             return "redirect:/teacher/quiz/regist-quizlist-form";
         }
     }
@@ -145,37 +144,33 @@ public class QuizController {
         return "redirect:/teacher/quiz/update-quizlist-form";
     }
 
-    // 2) quizNo에 속한 '모든' 문제를 불러와서 모델에 담습니다.
     @GetMapping("/teacher/quiz/update-quizlist-form")
     public String findUpdateQuizListForm(@ModelAttribute("quizNo") String quizNo, Model model) {
         List<QuizListDTO> quizItems = quizService.getQuizListItemsByQuizNo(quizNo);
         model.addAttribute("quizItems", quizItems);
-        // HTML에서 부모 quizNo를 보관하기 위해 담아줍니다.
         model.addAttribute("quizNo", quizNo);
         return "quiz/edit_quizlist";
     }
 
-    // 3) 100점 검증과 일괄 수정을 처리합니다.
     @PostMapping("/teacher/quiz/update-quizlist-batch")
-    public String updateQuizListBatch(@ModelAttribute QuizListFormDTO formDTO, RedirectAttributes rttr) {
+    public String updateQuizListBatch(@ModelAttribute QuizListFormDTO formDTO, RedirectAttributes redirectAttributes) {
         try {
             List<QuizListDTO> dtoList = formDTO.getQuizList();
             String quizNo = formDTO.getQuizNo();
 
-            // 부모 번호 주입 및 일괄 수정 서비스 호출
             for (QuizListDTO dto : dtoList) {
                 dto.setQuizNo(quizNo);
             }
             quizService.updateQuizListBatch(dtoList);
 
-            rttr.addFlashAttribute("successMessage", "모든 문제가 성공적으로 수정되었습니다!");
+            redirectAttributes.addFlashAttribute("successMessage", "모든 문제가 성공적으로 수정되었습니다!");
             return "redirect:/teacher/quiz/find-quizlist-by-quiz";
 
         } catch (IllegalArgumentException e) {
-            rttr.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/teacher/quiz/update-quizlist-form";
         } catch (Exception e) {
-            rttr.addFlashAttribute("errorMessage", "수정 중 서버 오류가 발생했습니다.");
+            redirectAttributes.addFlashAttribute("errorMessage", "수정 중 서버 오류가 발생했습니다.");
             return "redirect:/teacher/quiz/update-quizlist-form";
         }
     }
