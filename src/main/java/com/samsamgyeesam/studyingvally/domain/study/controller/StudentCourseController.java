@@ -152,27 +152,45 @@ public class StudentCourseController {
     }
 
     @GetMapping("/course/talk")
-    public String questionForm(@RequestParam Long courseId, Model model) {
+    public String questionForm(HttpSession session, Model model) {
+        Long courseId = (Long) session.getAttribute("currentCourseId");
+
+        if (courseId == null) {
+            return "redirect:/student/course";
+        }
+
+        String instructorNickname = studentCourseService.getInstructorNickname(courseId);
+        String instructorGender = studentCourseService.getInstructorGender(courseId);
+
+        model.addAttribute("instructorNickname", instructorNickname);
+        model.addAttribute("instructorGender", instructorGender);
         model.addAttribute("courseId", courseId);
         return "student/questionform";
     }
 
     @PostMapping("/course/question/save")
-    public String saveQuestion(@RequestParam("courseId") Long courseId,
-                               @RequestParam("title") String title,
+    public String saveQuestion(@RequestParam("title") String title,
                                @RequestParam("desc") String desc,
+                               HttpSession session,
                                Principal principal) {
         if (principal == null) return "redirect:/auth/login";
         String userId = principal.getName();
         Long userNo = studentService.findUserNoByUserId(userId);
 
+        Long courseId = (Long) session.getAttribute("currentCourseId");
+        if (courseId == null) {
+            return "redirect:/student/course";
+        }
         studentCourseService.saveQuestion(userNo, courseId, title, desc);
         return "redirect:/student/course";
     }
 
     @GetMapping("/course/mailbox")
-    public String mailbox(Long courseId, Principal principal, Model model) {
+    public String mailbox(HttpSession session, Principal principal, Model model) {
         if (principal == null) return "redirect:/auth/login";
+        Long courseId = (Long) session.getAttribute("currentCourseId");
+        if (courseId == null) return "redirect:/student/course";
+
         String userId = principal.getName();
         Long userNo = studentService.findUserNoByUserId(userId);
 
@@ -184,8 +202,11 @@ public class StudentCourseController {
 
     @GetMapping("/course/my-questions")
     @ResponseBody
-    public List<StudentCourseQuestion> getMyQuestionsJson(@RequestParam("courseId") Long courseId, Principal principal) {
+    public List<StudentCourseQuestion> getMyQuestionsJson(HttpSession session, Principal principal) {
         if (principal == null) return null;
+
+        Long courseId = (Long) session.getAttribute("currentCourseId");
+        if (courseId == null) return null;
 
         String userId = principal.getName();
         Long userNo = studentService.findUserNoByUserId(userId);

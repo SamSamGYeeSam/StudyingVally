@@ -225,7 +225,7 @@
         mailboxModal.style.display = 'block';
         mailList.innerHTML = '<p style="text-align: center; font-size: 13px;">불러오는 중...</p>';
 
-        fetch(`/student/course/my-questions?courseId=${courseId}`)
+        fetch(`/student/course/my-questions`)
             .then(response => response.json())
             .then(data => {
                 mailList.innerHTML = '';
@@ -261,7 +261,7 @@
         document.getElementById('npcChoices').style.display = 'none';
         document.getElementById('modalFooter').style.display = 'block';
     }
-    function goToQuestionPage() { location.href = "/student/course/talk?courseId=" + courseId; }
+    function goToQuestionPage() { location.href = "/student/course/talk"; }
 
     setInterval(moveNpcRandomly, 3000);
 </script>
