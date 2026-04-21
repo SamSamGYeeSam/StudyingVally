@@ -1,204 +1,277 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Studying Vally - Teacher School</title>
+    <!-- 폰트 추가 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
     <style>
-
-        #courseTable tbody tr {
-            cursor: pointer;
+        body {
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'DungGeunMo', sans-serif;
+            overflow: hidden;
         }
 
-        /* 선택창 */
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border: 2px solid #333;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            z-index: 1000;
-            width: 300px;
+        .room-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            background-image: url('/image/home_bg.png');
+            background-position: center;
+            background-size: cover;
+            border: 6px solid #5d4037;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            box-sizing: border-box;
         }
 
-        .popup.active {
-            display: block;
+        /* 헤더 스타일 */
+        .header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            z-index: 10;
         }
 
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 999;
-        }
-
-        .overlay.active {
-            display: block;
-        }
-
-        .popup-menu {
-            list-style: none;
-            padding: 0;
+        .pixel-title {
+            color: #ffca28;
+            font-size: 26px;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
             margin: 0;
         }
 
-        .popup-menu li {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+        /* [해결] 테이블 영역 가독성 강화: 반투명 검정 배경 추가 */
+        .table-wrapper {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.65); /* 반투명 검정으로 글자 대비 극대화 */
+            border: 3px solid #5d4037;
+            overflow-y: auto;
+            border-radius: 4px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .course-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #ffffff; /* 흰색 글자 */
+            font-size: 14px;
+        }
+
+        .course-table thead th {
+            position: sticky;
+            top: 0;
+            background: #5d4037;
+            color: #ffca28;
+            padding: 12px;
+            border-bottom: 2px solid #ffca28;
+            z-index: 5;
+        }
+
+        .course-table tbody tr {
             cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .popup-menu li:hover {
-            background-color: #f0f0f0;
+        .course-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.15); /* 마우스 올렸을 때 살짝 밝게 */
         }
 
-        .popup-menu li:last-child {
-            border-bottom: none;
-        }
-
-        .empty-message {
+        .course-table td {
+            padding: 12px;
             text-align: center;
-            padding: 50px;
-            color: #666;
-            font-size: 18px;
-           }
-
-        /* 메일함 */
-
-        #notificationModal {
-            width: auto;
-            min-width: 300px;
-            max-width: 600px;
-            white-space: nowrap;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            /* 글자 테두리 효과로 가독성 한 번 더 보강 */
+            text-shadow: 1px 1px 2px #000;
         }
 
+        /* 메일함 이미지 버튼 스타일 */
         .notification-button {
             position: relative;
-            padding: 8px 15px;
+            background: none !important;
+            border: none !important;
+            padding: 0;
             cursor: pointer;
+            outline: none;
+        }
+
+        .mailbox-icon {
+            width: 55px;
+            height: auto;
+            image-rendering: pixelated;
+            filter: drop-shadow(2px 2px 0px #000);
+            transition: transform 0.1s;
+        }
+
+        .notification-button:hover .mailbox-icon {
+            transform: scale(1.1);
         }
 
         .notification-badge {
             position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: #dc3545;
+            top: -2px;
+            right: -2px;
+            background: #e74c3c;
             color: white;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 11px;
+            border: 2px solid #000;
             font-weight: bold;
+            z-index: 10;
         }
 
-    </style>
-    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+        /* 픽셀 버튼 (하단용) */
+        .pixel-btn {
+            padding: 10px 18px;
+            background: #8d6e63;
+            color: white;
+            border: 2px solid #000;
+            cursor: pointer;
+            font-family: 'DungGeunMo';
+            font-size: 14px;
+            box-shadow: 3px 3px 0 #000;
+            text-decoration: none;
+        }
 
+        .pixel-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+        }
+
+        /* 팝업 UI */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #fff8e1;
+            border: 5px solid #5d4037;
+            box-shadow: 10px 10px 0 rgba(0,0,0,0.4);
+            z-index: 1000;
+            width: 280px;
+            padding: 15px;
+        }
+        .popup.active { display: block; }
+        .popup h4 { text-align: center; margin-top: 0; color: #5d4037; border-bottom: 2px dashed #5d4037; padding-bottom: 10px; }
+
+        .popup-menu { list-style: none; padding: 0; margin: 0; }
+        .popup-menu li {
+            padding: 10px; margin-bottom: 6px; background: #fff; border: 2px solid #5d4037;
+            text-align: center; cursor: pointer; font-size: 14px;
+        }
+        .popup-menu li:hover { background: #ffca28; }
+
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; }
+        .overlay.active { display: block; }
+
+        .footer-btns { margin-top: 20px; }
+
+        .empty-message { text-align: center; padding: 100px; color: #ffca28; font-size: 18px; }
+
+        /* 스크롤바 디자인 */
+        .table-wrapper::-webkit-scrollbar { width: 10px; }
+        .table-wrapper::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        .table-wrapper::-webkit-scrollbar-thumb { background: #5d4037; border: 2px solid #000; }
+    </style>
 </head>
 <body>
 
-<h3>전체 강의 목록</h3>
-<table id="courseTable" th:if="${courseList != null and !courseList.isEmpty()}">
-    <thead>
-    <tr>
-        <th>강의명</th>
-        <th>강의설명</th>
-        <th>등록일</th>
-        <th>개설여부</th>
-    </tr>
-    </thead>
-    <tbody>
-<!--  각 행 누르면 그 강의번호를 유지하면서 선택창 실행  -->
-    <tr th:each="course : ${courseList}"
-        th:attr="data-id=${course.courseId}, data-title=${course.courseTitle}"
-        onclick="showPopup(this.dataset.id, this.dataset.title)">
-        <td th:text="${course.courseTitle}"></td>
-        <td th:text="${course.courseDescription}"></td>
-        <td th:text="${#temporals.format(course.courseCreatedAt, 'yyyy. M. d')}"></td>
-        <td th:text="${course.courseStatus == 'OPEN' ? '개설' : '미개설'}"></td>
-    </tr>
-    </tbody>
-</table>
+<div class="room-container">
+    <div class="header-area">
+        <h3 class="pixel-title">📜 관리 중인 강의 목록</h3>
+        <!-- 메일함 이미지 버튼 적용 -->
+        <button onclick="showNotificationModal()" class="notification-button">
+            <img src="/image/questions-post.png" alt="Mailbox" class="mailbox-icon">
+            <span id="notificationBadge" class="notification-badge" style="display: none;"></span>
+        </button>
+    </div>
 
-<div class="empty-message" th:if="${courseList == null or courseList.isEmpty()}">
-    등록된 강의가 없습니다.
+    <div class="table-wrapper">
+        <table class="course-table" id="courseTable" th:if="${courseList != null and !courseList.isEmpty()}">
+            <thead>
+            <tr>
+                <th>강의명</th>
+                <th style="width: 40%;">설명</th>
+                <th>등록일</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="course : ${courseList}"
+                th:attr="data-id=${course.courseId}, data-title=${course.courseTitle}"
+                onclick="showPopup(this.dataset.id, this.dataset.title)">
+                <td th:text="${course.courseTitle}" style="color: #ffca28; font-weight: bold;"></td>
+                <td th:text="${course.courseDescription}" style="font-size: 12px; text-align: left;"></td>
+                <td th:text="${#temporals.format(course.courseCreatedAt, 'yyyy-MM-dd')}"></td>
+                <td th:text="${course.courseStatus == 'OPEN' ? '🟢개설' : '⚪대기'}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="empty-message" th:if="${courseList == null or courseList.isEmpty()}">
+            아직 등록된 강의가 없습니다... 🏜️
+        </div>
+    </div>
+
+    <div class="footer-btns">
+        <button type="button" class="pixel-btn" onclick="location.href='/teacher/teachermain'">🏠 이전으로</button>
+    </div>
 </div>
 
+<!-- 강의 메뉴 팝업 -->
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
-
 <div class="popup" id="popup">
     <h4 id="popupTitle">강의 메뉴</h4>
     <ul class="popup-menu">
-        <li onclick="submitTo('/teacher/course/chapter')">챕터 보기</li>
-        <li onclick="submitTo('/teacher/course/registchapterPage')">챕터 추가하기</li>
-        <li onclick="submitTo('/teacher/course/review')">강의평 보기</li>
-        <li onclick="submitTo('/teacher/course/studentlist')">수강생 보기</li>
-        <li onclick="submitTo('/teacher/course/update')">강의 수정하기</li>
-        <li onclick="submitTo('/teacher/course/deletecheck')">강의 삭제하기</li>
-        <li onclick="submitTo('/teacher/course/question')">질문 보기</li>
-        <li onclick="submitTo('/teacher/quiz/course-post')">퀴즈 보기</li>
-        <li onclick="closePopup()">이전으로</li>
+        <li onclick="submitTo('/teacher/course/chapter')">📚 챕터 관리</li>
+        <li onclick="submitTo('/teacher/course/registchapterPage')">➕ 챕터 추가</li>
+        <li onclick="submitTo('/teacher/course/review')">⭐ 강의평 확인</li>
+        <li onclick="submitTo('/teacher/course/studentlist')">👥 수강생 현황</li>
+        <li onclick="submitTo('/teacher/course/update')">✏️ 강의 정보 수정</li>
+        <li onclick="submitTo('/teacher/course/question')">❓ 질문함 이동</li>
+        <li onclick="submitTo('/teacher/quiz/course-post')">📝 퀴즈 관리</li>
+        <li onclick="submitTo('/teacher/course/deletecheck')" style="color:#e74c3c;">🗑️ 강의 삭제</li>
+        <li onclick="closePopup()" style="background:#8d6e63; color:#white; border-top:2px solid #000;">닫기</li>
     </ul>
 </div>
 
+<!-- 알림 모달 -->
+<div class="overlay" id="notificationOverlay" onclick="closeNotificationModal()"></div>
+<div class="popup" id="notificationModal">
+    <h4>📬 답변 대기 메일</h4>
+    <p id="notificationMessage" style="font-size: 13px; line-height: 1.5; color: #333; max-height: 200px; overflow-y: auto;"></p>
+    <button class="pixel-btn" style="width:100%; margin-top:10px;" onclick="closeNotificationModal()">확인</button>
+</div>
+
+<!-- 데이터 전송용 폼 -->
 <form id="commonForm" method="post">
     <input type="hidden" name="courseId" id="commonCourseId">
 </form>
 
-<a href="/teacher/teachermain">
-    <button type="button">이전으로</button>
-</a>
-
-<!--답변 안 한 질문 안내용-->
-<button onclick="showNotificationModal()" class="notification-button">
-    메일함
-    <span id="notificationBadge" class="notification-badge" style="display: none;"></span>
-</button>
-
-<!-- 알림 모달 -->
-<div class="overlay" id="notificationOverlay" onclick="closeNotificationModal()"></div>
-
-<div class="popup" id="notificationModal">
-    <h4>알림</h4>
-    <p id="notificationMessage"></p>
-    <button onclick="closeNotificationModal()" >확인</button>
-</div>
-
-<!-- 모달 HTML 포함 -->
 <div th:replace="~{modal/modal :: modalHtml}"></div>
-
-<!-- 모달 스크립트 포함 -->
 <script th:replace="~{modal/modal :: modalScript}"></script>
 
 <script th:inline="javascript">
+    let selectedCourseId = null;
+    const unansweredQuestions = /*[[${unansweredQuestions}]]*/ {};
 
-      // 선택한 강의 번호
-      let selectedCourseId = null;
-      // 답변 안 한 질문 갯수 세는 용
-      const unansweredQuestions = /*[[${unansweredQuestions}]]*/ {};
+    window.onload = function() { updateMailCount(); };
 
-      window.onload = function() {
-        updateMailCount();
-      };
-
-      //  배지 개수 업데이트
-        function updateMailCount() {
+    function updateMailCount() {
         let totalCount = 0;
-        for (const count of Object.values(unansweredQuestions)) {
-            totalCount += count;
-        }
-
+        for (const count of Object.values(unansweredQuestions)) { totalCount += count; }
         const badge = document.getElementById('notificationBadge');
         if (totalCount > 0) {
             badge.textContent = totalCount;
@@ -208,48 +281,44 @@
         }
     }
 
+    function showNotificationModal() {
+        let message = '';
+        if (Object.keys(unansweredQuestions).length === 0) {
+            message = '도착한 질문 메일이 없습니다.';
+        } else {
+            for (const [courseTitle, count] of Object.entries(unansweredQuestions)) {
+                message += '• ['+ courseTitle + ']\n  답변 대기 질문 ' + count + '건\n\n';
+            }
+        }
+        document.getElementById('notificationMessage').innerText = message;
+        document.getElementById('notificationModal').classList.add('active');
+        document.getElementById('notificationOverlay').classList.add('active');
+    }
 
-      function showNotificationModal() {
-          let message = '';
+    function closeNotificationModal() {
+        document.getElementById('notificationModal').classList.remove('active');
+        document.getElementById('notificationOverlay').classList.remove('active');
+    }
 
-          if (Object.keys(unansweredQuestions).length === 0) {
-              message = '알림이 없습니다.';
-          } else {
-              for (const [courseTitle, count] of Object.entries(unansweredQuestions)) {
-                  message += '• '+ courseTitle + ' 강의에 답변 대기 중인 질문이 ' + count + '개 있습니다.\n';
-              }
-          }
+    function showPopup(courseId, courseTitle) {
+        selectedCourseId = courseId;
+        document.getElementById('popupTitle').textContent = "📜 " + courseTitle;
+        document.getElementById('popup').classList.add('active');
+        document.getElementById('overlay').classList.add('active');
+    }
 
-          document.getElementById('notificationMessage').innerText = message;
-          document.getElementById('notificationModal').classList.add('active');
-          document.getElementById('notificationOverlay').classList.add('active');
-      }
+    function closePopup() {
+        document.getElementById('popup').classList.remove('active');
+        document.getElementById('overlay').classList.remove('active');
+        selectedCourseId = null;
+    }
 
-      function closeNotificationModal() {
-          document.getElementById('notificationModal').classList.remove('active');
-          document.getElementById('notificationOverlay').classList.remove('active');
-      }
-
-      function showPopup(courseId, courseTitle) {
-          selectedCourseId = courseId;
-          document.getElementById('popupTitle').textContent = courseTitle;
-          document.getElementById('popup').classList.add('active');
-          document.getElementById('overlay').classList.add('active');
-      }
-
-      function closePopup() {
-          document.getElementById('popup').classList.remove('active');
-          document.getElementById('overlay').classList.remove('active');
-          selectedCourseId = null;
-      }
-
-      function submitTo(action) {
-          const form = document.getElementById('commonForm');
-          form.action = action;
-          document.getElementById('commonCourseId').value = selectedCourseId;
-          form.submit();
-      }
+    function submitTo(action) {
+        const form = document.getElementById('commonForm');
+        form.action = action;
+        document.getElementById('commonCourseId').value = selectedCourseId;
+        form.submit();
+    }
 </script>
-
 </body>
 </html>

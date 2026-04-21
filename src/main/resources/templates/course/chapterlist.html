@@ -1,73 +1,79 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>챕터 목록</title>
+    <title>Studying Vally - 챕터 목록</title>
+    <link rel="stylesheet" th:href="@{/css/chapterlist.css}">
     <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
-
 </head>
 <body>
 
-<h1>강의 상세 챕터 페이지</h1>
-<h3 th:if="${courseTitle}" th:text="|${courseTitle}|"></h3>
+<div class="room-container">
+    <h1 class="pixel-title">📜 강의 상세 챕터</h1>
 
-<table th:if="${chapterList != null and !chapterList.isEmpty()}">
-    <thead>
-    <tr>
-        <th>챕터명</th>
-        <th>챕터 설명</th>
-        <th>퀴즈 등록하기</th>
-        <th>챕터 수정하기</th>
-        <th>챕터 삭제하기</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="chapter : ${chapterList}">
-        <td th:text="${chapter.chapTitle}"></td>
-        <td th:text="${chapter.chapDesc}"></td>
-        <td>
-            <form action="/teacher/quiz/course-post" method="post" style="display:inline;">
-                <input type="hidden" name="courseId" th:value="${courseId}">
-                <button type="submit">퀴즈 등록하기</button>
-            </form>
-        </td>
-        <td>
-            <form action="/teacher/course/chapterupdate" method="post" style="display:inline;">
-                <input type="hidden" name="courseId" th:value="${courseId}">
-                <input type="hidden" name="chapNo" th:value="${chapter.chapNo}">
-                <button type="submit">수정하기</button>
-            </form>
-        </td>
-        <td>
-            <form action="/teacher/course/deletechaptercheck" method="post" style="display:inline;">
-                <input type="hidden" name="chapNo" th:value="${chapter.chapNo}">
-                <input type="hidden" name="courseId" th:value="${courseId}">
-                <button type="submit">삭제하기</button>
-            </form>
-        </td>
-    </tr>
+    <p style="color: #ffca28; text-align: center; margin-bottom: 10px;">
+        <strong th:if="${courseTitle}" th:text="|강의명: ${courseTitle}|"></strong>
+    </p>
 
-    </tbody>
-</table>
+    <div class="table-wrapper">
+        <table class="chapter-table" th:if="${chapterList != null and !chapterList.isEmpty()}">
+            <thead>
+            <tr>
+                <th>챕터명</th>
+                <th style="width: 30%;">설명</th>
+                <th>퀴즈</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="chapter : ${chapterList}">
+                <td th:text="${chapter.chapTitle}" style="color: #ffca28; font-weight: bold;"></td>
+                <td th:text="${chapter.chapDesc}" style="font-size: 12px; text-align: left;"></td>
+                <td>
+                    <form action="/teacher/quiz/course-post" method="post" style="display:inline;">
+                        <input type="hidden" name="courseId" th:value="${courseId}">
+                        <button type="submit" class="pixel-btn success">등록</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/teacher/course/chapterupdate" method="post" style="display:inline;">
+                        <input type="hidden" name="courseId" th:value="${courseId}">
+                        <input type="hidden" name="chapNo" th:value="${chapter.chapNo}">
+                        <button type="submit" class="pixel-btn">수정</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/teacher/course/deletechaptercheck" method="post" style="display:inline;">
+                        <input type="hidden" name="chapNo" th:value="${chapter.chapNo}">
+                        <input type="hidden" name="courseId" th:value="${courseId}">
+                        <button type="submit" class="pixel-btn danger">삭제</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-<div th:if="${chapterList == null or chapterList.isEmpty()}">
-    <p>등록된 챕터가 없습니다.</p>
+        <!-- 데이터 없을 때 -->
+        <div th:if="${chapterList == null or chapterList.isEmpty()}"
+             style="text-align: center; color: #ffca28; padding: 100px;">
+            등록된 챕터가 없습니다. 🌵
+        </div>
+    </div>
+
+    <div class="footer-btns">
+        <a href="/teacher/course">
+            <button type="button" class="pixel-btn">🏠 이전으로</button>
+        </a>
+
+        <form action="/teacher/course/registchapterPage" method="post" style="display:inline;">
+            <input type="hidden" name="courseId" th:value="${courseId}">
+            <button type="submit" class="pixel-btn success">➕ 챕터 추가하기</button>
+        </form>
+    </div>
 </div>
 
-<br>
-
-<form action="/teacher/course/registchapterPage" method="post" style="display:inline;">
-    <input type="hidden" name="courseId" th:value="${courseId}">
-    <button type="submit">챕터 추가하기</button>
-</form>
-<br>
-
-<a href="/teacher/course">
-    <button type="button">이전으로</button>
-</a>
-
 <div th:replace="~{modal/modal :: modalHtml}"></div>
-
 <script th:replace="~{modal/modal :: modalScript}"></script>
 
 </body>

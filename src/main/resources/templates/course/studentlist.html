@@ -1,41 +1,48 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>수강생 조회</title>
+    <title>Studying Vally - 수강생 조회</title>
+    <link rel="stylesheet" th:href="@{/css/studentlist.css}">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
-<h2 th:text="|${course.courseTitle} 강의의 수강생 조회 페이지|"></h2>
+<div class="room-container">
+    <h2 class="pixel-title" th:text="|📜 ${course.courseTitle} 강의 수강생 목록|"></h2>
 
-<br>
+    <div class="list-wrapper">
+        <table th:if="${studentList != null and !studentList.isEmpty()}">
+            <thead>
+            <tr>
+                <th>이름</th>
+                <th>닉네임</th>
+                <th>강의 진척도</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="student : ${studentList}">
+                <td th:text="${student.userName}"></td>
+                <td th:text="${student.userNickname}"></td>
+                <td class="process-text" th:text="${student.enrollmentProcess} + '%'"></td>
+            </tr>
+            </tbody>
+        </table>
 
-<table th:if="${studentList != null and !studentList.isEmpty()}">
-    <thead>
-    <tr>
-        <th>이름</th>
-        <th>닉네임</th>
-        <th>강의 진척도</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="student : ${studentList}">
-        <td th:text="${student.userName}"></td>
-        <td th:text="${student.userNickname}"></td>
-        <td th:text="${student.enrollmentProcess} + '%'"></td>
-    </tr>
-    </tbody>
-</table>
+        <div th:if="${#lists.isEmpty(studentList)}" class="no-data">
+            아직 수강 중인 학생이 없습니다. 🌵
+        </div>
+    </div>
 
-<div th:if="${#lists.isEmpty(studentList)}">
-    <p>수강생이 없습니다.</p>
+    <div class="footer-area">
+        <a href="/teacher/course" class="pixel-btn">
+            🔙 이전으로
+        </a>
+    </div>
 </div>
 
-<br>
-
-<a href="/teacher/course">
-    <button type="button">이전으로</button>
-</a>
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
 
 </body>
 </html>

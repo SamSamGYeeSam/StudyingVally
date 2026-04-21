@@ -1,40 +1,62 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>강의 소식 수정</title>
+    <title>Studying Valley - 소식 수정</title>
+    <!-- 폰트 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <link rel="stylesheet" th:href="@{/css/updatecoursenotice.css}">
+
+    <!-- 모달 관련 스타일 -->
     <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
-<h1>강의 소식 수정 페이지</h1>
+<div class="room-container">
+    <div class="school-header">
+        <h2 class="pixel-title">📝 EDIT NOTICE</h2>
+    </div>
 
-<!--강의명은 수정 불가 -->
-<div >
-    <label>강의명</label><br>
-    <span th:text="${courseNotice.courseName}"></span>
+    <!-- 목록 페이지와 동일한 갈색 반투명 래퍼 -->
+    <div class="form-wrapper">
+        <form action="/teacher/coursenotice/updatecoursenotice" method="post" novalidate>
+            <input type="hidden" name="courseNoticeNo" th:value="${courseNotice.courseNoticeNo}">
+
+            <!-- 강의명 (읽기 전용) -->
+            <div class="input-group">
+                <label>COURSE</label>
+                <div class="pixel-readonly" th:text="${courseNotice.courseName}">강의 제목</div>
+            </div>
+
+            <!-- 제목 수정 -->
+            <div class="input-group">
+                <label for="noticeTitle">TITLE</label>
+                <input type="text" id="noticeTitle" name="courseNoticeTitle"
+                       class="pixel-input" th:value="${courseNotice.courseNoticeTitle}" required>
+            </div>
+
+            <!-- 내용 수정 -->
+            <div class="input-group" style="flex: 1; display: flex; flex-direction: column;">
+                <label for="noticeDesc">CONTENT</label>
+                <textarea id="noticeDesc" name="courseNoticeDesc"
+                          class="pixel-textarea" th:text="${courseNotice.courseNoticeDesc}" required></textarea>
+            </div>
+
+            <!-- 하단 버튼 그룹 -->
+            <div class="btn-group">
+                <button type="submit" class="pixel-btn btn-update">수정 완료</button>
+                <button type="button" class="pixel-btn btn-back" onclick="document.getElementById('backForm').submit();">취소</button>
+            </div>
+        </form>
+
+        <!-- 취소 시 상세로 돌아가기 위한 숨김 폼 -->
+        <form id="backForm" action="/teacher/coursenotice/detail" method="post" style="display:none;">
+            <input type="hidden" name="courseNoticeNo" th:value="${courseNotice.courseNoticeNo}">
+        </form>
+    </div>
 </div>
-<br>
-<form action="/teacher/coursenotice/updatecoursenotice" method="post" novalidate>
-
-    <input type="hidden" name="courseNoticeNo" th:value="${courseNotice.courseNoticeNo}">
-
-    <label>소식 제목</label><br>
-    <input type="text" name="courseNoticeTitle" th:value="${courseNotice.courseNoticeTitle}" required><br><br>
-
-    <label>소식 내용</label><br>
-    <textarea rows="10" cols="50" name="courseNoticeDesc" th:text="${courseNotice.courseNoticeDesc}" required></textarea><br><br>
-
-    <button type="submit">수정하기</button>
-</form>
-
-<form action="/teacher/coursenotice/detail" method="post" style="display:inline;">
-    <input type="hidden" name="courseNoticeNo" th:value="${courseNotice.courseNoticeNo}">
-    <button type="submit">이전으로</button>
-</form>
 
 <div th:replace="~{modal/modal :: modalHtml}"></div>
-
 <script th:replace="~{modal/modal :: modalScript}"></script>
 
 </body>
