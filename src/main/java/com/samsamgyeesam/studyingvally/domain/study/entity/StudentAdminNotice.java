@@ -21,6 +21,6 @@ public class StudentAdminNotice {
     @Column(name = "notice_desc")
     private String noticeDesc;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(updatable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
 }

@@ -12,7 +12,8 @@ import java.util.Optional;
 
 public interface StudentEnrollmentRepository extends JpaRepository<StudentEnrollment, Long> {
     @Query("SELECT e FROM StudentEnrollment e JOIN e.course c " +
-            "WHERE e.userNo = :userNo AND c.courseStatus = 'OPEN'")
+            "WHERE e.userNo = :userNo AND c.courseStatus = 'OPEN'" +
+            "ORDER BY e.enrollmentNo DESC")
     List<StudentEnrollment> findByUserNo(Long userNo);
 
     Optional<StudentEnrollment> findByUserNoAndCourse_CourseId(Long userNo, Long courseId);

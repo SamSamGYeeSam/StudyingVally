@@ -195,10 +195,12 @@
                 </thead>
                 <tbody>
                 <tr th:each="notice : ${adminNotices}">
-                    <td th:text="${notice.formattedDate}">2026-04-16</td>
+                    <td th:text="${notice.createdDate}">2026-04-21</td>
                     <td class="clickable-title"
-                        th:text="${notice.title}"
-                        th:onclick="openDetail([[${notice.title}]], [[${notice.desc}]])">
+                        th:text="${notice.noticeTitle}"
+                        th:data-title="${notice.noticeTitle}"
+                        th:data-desc="${notice.noticeDesc}"
+                        onclick="openDetail(this.getAttribute('data-title'), this.getAttribute('data-desc'))">
                         공지 제목
                     </td>
                 </tr>
@@ -219,12 +221,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="note : ${courseNotices}">
-                    <td th:text="${note.createdAt}">2026-04-16</td>
-                    <td th:text="${note.userNickname}">강사명</td>
+                <tr th:each="cn : ${courseNotices}">
+                    <td th:text="${cn.createdDate}">2026-04-21</td>
+                    <td th:text="${cn.userNickname}" style="color: #ffca28;">강사명</td>
                     <td class="clickable-title"
-                        th:text="${note.courseNoticeTitle}"
-                        th:onclick="openDetail([[${note.courseNoticeTitle}]], [[${note.courseNoticeDesc}]])">
+                        th:text="${cn.courseNoticeTitle}"
+                        th:data-title="${cn.courseNoticeTitle}"
+                        th:data-desc="${cn.courseNoticeDesc}"
+                        onclick="openDetail(this.getAttribute('data-title'), this.getAttribute('data-desc'))">
                         소식 제목
                     </td>
                 </tr>

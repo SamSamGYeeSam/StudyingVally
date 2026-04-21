@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface StudentChapterRepository extends JpaRepository<StudentChapter, Long> {
 
-    List<StudentChapter> findByCourseId(Long courseId);
-    long countByCourseId(Long courseId);
+    List<StudentChapter> findByCourse_CourseId(Long courseId);
+    long countByCourse_CourseId(Long courseId);
+    //    List<StudentChapter> findByCourseId(Long courseId);
+    //    long countByCourseId(Long courseId);
 
 }

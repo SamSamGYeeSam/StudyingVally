@@ -131,7 +131,7 @@
         <div class="star-deco">✨ ⭐ ✨</div>
         <h2>모험의 기록 남기기</h2>
 
-        <form th:action="@{/student/evaluation/save}" method="post">
+        <form th:action="@{/student/evaluation/save}" method="post" novalidate>
             <input type="hidden" name="courseId" th:value="${courseId}">
 
             <div class="form-group">

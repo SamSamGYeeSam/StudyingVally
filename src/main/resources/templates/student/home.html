@@ -189,6 +189,20 @@
                 <td th:text="${course.progress} + '%'">80%</td>
                 <td th:text="${course.score != null ? course.score : '-'}">A+</td>
                 <td>
+                     <span th:if="${course.score != null}"
+                           th:text="${course.score} + ' / 100'"
+                           style="font-weight: bold; color: #ffca28;">
+                             85 / 100
+                    </span>
+                </td>
+                <td th:with="s=${course.score}"
+                    th:text="${s != null ? s + '점' : '미응시'}"
+                    th:style="${s != null} ?
+              (${s >= 90} ? 'color:#2ecc71;' : (${s >= 60} ? 'color:#f1c40f;' : 'color:#e74c3c;')) :
+              'opacity: 0.5;'">
+                    미응시
+                </td>
+                <td>
                     <button th:if="${course.progress == 100 and course.hasEvaluation}"
                             class="pixel-btn"
                             style="padding: 5px 10px; font-size: 11px; width: auto; background-color: #4caf50;"

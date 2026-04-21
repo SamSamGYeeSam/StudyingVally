@@ -106,6 +106,9 @@
         .pixel-btn:disabled { background: #999; cursor: not-allowed; transform: none; box-shadow: none; }
 
     </style>
+
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+
 </head>
 <body>
 
@@ -114,7 +117,6 @@
 
         <div class="video-header">
             <h2 class="video-title" th:text="'📺 ' + ${chapter.chapTitle}">챕터 제목</h2>
-            <div style="color: #8d6e63; font-size: 11px;">[Course ID: <span th:text="${courseId}">0</span>]</div>
         </div>
 
         <!-- 비디오가 차지하는 영역을 대폭 키움 -->
@@ -135,6 +137,42 @@
 
     </div>
 </div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+
+<script th:inline="javascript">
+    function markAsComplete(btn) {
+        const chapNo = [[${chapter.chapNo}]];
+        const courseId = [[${courseId}]];
+
+        //
+
+        btn.disabled = true;
+        btn.innerText = "도장 찍는 중...";
+
+        fetch(`/student/chapter/complete/${courseId}/${chapNo}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(response => {
+                if(response.ok) {
+                    alert("훌륭해! 도장을 쾅 찍었어! 💮");
+                    location.href = "/student/course";
+                } else {
+                    alert("오류가 났네? 다시 한번 눌러줘!");
+                    btn.disabled = false;
+                    btn.innerText = "✅ 수강 완료 도장";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("서버 연결 실패!");
+                btn.disabled = false;
+            });
+    }
+</script>
+
+<script th:replace="~{modal/modal :: modalScript}"></script>
 
 
 </body>

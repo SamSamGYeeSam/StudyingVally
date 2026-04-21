@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 public class StudentCourseNoticeDTO {
     private Long courseNoticeNo;      // cn.courseNoticeNo
-    private String createdAt;         // CAST(cn.createdAt AS string)
+    private String createdDate;         // CAST(cn.createdAt AS string)
     private String courseTitle;       // c.courseTitle
     private String userNickname;          // u.userName
     private String courseNoticeTitle; // cn.courseNoticeTitle

@@ -14,14 +14,15 @@ import java.util.List;
 public interface StudentNoticeRepository extends JpaRepository<StudentAdminNotice, Long> {
 
     @Query("SELECT new com.samsamgyeesam.studyingvally.domain.study.dto.StudentAdminNoticeDTO(" +
-            "an.noticeNo, str(an.createdAt), an.noticeTitle, an.noticeDesc) " +
-            "FROM StudentAdminNotice an ORDER BY an.createdAt DESC")
+            "an.noticeNo, str(an.createdDate), an.noticeTitle, an.noticeDesc) " +
+            "FROM StudentAdminNotice an ORDER BY an.createdDate DESC")
     List<StudentAdminNoticeDTO> findAllAdminNotices();
 
     @Query("SELECT new com.samsamgyeesam.studyingvally.domain.study.dto.StudentCourseNoticeDTO(" +
-            "cn.courseNoticeNo, str(cn.createdAt), c.courseTitle, cn.userName, cn.courseNoticeTitle, cn.courseNoticeDesc) " +
+            "cn.courseNoticeNo, str(cn.createdDate), c.courseTitle, cn.userName, cn.courseNoticeTitle, cn.courseNoticeDesc) " +
             "FROM StudentCourseNotice cn " +
             "JOIN cn.course c " +
-            "WHERE c.courseId IN :courseIds")
+            "WHERE c.courseId IN :courseIds " +
+            "ORDER BY cn.createdDate DESC")
     List<StudentCourseNoticeDTO> findMyCourseNotices(@Param("courseIds") List<Long> courseIds);
 }

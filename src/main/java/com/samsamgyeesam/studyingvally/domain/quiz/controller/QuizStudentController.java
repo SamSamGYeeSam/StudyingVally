@@ -14,7 +14,6 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-// 👇 세션 유지 항목에 quizNo 추가
 @SessionAttributes({"courseId", "chapNo", "quizNo"})
 public class QuizStudentController {
 
@@ -73,7 +72,7 @@ public class QuizStudentController {
 
         List<QuizDTO> quizList = quizService.getQuizListByChapNo(chapNo);
 
-        // ✨ 이 학생이 예전에 푼 퀴즈들의 점수표(Map)를 가져옵니다.
+        // 학생이 예전에 푼 퀴즈들의 점수표(Map)를 가져옵니다.
         // (QuizStudentService의 getUserQuizScoreMap 메서드가 Map<String, Integer>를 반환한다고 가정)
         java.util.Map<Long, Integer> scoreMap = quizStudentService.getUserQuizScoreMap(userDetails.getUserNo());
 
@@ -100,7 +99,7 @@ public class QuizStudentController {
         return "quiz/student-quiz/student_quiz_solve";
     }
 
-    // 6. 퀴즈 완료 시 점수 저장 (AJAX용 API)
+    // 6. 퀴즈 완료 시 점수 저장 (AJAX용 API) fetch로 받을 수 있음.
     // ==========================================
     @PostMapping("/student/quiz/submit-score")
     @ResponseBody // 화면을 반환하지 않고 데이터(문자열)만 반환
@@ -130,8 +129,7 @@ public class QuizStudentController {
         // 서비스에서 평균 점수 계산 (예: 85.3333...)
         double averageScore = quizStudentService.getCourseAverageScore(courseId, userNo);
 
-        // 소수점 1자리까지만 예쁘게 잘라서 문자열로 반환 (예: "85.3")
-        // 정수로 딱 떨어지게 하려면 "%.0f" 로 변경하시면 됩니다.
+        // 1자리 문자열
         return String.format("%.1f", averageScore);
     }
 }

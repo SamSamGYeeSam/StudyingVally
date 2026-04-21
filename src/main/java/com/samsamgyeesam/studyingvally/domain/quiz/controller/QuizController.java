@@ -168,7 +168,7 @@ public class QuizController {
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/teacher/quiz/update   -quizlist-form";
+            return "redirect:/teacher/quiz/update-quizlist-form";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "수정 중 서버 오류가 발생했습니다.");
             return "redirect:/teacher/quiz/update-quizlist-form";

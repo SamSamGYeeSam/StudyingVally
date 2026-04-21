@@ -33,6 +33,6 @@ public class StudentCourseNotice {
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(updatable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
 }

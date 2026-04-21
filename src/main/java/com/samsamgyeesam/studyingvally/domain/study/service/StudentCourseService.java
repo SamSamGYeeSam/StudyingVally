@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,22 +27,19 @@ public class StudentCourseService {
     private final StudentUserRepository studentUserRepository;
 
     public List<StudentCourse> getOpenCourses() {
-//        return studentEnrollmentRepository.findAll().stream()
-//                .filter(enrollment -> enrollment.getCourse() != null &&
-//                        "open".equalsIgnoreCase(enrollment.getCourse().getCourseStatus()))
-//                .map(StudentEnrollment::getCourse)
-//                .distinct()
-//                .collect(Collectors.toList());
-        return studentCourseRepository.findByCourseStatusIgnoreCase("OPEN");
+        return studentCourseRepository.findByCourseStatusIgnoreCaseOrderByCourseCreatedAtDesc("OPEN");
     }
 
 
+    public List<StudentChapter> getChapters(Long courseId) {
+        return studentChapterRepository.findByCourse_CourseId(courseId);
+    }
 
 //    ==================================================================================================
 
     @Transactional
     public double updateAndGetProgress(Long userNo, Long courseId) {
-        long totalChapters = studentChapterRepository.countByCourseId(courseId);
+        long totalChapters = studentChapterRepository.countByCourse_CourseId(courseId);
         if (totalChapters == 0) return 0.0;
 
         long completedChapters = studentChapterAttemptRepository.countCompletedChapters(userNo, courseId);
@@ -75,7 +73,7 @@ public class StudentCourseService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("강의를 찾을 수 없습니다."));
 
-        List<StudentChapter> chapters = studentChapterRepository.findByCourseId(courseId);
+        List<StudentChapter> chapters = studentChapterRepository.findByCourse_CourseId(courseId);
         List<Long> completedChapNos = studentChapterAttemptRepository.findCompletedChapNosByUser(userNo, courseId);
         double progress = updateAndGetProgress(userNo, courseId);
 
@@ -148,8 +146,9 @@ public class StudentCourseService {
 
         question.setUserNo(userNo);
         question.setCourseId(courseId);
-        question.setQuestionCourseTitle(title); // DB: question_course_title
+        question.setQuestionCourseTitle(title);
         question.setQuestionCourseDesc(desc);
+        question.setCreatedDate(LocalDateTime.now());
 
         studentCourseQuestionRepository.save(question);
     }
