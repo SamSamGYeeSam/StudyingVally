@@ -19,7 +19,7 @@ public class TeacherNoticeService {
 
     // 전체 공지사항 조회
     public List<TeacherNoticeDTO> findAllNotices() {
-        List<TeacherNotice> noticeList = teacherNoticeRepository.findAllByOrderByNoticeNoDesc();
+        List<TeacherNotice> noticeList = teacherNoticeRepository.findAllByOrderByCreatedDateDesc();
 
         return noticeList.stream()
                 .map(notice -> modelMapper.map(notice, TeacherNoticeDTO.class))

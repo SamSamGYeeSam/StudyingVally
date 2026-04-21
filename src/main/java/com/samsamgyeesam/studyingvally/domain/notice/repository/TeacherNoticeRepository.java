@@ -10,6 +10,6 @@ import java.util.List;
 public interface TeacherNoticeRepository extends JpaRepository<TeacherNotice, Long> {
 
     // 공지사항 전체 조회
-    List<TeacherNotice> findAllByOrderByNoticeNoDesc();
+    List<TeacherNotice> findAllByOrderByCreatedDateDesc();
 
 }
