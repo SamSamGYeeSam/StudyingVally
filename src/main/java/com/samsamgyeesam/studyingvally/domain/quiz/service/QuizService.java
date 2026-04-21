@@ -30,10 +30,10 @@ public class QuizService {
     // [등록 로직]
     // ==========================================
 
-    // ✨ [추가됨] 여러 문제를 한 번에 등록하며 100점 만점 검증을 수행하는 메서드
+    // 100점 만점 검증로직
     @Transactional
     public void registQuizListBatch(List<QuizListDTO> quizListDTOs) {
-        // ✨ 1. 최소 5문제 검증 로직 추가
+        // 1. 5문제 검증 로직
         if (quizListDTOs == null || quizListDTOs.size() < 5) {
             throw new IllegalArgumentException("서바이벌 퀴즈 밸런스를 위해 최소 5개 이상의 문제를 등록해야 합니다. (현재: " + (quizListDTOs == null ? 0 : quizListDTOs.size()) + "개)");
         }
@@ -168,7 +168,7 @@ public class QuizService {
                 dto.getQuizAnswer(),
                 dto.getQuizAnswerDesc(),
                 dto.getQuizScore(),
-                quizNo // ✨ ManyToOne 객체가 아닌 String 값을 그대로 꽂아 넣습니다!
+                quizNo
         )).collect(Collectors.toList());
 
         quizListRepository.saveAll(entitiesToSave);

@@ -27,7 +27,6 @@ public class QuizStudentService {
     private final QuizEnrollmentRepository quizEnrollmentRepository;
     private final QuizAttemptRepository quizAttemptRepository;
 
-    // ✨ 강의 -> 챕터 -> 퀴즈 탐색을 위해 추가 주입
     private final QuizChapterRepository quizChapterRepository;
     private final QuizRepository quizRepository;
 
@@ -64,9 +63,6 @@ public class QuizStudentService {
         }
     }
 
-    // ==========================================
-    // ✨ [신규 추가] 특정 강의의 평균 점수 계산 로직
-    // ==========================================
     @Transactional(readOnly = true)
     public double getCourseAverageScore(Long courseId, Long userNo) {
         // 1. 강의에 속한 모든 챕터 조회
