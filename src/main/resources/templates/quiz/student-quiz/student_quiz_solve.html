@@ -17,6 +17,23 @@
             background-image: url('/image/quiz-bg.png'); background-size: cover; background-position: center;
         }
 
+        /* --- 피격 효과 (빨간 반투명 화면) --- */
+        .damage-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 15;
+            background-color: rgba(255, 0, 0, 0);
+        }
+        .damage-overlay.flash-active {
+            animation: damage-flash 0.5s ease-out;
+        }
+        @keyframes damage-flash {
+            0% { background-color: rgba(255, 0, 0, 0); }
+            20% { background-color: rgba(255, 0, 0, 0.5); }
+            100% { background-color: rgba(255, 0, 0, 0); }
+        }
+
         .life-container {
             position: absolute; top: 25px; right: 30px; display: flex; gap: 0; z-index: 20;
         }
@@ -48,7 +65,7 @@
         /* --- 기본 메시지 박스 --- */
         #msg-box {
             position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 800px; height: 200px;
+            width: 800px; height: 230px; /* 설명글을 위해 높이 약간 여유있게 조정 */
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(5px); border: 4px solid #b71c1c;
             border-radius: 25px; padding: 15px 40px; box-sizing: border-box;
@@ -72,23 +89,18 @@
 
         /* 💀 실패 시: 중앙에서 우측 하단으로 이동 */
         #msg-box.fail-mode {
-            bottom: 40px; left: auto; right: 40px; transform: none; /* 우측 하단 배치 */
+            bottom: 40px; left: auto; right: 40px; transform: none;
             width: 420px; height: auto; min-height: 130px;
             background: rgba(255, 255, 255, 0.75);
             border: 4px solid #ff0000; color: #000; border-radius: 20px; padding: 20px;
         }
-        /* 실패 말풍선 꼬리 (우측 하단 용의 시선에 맞춰 오른쪽 배치) */
         #msg-box.fail-mode::after {
             content: '';
             position: absolute;
-            /* 박스 위쪽으로 꼬리를 올림 */
             top: -22px;
-            /* 박스의 왼쪽 지점에 배치 (용이 있는 중앙 방향) */
             left: 40px;
             right: auto;
             bottom: auto;
-
-            /* 삼각형이 위(용)를 향하게 border 설정 */
             border-bottom: 20px solid rgba(255, 255, 255, 0.85);
             border-top: none;
             border-left: 15px solid transparent;
@@ -96,28 +108,68 @@
         }
         .question-card { display: none; }
         .question-card.active { display: block; }
-        .q-title { font-size: 26px; color: #1a1a1a; font-weight: 900; margin-bottom: 15px; }
+
+        .q-title { font-size: 26px; color: #1a1a1a; font-weight: 900; margin-bottom: 5px; }
+
+        /* 퀴즈 상세 설명 CSS 추가 */
+        .q-desc { font-size: 18px; color: #333; margin-bottom: 15px; line-height: 1.4; white-space: pre-wrap; font-weight: normal; }
 
         .answer-input {
             width: 380px; height: 50px; margin: 0 auto 15px; display: block;
             border: 2px solid #000; font-family: 'DungGeunMo'; font-size: 24px; text-align: center; border-radius: 10px;
         }
 
-        .submit-btn, .result-btn {
+        /* 문제 풀기 버튼 (단독 스타일 유지) */
+        .submit-btn {
             padding: 10px 25px; background: #b71c1c; color: white; border: none; border-radius: 8px;
             cursor: pointer; font-family: 'DungGeunMo'; font-weight: bold; text-decoration: none;
         }
-        .result-btn { background: #2e7d32; border: 1px solid #fff; display: inline-block; }
-        .retry-btn { background: #b71c1c; border: 1px solid #fff; display: inline-block; }
 
         @keyframes dragon-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         @keyframes dragon-shaking { 0% { transform: translate(4px, 4px); } 100% { transform: translate(-4px, -4px); } }
         @keyframes potion-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        /* --- 도망치기, 재도전, 나가기 버튼 통합 디자인 --- */
+        .escape-btn, .retry-btn, .exit-btn, .result-btn {
+            background: #263238;
+            color: #fff;
+            border: 2px solid #000;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: 3px 3px 0 #000;
+            cursor: pointer;
+            font-family: 'DungGeunMo', sans-serif;
+            transition: 0.2s;
+        }
+
+        .escape-btn:hover, .retry-btn:hover, .exit-btn:hover, .result-btn:hover {
+            background: #37474f;
+        }
+
+        /* 도망치기 버튼 전용 위치 (좌측 상단 고정) */
+        .escape-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 8px 15px;
+            z-index: 50;
+        }
+
+        /* 결과창 내부 버튼 전용 여백 및 정렬 */
+        .retry-btn, .exit-btn, .result-btn {
+            padding: 8px 15px;
+            display: inline-block;
+            margin: 0 5px;
+        }
     </style>
 </head>
 <body>
 
 <div class="dungeon-container">
+    <div id="damage-overlay" class="damage-overlay"></div>
+
+    <button type="button" class="escape-btn" onclick="location.href='/student/quiz/list'">⬅ 도망치기</button>
+
     <div class="dragon-layer">
         <img src="/image/dragon-icon.png" id="dragon-img">
         <img src="/image/potion.png" id="potion-img">
@@ -134,14 +186,18 @@
              th:class="${stat.index == 0 ? 'question-card active' : 'question-card'}"
              th:id="'card-' + ${stat.index}">
             <div style="color:#b71c1c; font-size: 20px; margin-bottom: 5px;">QUEST #<span th:text="${stat.index + 1}">1</span></div>
+
             <div class="q-title" th:text="${item.quizTitle}">용의 비늘은 무슨 색인가?</div>
-            <input type="text" th:id="'input-' + ${stat.index}" class="answer-input" onkeypress="if(event.keyCode==13) checkAnswer()">
+
+            <div class="q-desc" th:if="${item.quizDesc != null}" th:text="${item.quizDesc}">여기에 상세 설명이 나옵니다.</div>
+
+            <input type="text" th:id="'input-' + ${stat.index}" class="answer-input" onkeypress="if(event.keyCode==13) checkAnswer()" autocomplete="off">
             <input type="hidden" th:id="'correct-' + ${stat.index}" th:value="${item.quizAnswer}">
             <button type="button" class="submit-btn" onclick="checkAnswer()">⚔️ 시련에 맞서기</button>
         </div>
 
         <div id="result-content" style="display: none;">
-            <div id="result-text" style="font-size: 17px; font-weight: 900; line-height: 1.5; margin-bottom: 12px; color: #000;"></div>
+            <div id="result-text" style="font-size: 17px; font-weight: 900; line-height: 1.5; margin-bottom: 15px; color: #000;"></div>
             <div id="result-action"></div>
         </div>
     </div>
@@ -159,13 +215,27 @@
     function checkAnswer() {
         const userInput = document.getElementById('input-' + currentIndex).value.trim();
         const correctAnswer = document.getElementById('correct-' + currentIndex).value.trim();
-        if (userInput === correctAnswer) nextQuestion();
-        else {
+
+        if (userInput === correctAnswer) {
+            nextQuestion();
+        } else {
             lives--;
+
+            // 화면 번쩍임 애니메이션
+            const overlay = document.getElementById('damage-overlay');
+            overlay.classList.remove('flash-active');
+            void overlay.offsetWidth;
+            overlay.classList.add('flash-active');
+
             const heartToLose = document.getElementById('h' + (lives + 1));
             if(heartToLose) heartToLose.classList.add('lost');
+
             if (lives <= 0) showFinalResult('fail');
-            else nextQuestion();
+            else {
+                // 오답 후 인풋 초기화
+                document.getElementById('input-' + currentIndex).value = '';
+                document.getElementById('input-' + currentIndex).focus();
+            }
         }
     }
 
@@ -183,18 +253,22 @@
         resultContent.style.display = 'block';
 
         if (status === 'success') {
-            msgBox.classList.add('result-mode'); // 성공 시 좌상단
+            msgBox.classList.add('result-mode');
             dragonImg.src = '/image/dragon-sleeping.png';
             dragonImg.classList.add('sleeping');
             potionImg.style.display = 'block';
             document.getElementById('result-text').innerHTML = "음... 제법이군.<br>약속대로 보상을 주마.<br>다음에 또 보지...";
-            document.getElementById('result-action').innerHTML = `<a href="/student/quiz/list" class="result-btn">포션 수령</a>`;
+            document.getElementById('result-action').innerHTML = `<button onclick="location.href='/student/quiz/list'" class="result-btn">포션 수령</button>`;
         } else {
-            msgBox.classList.add('fail-mode'); // 실패 시 우상단(중앙 우측 하단)
+            msgBox.classList.add('fail-mode');
             dragonImg.src = '/image/dragon-angry.png';
             dragonImg.classList.add('angry');
             document.getElementById('result-text').innerHTML = "감히 나를 깨우고 오답을 내놓다니!<br>천벌을 내리겠다!";
-            document.getElementById('result-action').innerHTML = `<button onclick="location.reload()" class="retry-btn">재도전</button>`;
+
+            document.getElementById('result-action').innerHTML = `
+                <button onclick="location.reload()" class="retry-btn">재도전</button>
+                <button onclick="location.href='/student/main'" class="exit-btn">메인으로 나가기</button>
+            `;
         }
     }
 </script>

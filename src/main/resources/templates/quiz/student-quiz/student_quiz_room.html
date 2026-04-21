@@ -3,149 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <title>퀴즈 던전 입장</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
     <style>
+        /* 기본 폰트 사용, 사진 배제, 무채색/어두운 톤 적용 */
         body {
-            background-color: #050505;
+            background-color: #121212;
+            color: #e0e0e0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: 'DungGeunMo', sans-serif;
-            overflow: hidden;
+            font-family: sans-serif;
         }
 
-        /* 퀴즈방 배경 컨테이너 */
         .dungeon-container {
             position: relative;
-            width: 900px;
-            height: 550px;
-            border: 8px solid #2c3e50;
-            box-shadow: 0 0 40px rgba(0,0,0,1);
-            background-image: url('/image/quiz-bg.png'); /* 던전 배경 이미지 */
-            background-size: cover;
-            background-position: center;
-        }
-
-        /* 드래곤 캐릭터 (가만히 앉아있는 효과) */
-        .dragon-npc {
-            position: absolute;
-            bottom: 120px;
-            right: 150px;
-            width: 280px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            filter: drop-shadow(0 0 10px rgba(255, 69, 0, 0.4));
-            animation: breathe 3s ease-in-out infinite;
-        }
-
-        /* 숨쉬는 듯한 움직임 애니메이션 */
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03) translateY(-5px); }
-        }
-
-        .dragon-npc:hover {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 20px rgba(255, 69, 0, 0.8));
-        }
-
-        /* 말풍선/물음표 영역 */
-        .dialogue-box {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
             width: 800px;
-            background: rgba(255, 255, 255, 0.95);
-            border: 5px solid #000;
-            border-radius: 40px 40px 5px 40px; /* 말풍선 꼬리 느낌 */
-            padding: 25px 40px;
+            height: 500px;
+            border: 2px solid #555;
+            background-color: #1e1e1e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
             box-sizing: border-box;
-            cursor: pointer;
-            box-shadow: 0 10px 0 rgba(0,0,0,0.2);
-            transition: 0.2s;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
 
-        .dialogue-box:hover {
-            background: #fff;
-            transform: translateX(-50%) translateY(-5px);
-        }
-
-        .dialogue-text {
-            font-size: 20px;
-            line-height: 1.6;
-            color: #1a1a1a;
-            margin: 0;
-        }
-
-        .npc-name {
-            position: absolute;
-            top: -15px;
-            left: 50px;
-            background: #000;
-            color: #ff4500;
-            padding: 5px 15px;
-            font-size: 16px;
-            border: 2px solid #fff;
-        }
-
-        /* 상단 하트(라이프) 표시 */
+        /* 이미지 대신 텍스트 기호로 라이프 표현 */
         .life-container {
             position: absolute;
             top: 20px;
             right: 30px;
-            display: flex;
-            gap: 0;
-        }
-        .heart {
-            width: 60px;
-            image-rendering: pixelated;
+            font-size: 24px;
+            color: #ff5252;
+            letter-spacing: 5px;
         }
 
-        /* 투명 버튼 (용과 말풍선 전체 클릭 영역) */
-        .hidden-submit {
-            position: absolute;
+        .npc-area {
+            text-align: center;
+            margin-top: 20px;
             width: 100%;
-            height: 100%;
-            background: none;
-            border: none;
+        }
+
+        .npc-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .dialogue-box {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            padding: 25px;
+            border-radius: 8px;
+            width: 70%;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .npc-name {
+            color: #ff9800;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            font-size: 1.1em;
+        }
+
+        .dialogue-text {
+            line-height: 1.6;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .btn-group {
+            margin-top: 40px;
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 12px 24px;
+            font-size: 16px;
             cursor: pointer;
-            padding: 0;
-            z-index: 5;
+            transition: background-color 0.2s;
+            font-family: sans-serif;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .btn-submit {
+            background-color: #4a4a4a;
+            border-color: #666;
+            font-weight: bold;
+        }
+
+        .btn-submit:hover {
+            background-color: #666;
         }
     </style>
 </head>
 <body>
 
 <div class="dungeon-container">
-    <!-- 라이프 표시 (이미지 느낌 살리기) -->
-    <div class="life-container">
-        <img src="/image/pixel-heart.png" class="heart" alt="life">
-        <img src="/image/pixel-heart.png" class="heart" alt="life">
-        <img src="/image/pixel-heart.png" class="heart" alt="life">
+    <div class="life-container" id="lifeDisplay">
+        ♥♥♥
     </div>
 
-    <!-- 퀴즈 리스트로 이동하는 폼 -->
-    <form action="/student/quiz/course" method="get">
-        <!-- 용 이미지 -->
-        <button type="submit" class="hidden-submit">
-            <img src="/image/dragon-icon.png" class="dragon-npc" alt="드래곤">
+    <div class="npc-area">
+        <div class="npc-icon">🐉</div>
+        <div class="dialogue-box">
+            <span class="npc-name">붉은 용의 수호자</span>
+            <p class="dialogue-text">
+                "강의는 다 들었나? 문제를 풀면 상품을 주지.<br>
+                대신 틀리면... 네 캐릭터는 이 던전에서 삭제될 것이다."
+            </p>
+        </div>
+    </div>
 
-            <!-- 말풍선 -->
-            <div class="dialogue-box">
-                <span class="npc-name">붉은 용의 수호자</span>
-                <p class="dialogue-text">
-                    "강의는 다 들었나? 문제를 풀면 상품을 주지.<br>
-                    대신 틀리면... 네 캐릭터는 이 던전에서 삭제될 것이다."
-                </p>
-                <p style="font-size: 14px; color: #666; margin-top: 10px; text-align: right;">
-                    [ 클릭하여 퀴즈 확인하기 ]
-                </p>
-            </div>
-        </button>
-    </form>
+    <div class="btn-group">
+        <button type="button" onclick="location.href='/student/main'">도망치기 (뒤로가기)</button>
+
+        <form action="/student/quiz/course" method="get" style="margin: 0;">
+            <button type="submit" class="btn-submit">퀴즈 확인하기</button>
+        </form>
+    </div>
 </div>
 
 </body>
