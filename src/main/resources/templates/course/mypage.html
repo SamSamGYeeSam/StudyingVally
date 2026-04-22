@@ -37,9 +37,7 @@
                         <strong>계정 탈퇴</strong>
                         <span class="danger-text">탈퇴 시 모든 학습 데이터가 삭제됩니다.</span>
                     </div>
-                    <form action="/deleteaccount" method="post" onsubmit="return confirm('정말로 탈퇴하시겠습니까?');">
-                        <button type="submit" class="pixel-btn danger">회원 탈퇴</button>
-                    </form>
+                    <button type="button" class="pixel-btn danger" onclick="openWithdrawModal()">회원 탈퇴</button>
                 </div>
             </div>
         </div>
@@ -54,6 +52,19 @@
     <form id="infoPasswordForm" action="/showinformation/check-password" method="post" style="display:none;">
         <input type="hidden" name="userPassword" id="infoPasswordInput">
     </form>
+</div>
+
+<!-- 회원탈퇴 확인 모달 -->
+<div class="modal-overlay" id="withdrawModalOverlay" onclick="closeWithdrawModal()"></div>
+<div class="common-modal info" id="withdrawModal">
+    <h3>🚪 회원 탈퇴</h3>
+    <p>정말 탈퇴하시겠습니까?<br>모든 학습 데이터가 삭제됩니다.</p>
+    <div style="display:flex; gap:10px; justify-content:center;">
+        <form action="/deleteaccount" method="post" style="display:inline;">
+            <button type="submit" style="background:#e74c3c;">탈퇴</button>
+        </form>
+        <button onclick="closeWithdrawModal()" style="background:#607d8b;">취소</button>
+    </div>
 </div>
 
 <div th:replace="~{modal/modal :: modalHtml}"></div>
@@ -85,6 +96,16 @@
 <script th:replace="~{modal/modal :: modalScript}"></script>
 
 <script>
+    function openWithdrawModal() {
+        document.getElementById("withdrawModal").classList.add("active");
+        document.getElementById("withdrawModalOverlay").classList.add("active");
+    }
+
+    function closeWithdrawModal() {
+        document.getElementById("withdrawModal").classList.remove("active");
+        document.getElementById("withdrawModalOverlay").classList.remove("active");
+    }
+
     function openInfoPasswordPopup() {
         document.getElementById("pwModalInput").value = "";
         document.getElementById("pwErrorMsg").style.display = "none";

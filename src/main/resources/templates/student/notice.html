@@ -195,7 +195,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="notice : ${adminNotices}">
-                    <td th:text="${notice.createdDate}">2026-04-21</td>
+                    <td th:text="${#strings.substring(notice.createdDate, 0, 10)}">2026-04-21</td>
                     <td class="clickable-title"
                         th:text="${notice.noticeTitle}"
                         th:data-title="${notice.noticeTitle}"
@@ -222,7 +222,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="cn : ${courseNotices}">
-                    <td th:text="${cn.createdDate}">2026-04-21</td>
+                    <td th:text="${#strings.substring(cn.createdDate, 0, 10)}">2026-04-21</td>
                     <td th:text="${cn.userNickname}" style="color: #ffca28;">강사명</td>
                     <td class="clickable-title"
                         th:text="${cn.courseNoticeTitle}"
