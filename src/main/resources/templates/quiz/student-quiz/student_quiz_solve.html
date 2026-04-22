@@ -207,6 +207,8 @@
     let currentIndex = 0;
     let lives = 3;
     const totalQuestions = /*[[${#lists.size(quizItems)}]]*/ 0;
+    const currentQuizNo = /*[[${quizNo}]]*/ 0; // 백엔드로 보낼 현재 퀴즈 번호 추가
+
     const dragonImg = document.getElementById('dragon-img');
     const potionImg = document.getElementById('potion-img');
     const msgBox = document.getElementById('msg-box');
@@ -251,6 +253,25 @@
     function showFinalResult(status) {
         document.querySelectorAll('.question-card').forEach(c => c.style.display = 'none');
         resultContent.style.display = 'block';
+
+        // --- 추가된 점수 전송 Fetch 로직 ---
+        const finalScore = (status === 'success') ? 100 : 0;
+        const finalResult = (status === 'success') ? true : false; // Boolean으로 전송 (1 / 0)
+
+        fetch('/student/quiz/submit-score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                quizNo: currentQuizNo,
+                quizScore: finalScore,
+                quizResult: finalResult
+            })
+        }).then(res => res.text())
+            .then(data => console.log('저장 완료:', data))
+            .catch(err => console.error('에러 발생:', err));
+        // ------------------------------------
 
         if (status === 'success') {
             msgBox.classList.add('result-mode');
