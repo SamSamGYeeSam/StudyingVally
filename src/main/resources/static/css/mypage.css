@@ -1,0 +1,139 @@
+@charset "UTF-8";
+
+/* 기본 폰트 적용 및 초기화 */
+* { box-sizing: border-box; }
+
+body {
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'DungGeunMo', sans-serif;
+    overflow: hidden;
+}
+
+/* 800x600 컨테이너 */
+.room-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background-image: url('/image/room-bg.png'); /* 또는 기존 배경 이미지 */
+    background-position: center;
+    background-size: cover;
+    border: 6px solid #5d4037;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    padding: 35px;
+}
+
+/* 좌측 상단 타이틀 */
+.pixel-title {
+    color: #ffca28;
+    font-size: 24px;
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+    margin: 0 0 20px 0;
+}
+
+/* 중앙 메인 박스 */
+.main-wrapper {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.75);
+    border: 3px solid #5d4037;
+    padding: 25px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.section-title {
+    color: #ffca28;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 20px;
+}
+
+/* 설정 아이템 카드 */
+.info-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #5d4037;
+    padding: 20px;
+}
+
+.pixel-text-small {
+    color: #ccc;
+    font-size: 13px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.settings-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.item-desc strong {
+    display: block;
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.item-desc span {
+    color: #aaa;
+    font-size: 13px;
+}
+
+.danger-text { color: #e74c3c !important; }
+
+/* 버튼 스타일 */
+.pixel-btn {
+    padding: 10px 20px;
+    background: #8d6e63;
+    color: white;
+    border: 2px solid #000;
+    cursor: pointer;
+    font-family: 'DungGeunMo';
+    font-size: 14px;
+    box-shadow: 3px 3px 0 #000;
+    text-decoration: none;
+    display: inline-block;
+    transition: 0.1s;
+}
+
+.pixel-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 #000;
+}
+
+.pixel-btn.danger { background: #e74c3c; }
+.pixel-btn.grey { background: #607d8b; }
+
+/* 하단 버튼 영역 */
+.footer-area {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #5d4037;
+}
+
+.pixel-hr {
+    border: none;
+    border-top: 1px solid rgba(93, 64, 55, 0.5);
+    margin: 10px 0;
+}
+
+/* 스크롤바 디자인 */
+.scroll-content::-webkit-scrollbar { width: 8px; }
+.scroll-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+.scroll-content::-webkit-scrollbar-thumb { background: #5d4037; border: 1px solid #000; }
