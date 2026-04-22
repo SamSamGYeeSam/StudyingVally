@@ -3,92 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <title>내 정보 수정</title>
+    <link rel="stylesheet" th:href="@{/css/mypage.css}">
 </head>
 <body>
+<div class="room-container">
 
-<h1>내 정보 수정</h1>
+    <h1 class="pixel-title">✏️ 내 정보 수정</h1>
 
-<div th:if="${updateError != null}" th:text="${updateError}">
-    수정 에러 메시지
+    <div class="main-wrapper">
+        <div class="scroll-content">
+
+            <!-- 수정 실패 메시지 -->
+            <div th:if="${updateError != null}"
+                 th:text="${updateError}"
+                 style="color:#e74c3c; text-align:center; margin-bottom:15px; font-size:13px;">
+            </div>
+
+            <div class="info-card">
+                <form th:if="${formActionUrl != null}" th:action="${formActionUrl}" method="post">
+
+                    <!-- 이름 (읽기 전용) -->
+                    <div class="settings-item">
+                        <div class="item-desc">
+                            <strong>이름</strong>
+                            <span>변경 불가</span>
+                        </div>
+                        <span style="color:#aaa;" th:text="${userInfo != null ? userInfo.userName : ''}"></span>
+                    </div>
+                    <hr class="pixel-hr">
+
+                    <!-- 닉네임 -->
+                    <div class="settings-item">
+                        <div class="item-desc">
+                            <strong>닉네임</strong>
+                        </div>
+                        <input type="text"
+                               id="userNickname"
+                               name="userNickname"
+                               th:value="${updateDTO != null ? updateDTO.userNickname : ''}"
+                               required
+                               style="background:rgba(255,255,255,0.1); border:2px solid #5d4037;
+                                      color:#fff; font-family:'DungGeunMo'; font-size:14px;
+                                      padding:6px 10px; outline:none; width:200px;">
+                    </div>
+                    <hr class="pixel-hr">
+
+                    <!-- 전화번호 -->
+                    <div class="settings-item">
+                        <div class="item-desc">
+                            <strong>전화번호</strong>
+                        </div>
+                        <input type="text"
+                               id="userPhoneNumber"
+                               name="userPhoneNumber"
+                               th:value="${updateDTO != null ? updateDTO.userPhoneNumber : ''}"
+                               required
+                               style="background:rgba(255,255,255,0.1); border:2px solid #5d4037;
+                                      color:#fff; font-family:'DungGeunMo'; font-size:14px;
+                                      padding:6px 10px; outline:none; width:200px;">
+                    </div>
+                    <hr class="pixel-hr">
+
+                    <!-- 성별 -->
+                    <div class="settings-item">
+                        <div class="item-desc">
+                            <strong>성별</strong>
+                        </div>
+                        <div style="display:flex; gap:20px; color:#fff; font-size:14px;">
+                            <label for="genderM" style="cursor:pointer;">
+                                <input type="radio"
+                                       id="genderM"
+                                       name="userGender"
+                                       value="M"
+                                       th:checked="${updateDTO != null and updateDTO.userGender == 'M'}"
+                                       required>
+                                남성
+                            </label>
+                            <label for="genderF" style="cursor:pointer;">
+                                <input type="radio"
+                                       id="genderF"
+                                       name="userGender"
+                                       value="F"
+                                       th:checked="${updateDTO != null and updateDTO.userGender == 'F'}">
+                                여성
+                            </label>
+                        </div>
+                    </div>
+                    <hr class="pixel-hr">
+
+                    <!-- 이메일 -->
+                    <div class="settings-item">
+                        <div class="item-desc">
+                            <strong>이메일</strong>
+                        </div>
+                        <input type="text"
+                               id="userEmail"
+                               name="userEmail"
+                               th:value="${updateDTO != null ? updateDTO.userEmail : ''}"
+                               required
+                               style="background:rgba(255,255,255,0.1); border:2px solid #5d4037;
+                                      color:#fff; font-family:'DungGeunMo'; font-size:14px;
+                                      padding:6px 10px; outline:none; width:200px;">
+                    </div>
+                    <hr class="pixel-hr">
+
+                    <!-- 새 비밀번호 -->
+                    <div class="settings-item">
+                        <div class="item-desc">
+                            <strong>새 비밀번호</strong>
+                            <span>변경할 때만 입력</span>
+                        </div>
+                        <input type="password"
+                               id="userPassword"
+                               name="userPassword"
+                               placeholder="변경할 때만 입력하세요"
+                               style="background:rgba(255,255,255,0.1); border:2px solid #5d4037;
+                                      color:#fff; font-family:'DungGeunMo'; font-size:14px;
+                                      padding:6px 10px; outline:none; width:200px;">
+                    </div>
+
+                    <!-- 하단 버튼 -->
+                    <div class="footer-area" style="display:flex; gap:10px;">
+                        <a th:if="${showPageUrl != null}"
+                           th:href="${showPageUrl}"
+                           class="pixel-btn grey"
+                           style="text-decoration:none; text-align:center;">
+                            🔙 이전으로
+                        </a>
+                        <button type="submit" class="pixel-btn">
+                            ✅ 확인
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
-
-<form th:if="${formActionUrl != null}" th:action="${formActionUrl}" method="post">
-
-    <div>
-        <label>이름</label>
-        <input type="text" th:value="${userInfo != null ? userInfo.userName : ''}" readonly>
-    </div>
-
-    <div>
-        <label for="userNickname">닉네임</label>
-        <input type="text"
-               id="userNickname"
-               name="userNickname"
-               th:value="${updateDTO != null ? updateDTO.userNickname : ''}"
-               required>
-    </div>
-
-    <div>
-        <label for="userPhoneNumber">전화번호</label>
-        <input type="text"
-               id="userPhoneNumber"
-               name="userPhoneNumber"
-               th:value="${updateDTO != null ? updateDTO.userPhoneNumber : ''}"
-               required>
-    </div>
-
-    <div>
-        <label>성별</label>
-
-        <label for="genderM">
-            <input type="radio"
-                   id="genderM"
-                   name="userGender"
-                   value="M"
-                   th:checked="${updateDTO != null and updateDTO.userGender == 'M'}"
-                   required>
-            남성
-        </label>
-
-        <label for="genderF">
-            <input type="radio"
-                   id="genderF"
-                   name="userGender"
-                   value="F"
-                   th:checked="${updateDTO != null and updateDTO.userGender == 'F'}">
-            여성
-        </label>
-    </div>
-
-    <div>
-        <label for="userEmail">이메일</label>
-        <input type="text"
-               id="userEmail"
-               name="userEmail"
-               th:value="${updateDTO != null ? updateDTO.userEmail : ''}"
-               required>
-    </div>
-
-    <div>
-        <label for="userPassword">새 비밀번호</label>
-        <input type="password"
-               id="userPassword"
-               name="userPassword"
-               placeholder="변경할 때만 입력하세요">
-    </div>
-
-    <div>
-        <a th:if="${showPageUrl != null}"
-           th:href="${showPageUrl}">
-            이전으로
-        </a>
-
-        <button type="submit">
-            확인
-        </button>
-    </div>
-
-</form>
-
 </body>
 </html>

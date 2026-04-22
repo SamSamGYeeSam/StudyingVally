@@ -7,6 +7,7 @@ import com.samsamgyeesam.studyingvally.domain.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -91,15 +93,35 @@ public class StudentInformationController {
      *
      * URL: POST /student/home/update-info
      */
+    /**
+     * 학생 내 정보 조회 전 비밀번호 확인 처리
+     * URL: POST /student/home/check-password
+     */
+    @PostMapping("/home/check-password")
+    public String checkStudentInfoPassword(Authentication authentication,
+                                           @ModelAttribute DeleteUserDTO deleteUserDTO,
+                                           HttpSession session) {
+        try {
+            String loginUserId = authentication.getName();
+            userService.verifyUserPassword(loginUserId, deleteUserDTO.getUserPassword());
+            session.setAttribute("studentInfoVerified", true);
+            return "redirect:/student/home/info";
+        } catch (IllegalArgumentException exception) {
+            return "redirect:/student/home?passwordError=true";
+        }
+    }
+
     @PostMapping("/home/update-info")
     public String updateStudentInformation(Authentication authentication,
                                            @ModelAttribute UserInformationUpdateDTO updateDTO,
-                                           Model model) {
+                                           Model model, RedirectAttributes rttr) {
 
         try {
             String loginUserId = authentication.getName();
 
             userService.updateUserInformation(loginUserId, updateDTO);
+
+            rttr.addFlashAttribute("successMessage","정보 수정이 완료되었습니다 !");
 
             return "redirect:/student/home/info";
 

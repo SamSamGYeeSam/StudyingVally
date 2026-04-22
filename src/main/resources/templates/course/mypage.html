@@ -9,10 +9,8 @@
 <body>
 
 <div class="room-container">
-    <!-- 좌측 상단 타이틀 -->
     <h1 class="pixel-title">⚙️ USER SETTINGS</h1>
 
-    <!-- 중앙 메인 박스 -->
     <div class="main-wrapper">
         <div class="scroll-content">
             <h3 class="section-title">회원 관리</h3>
@@ -59,19 +57,68 @@
 </div>
 
 <div th:replace="~{modal/modal :: modalHtml}"></div>
+
+<!-- 비밀번호 입력 모달 -->
+<div class="modal-overlay" id="pwModalOverlay" onclick="closePwModal()"></div>
+<div class="common-modal info" id="pwModal">
+    <h3>🔒 비밀번호 확인</h3>
+    <p>내 정보 조회를 위해<br>비밀번호를 입력해주세요.</p>
+    <input type="password" id="pwModalInput"
+           style="width:100%; padding:10px; margin-bottom:6px;
+                  border:2px solid #8d6e63; background:rgba(255,255,255,0.7);
+                  font-family:'DungGeunMo',sans-serif; font-size:14px;
+                  box-sizing:border-box; outline:none;"
+           placeholder="비밀번호 입력"
+           onkeydown="if(event.key==='Enter') confirmPwModal()">
+    <p id="pwErrorMsg"
+       style="display:none; margin:0 0 12px; padding:0;
+              color:#f44336; font-size:13px; text-align:left;
+              background:none; border:none;">
+        ⚠ 비밀번호가 일치하지 않습니다.
+    </p>
+    <div style="display:flex; gap:10px; justify-content:center;">
+        <button onclick="confirmPwModal()">확인</button>
+        <button onclick="closePwModal()" style="background:#8d6e63;">취소</button>
+    </div>
+</div>
+
 <script th:replace="~{modal/modal :: modalScript}"></script>
 
 <script>
     function openInfoPasswordPopup() {
-        const password = prompt("내 정보 조회를 위해 비밀번호를 입력해주세요.");
-        if (password === null) return;
+        document.getElementById("pwModalInput").value = "";
+        document.getElementById("pwErrorMsg").style.display = "none";
+        document.getElementById("pwModal").classList.add("active");
+        document.getElementById("pwModalOverlay").classList.add("active");
+        setTimeout(() => document.getElementById("pwModalInput").focus(), 100);
+    }
+
+    function closePwModal() {
+        document.getElementById("pwModal").classList.remove("active");
+        document.getElementById("pwModalOverlay").classList.remove("active");
+        const url = new URL(window.location);
+        url.searchParams.delete("passwordError");
+        window.history.replaceState({}, '', url);
+    }
+
+    function confirmPwModal() {
+        const password = document.getElementById("pwModalInput").value;
         if (password.trim() === "") {
-            alert("비밀번호를 입력해주세요.");
+            showModal("비밀번호를 입력해주세요.", "error");
             return;
         }
+        closePwModal();
         document.getElementById("infoPasswordInput").value = password;
         document.getElementById("infoPasswordForm").submit();
     }
+
+    window.addEventListener('DOMContentLoaded', function () {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("passwordError") === "true") {
+            openInfoPasswordPopup();
+            document.getElementById("pwErrorMsg").style.display = "block";
+        }
+    });
 </script>
 
 </body>

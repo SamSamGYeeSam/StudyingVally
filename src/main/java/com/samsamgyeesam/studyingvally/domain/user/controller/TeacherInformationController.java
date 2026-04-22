@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -112,13 +113,15 @@ public class TeacherInformationController {
     @PostMapping("/updateinformation")
     public String updateTeacherInformation(Authentication authentication,
                                            @ModelAttribute UserInformationUpdateDTO updateDTO,
-                                           Model model) {
+                                           Model model,
+                                           RedirectAttributes rttr) {
 
         try {
             String loginUserId = authentication.getName();
 
             userService.updateUserInformation(loginUserId, updateDTO);
 
+            rttr.addFlashAttribute("successMessage","정보 수정이 완료되었습니다 !");
             return "redirect:/showinformation";
 
         } catch (IllegalArgumentException exception) {
@@ -211,11 +214,8 @@ public class TeacherInformationController {
             /* 실제 조회 페이지로 이동 */
             return "redirect:/showinformation";
 
-        } catch (IllegalArgumentException exception) {
-            /* 실패 시 마이페이지로 다시 이동하면서 에러 메시지 전달 */
-            model.addAttribute("passwordCheckError", exception.getMessage());
-
-            return "course/mypage";
+        }catch (IllegalArgumentException exception) {
+        return "redirect:/teacher/mypage?passwordError=true";
         }
     }
 }
