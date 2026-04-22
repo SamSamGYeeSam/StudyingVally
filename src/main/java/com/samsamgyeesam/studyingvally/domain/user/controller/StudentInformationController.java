@@ -7,6 +7,7 @@ import com.samsamgyeesam.studyingvally.domain.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -92,6 +93,24 @@ public class StudentInformationController {
      *
      * URL: POST /student/home/update-info
      */
+    /**
+     * 학생 내 정보 조회 전 비밀번호 확인 처리
+     * URL: POST /student/home/check-password
+     */
+    @PostMapping("/home/check-password")
+    public String checkStudentInfoPassword(Authentication authentication,
+                                           @ModelAttribute DeleteUserDTO deleteUserDTO,
+                                           HttpSession session) {
+        try {
+            String loginUserId = authentication.getName();
+            userService.verifyUserPassword(loginUserId, deleteUserDTO.getUserPassword());
+            session.setAttribute("studentInfoVerified", true);
+            return "redirect:/student/home/info";
+        } catch (IllegalArgumentException exception) {
+            return "redirect:/student/home?passwordError=true";
+        }
+    }
+
     @PostMapping("/home/update-info")
     public String updateStudentInformation(Authentication authentication,
                                            @ModelAttribute UserInformationUpdateDTO updateDTO,
