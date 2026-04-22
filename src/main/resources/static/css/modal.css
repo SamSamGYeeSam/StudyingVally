@@ -1,0 +1,94 @@
+@charset "UTF-8";
+
+/* 배경 오버레이 - 던전의 어둠 */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(2px);
+    z-index: 2001;
+}
+.modal-overlay.active { display: block; }
+
+/* 모달 본체 - 픽셀 아트 양피지 상자 */
+.common-modal {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fdf1d5; /* 따뜻한 양피지색 */
+    padding: 25px;
+    border: 6px solid #5d4037; /* 나무 궤짝 느낌의 테두리 */
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+    z-index: 2002;
+    width: 380px;
+    text-align: center;
+    image-rendering: pixelated;
+}
+.common-modal.active { display: block; }
+
+/* 타이틀 공통 스타일 */
+.common-modal h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 22px;
+    font-family: 'DungGeunMo', sans-serif;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+}
+
+/* 🟢 Success - 보물 상자 (Green) */
+.common-modal.success { border-color: #2e7d32; }
+.common-modal.success h3 { color: #2e7d32; }
+.common-modal.success button {
+    background-color: #4caf50;
+    border: 2px solid #000;
+    border-bottom: 4px solid #2e7d32;
+}
+.common-modal.success button:hover { background-color: #45a049; }
+
+/* 🔴 Error - 용암 경고 (Red) */
+.common-modal.error { border-color: #c62828; }
+.common-modal.error h3 { color: #c62828; }
+.common-modal.error button {
+    background-color: #e53935;
+    border: 2px solid #000;
+    border-bottom: 4px solid #b71c1c;
+}
+.common-modal.error button:hover { background-color: #d32f2f; }
+
+/* 🔵 Info - 마법사의 지혜 (Blue) */
+.common-modal.info { border-color: #1565c0; }
+.common-modal.info h3 { color: #1565c0; }
+.common-modal.info button {
+    background-color: #1e88e5;
+    border: 2px solid #000;
+    border-bottom: 4px solid #1565c0;
+}
+.common-modal.info button:hover { background-color: #1976d2; }
+
+/* 텍스트 영역 */
+.common-modal p {
+    margin-bottom: 25px;
+    font-size: 16px;
+    color: #4e342e;
+    line-height: 1.6;
+    font-weight: bold;
+    font-family: 'DungGeunMo', sans-serif;
+}
+
+/* 픽셀 버튼 공통 */
+.common-modal button {
+    padding: 10px 25px;
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+    font-family: 'DungGeunMo', sans-serif;
+    transition: transform 0.1s;
+    outline: none;
+}
+.common-modal button:active {
+    transform: translateY(2px);
+    border-bottom-width: 2px;
+}
