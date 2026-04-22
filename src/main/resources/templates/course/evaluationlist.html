@@ -16,7 +16,6 @@
             <table>
                 <thead>
                 <tr>
-                    <th>등록일</th>
                     <th>이름</th>
                     <th>닉네임</th>
                     <th>별점</th>
@@ -25,7 +24,6 @@
                 </thead>
                 <tbody>
                 <tr th:each="evaluation : ${evaluations}">
-                    <td th:text="${#temporals.format(evaluation.createdDate, 'yyyy-MM-dd')}">2024-01-01</td>
                     <td th:text="${evaluation.userName}">이름</td>
                     <td th:text="${evaluation.userNickname}">닉네임</td>
                     <td class="star-rating" th:text="${evaluation.evaluationScore} + ' ★'">5.0 ★</td>
