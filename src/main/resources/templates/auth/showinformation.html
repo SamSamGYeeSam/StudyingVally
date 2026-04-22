@@ -1,84 +1,104 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <title>내 정보 조회</title>
-        <link rel="stylesheet" th:href="@{/css/auth.css}">
-    </head>
-        <body>
-            <div class="game-screen">
-            <!-- 하늘 요소 -->
-            <div class="cloud c1"></div>
-            <div class="cloud c2"></div>
-            <div class="cloud c3"></div>
+<head>
+    <meta charset="UTF-8">
+    <title>내 정보 조회</title>
+    <link rel="stylesheet" th:href="@{/css/mypage.css}">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+<div class="room-container">
 
-        <!-- 중앙 패널 -->
-        <div class="panel-wrap">
-            <div class="panel">
+    <h1 class="pixel-title">👤 내 정보 조회</h1>
 
-
-            <h1>내 정보 조회</h1>
+    <div class="main-wrapper">
+        <div class="scroll-content">
 
             <!-- 조회 실패 메시지 -->
-            <div th:if="${infoError != null}" th:text="${infoError}">
-                조회 에러 메시지
+            <div th:if="${infoError != null}"
+                 th:text="${infoError}"
+                 style="color:#e74c3c; text-align:center; margin-bottom:15px; font-size:13px;">
             </div>
 
-            <!-- 이름 -->
-            <div>
-                <label>이름</label>
-                <input type="text"
-                       th:value="${userInfo != null ? userInfo.userName : ''}"
-                        readonly>
-            </div>
-                <div>
-                    <label>닉네임</label>
-                    <input type="text"
-                           th:value="${userInfo != null ? userInfo.userNickname : ''}"
-                           readonly>
+            <div class="info-card">
+
+                <!-- 이름 -->
+                <div class="settings-item">
+                    <div class="item-desc">
+                        <strong>이름</strong>
+                    </div>
+                    <span style="color:#fff;" th:text="${userInfo != null ? userInfo.userName : ''}"></span>
+                </div>
+                <hr class="pixel-hr">
+
+                <!-- 닉네임 -->
+                <div class="settings-item">
+                    <div class="item-desc">
+                        <strong>닉네임</strong>
+                    </div>
+                    <span style="color:#fff;" th:text="${userInfo != null ? userInfo.userNickname : ''}"></span>
+                </div>
+                <hr class="pixel-hr">
+
+                <!-- 성별 -->
+                <div class="settings-item">
+                    <div class="item-desc">
+                        <strong>성별</strong>
+                    </div>
+                    <span style="color:#fff;"
+                          th:text="${userInfo != null ? (userInfo.userGender == 'M' ? '남성' : '여성') : ''}"></span>
+                </div>
+                <hr class="pixel-hr">
+
+                <!-- 전화번호 -->
+                <div class="settings-item">
+                    <div class="item-desc">
+                        <strong>전화번호</strong>
+                    </div>
+                    <span style="color:#fff;" th:text="${userInfo != null ? userInfo.userPhoneNumber : ''}"></span>
+                </div>
+                <hr class="pixel-hr">
+
+                <!-- 이메일 -->
+                <div class="settings-item">
+                    <div class="item-desc">
+                        <strong>이메일</strong>
+                    </div>
+                    <span style="color:#fff;" th:text="${userInfo != null ? userInfo.userEmail : ''}"></span>
+                </div>
+                <hr class="pixel-hr">
+
+                <!-- 비밀번호 -->
+                <div class="settings-item">
+                    <div class="item-desc">
+                        <strong>비밀번호</strong>
+                    </div>
+                    <span style="color:#fff;">********</span>
                 </div>
 
-                <div>
-                    <label>성별</label>
-                    <input type="text"
-                           th:value="${userInfo != null ? (userInfo.userGender == 'M' ? '남성' : '여성') : ''}"
-                           readonly>
-                </div>
-
-            <!-- 전화번호 -->
-            <div>
-                <label>전화번호</label>
-                <input type="text"
-                    th:value="${userInfo != null ? userInfo.userPhoneNumber : ''}"
-                    readonly>
-            </div>
-
-            <!-- 이메일 -->
-            <div>
-                <label>이메일</label>
-                <input type="text"
-                    th:value="${userInfo != null ? userInfo.userEmail : ''}"
-                    readonly>
-            </div>
-
-            <!-- 비밀번호 -->
-            <div>
-                <label>비밀번호</label>
-            </div>
-
-            <!-- 수정 버튼 -->
-            <div th:if="${updatePageUrl != null}">
-                <a th:href="${updatePageUrl}">
-                    수정
-                </a>
-            </div>
-
-            <!-- 전페이지(마이페이지)로 돌아가기 위한 확인 버튼-->
-            <div th:if="${confirmPageUrl !=null}">
-                <a th:href="${confirmPageUrl}">이전으로</a>
             </div>
         </div>
+
+        <!-- 하단 버튼 영역 -->
+        <div class="footer-area" style="display:flex; gap:10px;">
+            <a th:if="${updatePageUrl != null}"
+               th:href="${updatePageUrl}"
+               class="pixel-btn"
+               style="text-decoration:none; text-align:center;">
+                ✏️ 수정
+            </a>
+            <a th:if="${confirmPageUrl != null}"
+               th:href="${confirmPageUrl}"
+               class="pixel-btn grey"
+               style="text-decoration:none; text-align:center;">
+                🔙 이전으로
+            </a>
         </div>
-            </div>
-    </body>
+    </div>
+
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+</body>
 </html>

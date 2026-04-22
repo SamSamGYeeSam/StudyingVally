@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -94,12 +95,14 @@ public class StudentInformationController {
     @PostMapping("/home/update-info")
     public String updateStudentInformation(Authentication authentication,
                                            @ModelAttribute UserInformationUpdateDTO updateDTO,
-                                           Model model) {
+                                           Model model, RedirectAttributes rttr) {
 
         try {
             String loginUserId = authentication.getName();
 
             userService.updateUserInformation(loginUserId, updateDTO);
+
+            rttr.addFlashAttribute("successMessage","정보 수정이 완료되었습니다 !");
 
             return "redirect:/student/home/info";
 
