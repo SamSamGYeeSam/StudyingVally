@@ -1,0 +1,3 @@
+CREATE DATABASE studyingvally;
+create user 'samsam'@'%' IDENTIFIED by 'samsam';
+GRANT ALL PRIVILEGES ON studyingvally.* to 'samsam';
