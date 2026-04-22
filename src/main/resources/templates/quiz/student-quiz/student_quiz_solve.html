@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>드래곤의 시련 - Valley Quiz</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <style>
+        body {
+            background-color: #050505;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; margin: 0; font-family: 'DungGeunMo', sans-serif; overflow: hidden;
+        }
+
+        .dungeon-container {
+            position: relative; width: 900px; height: 550px;
+            border: 8px solid #2c3e50; box-shadow: 0 0 40px rgba(0,0,0,1);
+            background-image: url('/image/quiz-bg.png'); background-size: cover; background-position: center;
+        }
+
+        /* --- 피격 효과 (빨간 반투명 화면) --- */
+        .damage-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 15;
+            background-color: rgba(255, 0, 0, 0);
+        }
+        .damage-overlay.flash-active {
+            animation: damage-flash 0.5s ease-out;
+        }
+        @keyframes damage-flash {
+            0% { background-color: rgba(255, 0, 0, 0); }
+            20% { background-color: rgba(255, 0, 0, 0.5); }
+            100% { background-color: rgba(255, 0, 0, 0); }
+        }
+
+        .life-container {
+            position: absolute; top: 25px; right: 30px; display: flex; gap: 0; z-index: 20;
+        }
+        .heart { width: 60px; image-rendering: pixelated; transition: 0.3s; }
+        .heart.lost { filter: grayscale(100%) brightness(20%); opacity: 0.5; }
+
+        .dragon-layer {
+            position: absolute; inset: 0; z-index: 1;
+            display: flex; justify-content: center; align-items: flex-end;
+            pointer-events: none;
+        }
+        #dragon-img {
+            width: 450px; image-rendering: pixelated;
+            filter: drop-shadow(0 0 20px rgba(255,0,0,0.5));
+            animation: dragon-float 5s infinite ease-in-out;
+            transition: all 0.6s ease;
+            margin-bottom: -10px;
+        }
+        #dragon-img.angry { width: 820px; margin-bottom: -50px; filter: drop-shadow(0 0 50px #ff0000); animation: dragon-shaking 0.1s infinite; }
+        #dragon-img.sleeping { width: 750px; margin-bottom: -80px; filter: drop-shadow(0 0 30px rgba(0, 255, 0, 0.4)); }
+
+        #potion-img {
+            position: absolute; bottom: 80px; right: 150px;
+            width: 100px; display: none; image-rendering: pixelated; z-index: 2;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.8));
+            animation: potion-pulse 1.5s infinite ease-in-out;
+        }
+
+        /* --- 기본 메시지 박스 --- */
+        #msg-box {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 230px; /* 설명글을 위해 높이 약간 여유있게 조정 */
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px); border: 4px solid #b71c1c;
+            border-radius: 25px; padding: 15px 40px; box-sizing: border-box;
+            z-index: 10; display: flex; flex-direction: column; justify-content: center;
+            text-align: center; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* ✨ 성공 시: 좌측 상단 말풍선 */
+        #msg-box.result-mode {
+            bottom: auto; top: 40px; left: 40px; transform: none;
+            width: 380px; height: auto; min-height: 120px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 3px solid #fff; color: #000; border-radius: 20px; padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        #msg-box.result-mode::after {
+            content: ''; position: absolute; bottom: -18px; left: 50px;
+            border-top: 20px solid rgba(255, 255, 255, 0.7);
+            border-left: 15px solid transparent; border-right: 15px solid transparent;
+        }
+
+        /* 💀 실패 시: 중앙에서 우측 하단으로 이동 */
+        #msg-box.fail-mode {
+            bottom: 40px; left: auto; right: 40px; transform: none;
+            width: 420px; height: auto; min-height: 130px;
+            background: rgba(255, 255, 255, 0.75);
+            border: 4px solid #ff0000; color: #000; border-radius: 20px; padding: 20px;
+        }
+        #msg-box.fail-mode::after {
+            content: '';
+            position: absolute;
+            top: -22px;
+            left: 40px;
+            right: auto;
+            bottom: auto;
+            border-bottom: 20px solid rgba(255, 255, 255, 0.85);
+            border-top: none;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+        }
+        .question-card { display: none; }
+        .question-card.active { display: block; }
+
+        .q-title { font-size: 26px; color: #1a1a1a; font-weight: 900; margin-bottom: 5px; }
+
+        /* 퀴즈 상세 설명 CSS 추가 */
+        .q-desc { font-size: 18px; color: #333; margin-bottom: 15px; line-height: 1.4; white-space: pre-wrap; font-weight: normal; }
+
+        .answer-input {
+            width: 380px; height: 50px; margin: 0 auto 15px; display: block;
+            border: 2px solid #000; font-family: 'DungGeunMo'; font-size: 24px; text-align: center; border-radius: 10px;
+        }
+
+        /* 문제 풀기 버튼 (단독 스타일 유지) */
+        .submit-btn {
+            padding: 10px 25px; background: #b71c1c; color: white; border: none; border-radius: 8px;
+            cursor: pointer; font-family: 'DungGeunMo'; font-weight: bold; text-decoration: none;
+        }
+
+        @keyframes dragon-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes dragon-shaking { 0% { transform: translate(4px, 4px); } 100% { transform: translate(-4px, -4px); } }
+        @keyframes potion-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        /* --- 도망치기, 재도전, 나가기 버튼 통합 디자인 --- */
+        .escape-btn, .retry-btn, .exit-btn, .result-btn {
+            background: #263238;
+            color: #fff;
+            border: 2px solid #000;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: 3px 3px 0 #000;
+            cursor: pointer;
+            font-family: 'DungGeunMo', sans-serif;
+            transition: 0.2s;
+        }
+
+        .escape-btn:hover, .retry-btn:hover, .exit-btn:hover, .result-btn:hover {
+            background: #37474f;
+        }
+
+        /* 도망치기 버튼 전용 위치 (좌측 상단 고정) */
+        .escape-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 8px 15px;
+            z-index: 50;
+        }
+
+        /* 결과창 내부 버튼 전용 여백 및 정렬 */
+        .retry-btn, .exit-btn, .result-btn {
+            padding: 8px 15px;
+            display: inline-block;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dungeon-container">
+    <div id="damage-overlay" class="damage-overlay"></div>
+
+    <button type="button" class="escape-btn" onclick="location.href='/student/quiz/list'">⬅ 도망치기</button>
+
+    <div class="dragon-layer">
+        <img src="/image/dragon-icon.png" id="dragon-img">
+        <img src="/image/potion.png" id="potion-img">
+    </div>
+
+    <div class="life-container">
+        <img src="/image/pixel-heart.png" class="heart" id="h1">
+        <img src="/image/pixel-heart.png" class="heart" id="h2">
+        <img src="/image/pixel-heart.png" class="heart" id="h3">
+    </div>
+
+    <div class="question-area" id="msg-box">
+        <div th:each="item, stat : ${quizItems}"
+             th:class="${stat.index == 0 ? 'question-card active' : 'question-card'}"
+             th:id="'card-' + ${stat.index}">
+            <div style="color:#b71c1c; font-size: 20px; margin-bottom: 5px;">QUEST #<span th:text="${stat.index + 1}">1</span></div>
+
+            <div class="q-title" th:text="${item.quizTitle}">용의 비늘은 무슨 색인가?</div>
+
+            <div class="q-desc" th:if="${item.quizDesc != null}" th:text="${item.quizDesc}">여기에 상세 설명이 나옵니다.</div>
+
+            <input type="text" th:id="'input-' + ${stat.index}" class="answer-input" onkeypress="if(event.keyCode==13) checkAnswer()" autocomplete="off">
+            <input type="hidden" th:id="'correct-' + ${stat.index}" th:value="${item.quizAnswer}">
+            <button type="button" class="submit-btn" onclick="checkAnswer()">⚔️ 시련에 맞서기</button>
+        </div>
+
+        <div id="result-content" style="display: none;">
+            <div id="result-text" style="font-size: 17px; font-weight: 900; line-height: 1.5; margin-bottom: 15px; color: #000;"></div>
+            <div id="result-action"></div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    let currentIndex = 0;
+    let lives = 3;
+    const totalQuestions = /*[[${#lists.size(quizItems)}]]*/ 0;
+    const currentQuizNo = /*[[${quizNo}]]*/ 0; // 백엔드로 보낼 현재 퀴즈 번호 추가
+
+    const dragonImg = document.getElementById('dragon-img');
+    const potionImg = document.getElementById('potion-img');
+    const msgBox = document.getElementById('msg-box');
+    const resultContent = document.getElementById('result-content');
+
+    function checkAnswer() {
+        const userInput = document.getElementById('input-' + currentIndex).value.trim();
+        const correctAnswer = document.getElementById('correct-' + currentIndex).value.trim();
+
+        if (userInput === correctAnswer) {
+            nextQuestion();
+        } else {
+            lives--;
+
+            // 화면 번쩍임 애니메이션
+            const overlay = document.getElementById('damage-overlay');
+            overlay.classList.remove('flash-active');
+            void overlay.offsetWidth;
+            overlay.classList.add('flash-active');
+
+            const heartToLose = document.getElementById('h' + (lives + 1));
+            if(heartToLose) heartToLose.classList.add('lost');
+
+            if (lives <= 0) showFinalResult('fail');
+            else {
+                // 오답 후 인풋 초기화
+                document.getElementById('input-' + currentIndex).value = '';
+                document.getElementById('input-' + currentIndex).focus();
+            }
+        }
+    }
+
+    function nextQuestion() {
+        document.getElementById('card-' + currentIndex).classList.remove('active');
+        currentIndex++;
+        if (currentIndex < totalQuestions && lives > 0) {
+            document.getElementById('card-' + currentIndex).classList.add('active');
+            document.getElementById('input-' + currentIndex).focus();
+        } else if (lives > 0) showFinalResult('success');
+    }
+
+    function showFinalResult(status) {
+        document.querySelectorAll('.question-card').forEach(c => c.style.display = 'none');
+        resultContent.style.display = 'block';
+
+        // --- 추가된 점수 전송 Fetch 로직 ---
+        const finalScore = (status === 'success') ? 100 : 0;
+        const finalResult = (status === 'success') ? true : false; // Boolean으로 전송 (1 / 0)
+
+        fetch('/student/quiz/submit-score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                quizNo: currentQuizNo,
+                quizScore: finalScore,
+                quizResult: finalResult
+            })
+        }).then(res => res.text())
+            .then(data => console.log('저장 완료:', data))
+            .catch(err => console.error('에러 발생:', err));
+        // ------------------------------------
+
+        if (status === 'success') {
+            msgBox.classList.add('result-mode');
+            dragonImg.src = '/image/dragon-sleeping.png';
+            dragonImg.classList.add('sleeping');
+            potionImg.style.display = 'block';
+            document.getElementById('result-text').innerHTML = "음... 제법이군.<br>약속대로 보상을 주마.<br>다음에 또 보지...";
+            document.getElementById('result-action').innerHTML = `<button onclick="location.href='/student/quiz/list'" class="result-btn">포션 수령</button>`;
+        } else {
+            msgBox.classList.add('fail-mode');
+            dragonImg.src = '/image/dragon-angry.png';
+            dragonImg.classList.add('angry');
+            document.getElementById('result-text').innerHTML = "감히 나를 깨우고 오답을 내놓다니!<br>천벌을 내리겠다!";
+
+            document.getElementById('result-action').innerHTML = `
+                <button onclick="location.reload()" class="retry-btn">재도전</button>
+                <button onclick="location.href='/student/main'" class="exit-btn">메인으로 나가기</button>
+            `;
+        }
+    }
+</script>
+
+</body>
+</html>

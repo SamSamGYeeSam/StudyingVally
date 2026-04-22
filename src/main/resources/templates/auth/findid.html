@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- 문자 인코딩 -->
+  <meta charset="UTF-8" />
+
+  <!-- 반응형 설정 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 브라우저 탭 제목 -->
+  <title>강의 마을 - 아이디 찾기</title>
+
+  <!-- auth 화면 공통 CSS -->
+  <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<div class="game-screen">
+  <!-- 배경 요소 -->
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+
+  <div class="panel-wrap">
+    <div class="panel">
+
+      <!-- 아이디 찾기 화면 -->
+      <section id="findIdScreen" class="form-screen active">
+        <h1 class="title">아이디 찾기</h1>
+
+        <!--
+            현재 단계에서는 화면 구조를 먼저 맞춘다.
+            나중에 service 연결 시 실제 조회 처리로 변경할 수 있다.
+        -->
+        <form class="form-box" th:action="@{/auth/findid2}" method="get">
+
+          <div class="field">
+            <label for="userName">이름</label>
+            <input type="text"
+                   id="userName"
+                   name="userName"
+                   placeholder="이름 입력"
+                   required />
+          </div>
+
+          <div class="field">
+            <label for="phoneNumber">전화번호</label>
+            <input type="text"
+                   id="phoneNumber"
+                   name="phoneNumber"
+                   placeholder="전화번호 입력"
+                   required />
+          </div>
+
+          <div class="bottom-row">
+            <!-- 첫 화면으로 이동 -->
+            <button type="button"
+                    onclick="location.href='/main'"
+                    class="pixel-btn secondary"
+                    id="backFromFindIdBtn">
+              이전으로
+            </button>
+
+            <!-- 아이디 찾기 결과 화면으로 이동 -->
+            <button type="submit"
+                    class="pixel-btn"
+                    id="findIdSubmitBtn">
+              아이디 찾기
+            </button>
+          </div>
+          <div id="findIdMsg" class="msg show error" th:if="${findIdError}">
+            <span th:text="${findIdError}">일치하는 회원 정보를 찾을 수 없습니다.</span>
+          </div>
+        </form>
+      </section>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

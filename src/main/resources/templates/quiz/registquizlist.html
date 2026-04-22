@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Valley - Batch Quiz Creation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+    <style>
+        body {
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'DungGeunMo', sans-serif;
+            overflow: hidden;
+        }
+
+        .room-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            background-image: url('/image/home_bg.png');
+            background-position: center;
+            background-size: cover;
+            border: 6px solid #5d4037;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+
+        /* 헤더 스타일 */
+        .header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            z-index: 10;
+        }
+
+        .pixel-title {
+            color: #ffca28; /* 노란색 글자 */
+            font-size: 24px;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+            margin: 0;
+        }
+
+        .score-info {
+            color: #fff;
+            font-size: 14px;
+            text-align: right;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        /* 검은색 반투명 컨텐츠 박스 */
+        .content-wrapper {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.75); /* 검은색 반투명 */
+            border: 3px solid #5d4037;
+            overflow-y: auto;
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* 문제 블록 스타일 */
+        .question-block {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #5d4037;
+            padding: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            border-radius: 4px;
+        }
+
+        .q-number {
+            color: #ffca28;
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            border-bottom: 1px dashed #ffca28;
+            padding-bottom: 5px;
+        }
+
+        label {
+            display: block;
+            color: #fff;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            background: #fdf5e6;
+            border: 2px solid #5d4037;
+            font-family: 'DungGeunMo';
+            box-sizing: border-box;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            border: 2px solid #000;
+            cursor: pointer;
+            font-family: 'DungGeunMo';
+            font-size: 12px;
+            padding: 3px 8px;
+        }
+
+        /* 픽셀 버튼 공통 */
+        .pixel-btn {
+            padding: 10px 18px;
+            background: #8d6e63;
+            color: white;
+            border: 2px solid #000;
+            cursor: pointer;
+            font-family: 'DungGeunMo';
+            font-size: 14px;
+            box-shadow: 3px 3px 0 #000;
+            text-decoration: none;
+        }
+
+        .pixel-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+        }
+
+        .add-btn {
+            width: 100%;
+            background: #607d8b;
+            margin-bottom: 15px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #27ae60;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .footer-area {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 스크롤바 디자인 */
+        .content-wrapper::-webkit-scrollbar { width: 10px; }
+        .content-wrapper::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        .content-wrapper::-webkit-scrollbar-thumb { background: #5d4037; border: 2px solid #000; }
+
+        .score-status {
+            font-weight: bold;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="room-container">
+    <div class="header-area">
+        <h3 class="pixel-title">⚔️ 문제 일괄 등록 (100점 맞추기)</h3>
+        <div class="score-info">
+            합계: <span id="totalScoreText" class="score-status" style="color: #ff5252;">0</span> / 100
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <form action="/teacher/quiz/create-quizlist-batch" method="post" id="quizForm">
+            <input type="hidden" name="quizNo" th:value="${quizNo}">
+
+            <div id="quizContainer">
+                <div class="question-block" data-index="0">
+                    <h4 class="q-number">Quest 1</h4>
+
+                    <label>문제 제목</label>
+                    <input type="text" name="quizList[0].quizTitle" required placeholder="예: 자바의 창시자는?">
+
+                    <label>지문 및 보기 (선택)</label>
+                    <textarea name="quizList[0].quizDesc" rows="2" placeholder="상세 설명을 입력하세요."></textarea>
+
+                    <label>정답</label>
+                    <input type="text" name="quizList[0].quizAnswer" required>
+
+                    <label>정답 해설 (선택)</label>
+                    <textarea name="quizList[0].quizAnswerDesc" rows="2"></textarea>
+
+                    <label style="color: #ffca28;">배점</label>
+                    <input type="number" name="quizList[0].quizScore" class="quiz-score-input"
+                           value="0" min="1" max="100" required oninput="calculateTotalScore()" style="width: 100px;">
+                </div>
+            </div>
+
+            <button type="button" class="pixel-btn add-btn" onclick="addQuestionBlock()">+ 새로운 문제 추가하기</button>
+            <button type="submit" class="pixel-btn submit-btn">최종 등록 완료 (100점 체크)</button>
+        </form>
+    </div>
+
+    <div class="footer-area">
+        <button type="button" class="pixel-btn" onclick="location.href='/teacher/quiz/find-quizlist-by-quiz'" style="background: #5d4037;">
+            ⬅ 이전으로
+        </button>
+    </div>
+</div>
+
+<script>
+    let questionCount = 1;
+
+    function calculateTotalScore() {
+        let inputs = document.querySelectorAll('.quiz-score-input');
+        let total = 0;
+        inputs.forEach(input => {
+            total += parseInt(input.value) || 0;
+        });
+
+        let textElement = document.getElementById('totalScoreText');
+        textElement.innerText = total;
+        textElement.style.color = (total === 100) ? '#2ecc71' : '#ff5252';
+    }
+
+    function addQuestionBlock() {
+        const container = document.getElementById('quizContainer');
+        const currentIndex = questionCount;
+
+        const newBlock = document.createElement('div');
+        newBlock.className = 'question-block';
+        newBlock.setAttribute('data-index', currentIndex);
+
+        newBlock.innerHTML = `
+            <button type="button" class="remove-btn" onclick="removeQuestionBlock(this)">삭제</button>
+            <h4 class="q-number">Quest ${currentIndex + 1}</h4>
+
+            <label>문제 제목</label>
+            <input type="text" name="quizList[${currentIndex}].quizTitle" required>
+
+            <label>지문 및 보기 (선택)</label>
+            <textarea name="quizList[${currentIndex}].quizDesc" rows="2"></textarea>
+
+            <label>정답</label>
+            <input type="text" name="quizList[${currentIndex}].quizAnswer" required>
+
+            <label>정답 해설 (선택)</label>
+            <textarea name="quizList[${currentIndex}].quizAnswerDesc" rows="2"></textarea>
+
+            <label style="color: #ffca28;">배점</label>
+            <input type="number" name="quizList[${currentIndex}].quizScore" class="quiz-score-input"
+                   value="0" min="1" max="100" required oninput="calculateTotalScore()" style="width: 100px;">
+        `;
+
+        container.appendChild(newBlock);
+        questionCount++;
+        // 신규 추가 시 하단으로 스크롤 이동
+        const wrapper = document.querySelector('.content-wrapper');
+        wrapper.scrollTop = wrapper.scrollHeight;
+    }
+
+    function removeQuestionBlock(buttonElement) {
+        buttonElement.closest('.question-block').remove();
+        reindexQuestions();
+        calculateTotalScore();
+    }
+
+    function reindexQuestions() {
+        const blocks = document.querySelectorAll('.question-block');
+        questionCount = blocks.length;
+
+        blocks.forEach((block, index) => {
+            block.setAttribute('data-index', index);
+            block.querySelector('.q-number').innerText = 'Quest ' + (index + 1);
+
+            block.querySelector('input[name*=".quizTitle"]').name = `quizList[${index}].quizTitle`;
+            block.querySelector('textarea[name*=".quizDesc"]').name = `quizList[${index}].quizDesc`;
+            block.querySelector('input[name*=".quizAnswer"]').name = `quizList[${index}].quizAnswer`;
+            block.querySelector('textarea[name*=".quizAnswerDesc"]').name = `quizList[${index}].quizAnswerDesc`;
+            block.querySelector('input[name*=".quizScore"]').name = `quizList[${index}].quizScore`;
+        });
+    }
+
+    // 폼 제출 시 100점 체크 (기본)
+    document.getElementById('quizForm').onsubmit = function() {
+        let total = parseInt(document.getElementById('totalScoreText').innerText);
+        if(total !== 100) {
+            alert("배점 합계가 " + total + "점입니다. 정확히 100점을 맞춰주세요!");
+            return false;
+        }
+        return true;
+    };
+</script>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
+</body>
+</html>

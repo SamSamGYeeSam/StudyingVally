@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>신고 상세</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+    />
+    <style>
+        :root {
+          --wood-dark: #3e2723;
+          --wood-medium: #5d4037;
+          --wood-light: #8d6e63;
+          --gold: #ffca28;
+          --paper: #fff8e1;
+        }
+
+        * { 
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DungGeunMo', sans-serif;
+            background-color: #f5efe6;
+            margin: 0;
+        }
+
+        .header {
+            background: var(--paper);
+            border-bottom: 3px solid var(--wood-medium);
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 53px;
+            font-weight: bold;
+            color: var(--wood-dark);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .content-box {
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
+            background: var(--paper);
+            padding: 32px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .content-title {
+            margin: 0;
+            font-size: 34px;
+            font-weight: bold;
+            color: var(--wood-dark);
+        }
+
+        .top-button,
+        .submit-button {
+            display: inline-block;
+            background: var(--wood-dark);
+            color: var(--paper);
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none !important;
+            cursor: pointer;
+            font-family: 'DungGeunMo';
+            transition: 0.1s;
+        }
+
+        .top-button:hover,
+        .submit-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--wood-medium);
+        }
+
+        .top-button:active,
+        .submit-button:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-medium);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .form-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .form-table th,
+        .form-table td {
+            border: 2px solid var(--wood-dark);
+            padding: 16px;
+            vertical-align: middle;
+        }
+
+        .form-table th {
+            width: 180px;
+            background: var(--wood-light);
+            color: var(--paper);
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .form-table td {
+            color: var(--wood-dark);
+        }
+
+        .readonly-box {
+            width: 100%;
+            min-height: 52px;
+            border: 2px solid var(--wood-dark);
+            background: #f7f7f7;
+            padding: 12px;
+            font-size: 18px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-family: 'DungGeunMo';
+            color: var(--wood-dark);
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 260px;
+            border: 2px solid var(--wood-dark);
+            padding: 12px;
+            font-size: 18px;
+            font-family: 'DungGeunMo';
+            resize: vertical;
+            color: var(--wood-dark);
+            background: #fff;
+        }
+
+        .bottom-button-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .error-text {
+            color: #c62828;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 10px;
+            border: 2px solid #c62828;
+            background: #ffe0e0;
+        }
+    </style>
+
+    <script>
+        function validateReportForm(form) {
+            const textarea = form.querySelector('textarea[name="reportAnswer"]');
+            const button = form.querySelector('button[type="submit"]');
+
+            if (!textarea || textarea.value.trim() === "") {
+                showModal("답변 내용을 입력하세요.", "error");
+                if (textarea) {
+                    textarea.focus();
+                }
+                return false;
+            }
+
+            if (button.dataset.submitted === "true") {
+                return false;
+            }
+
+            button.dataset.submitted = "true";
+            button.disabled = true;
+            button.textContent = "등록 중...";
+            return true;
+        }
+    </script>
+
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="header">
+    <h1>신고 상세</h1>
+    <a th:href="@{/admin/callcenter/report}" class="top-button">이전으로</a>
+</div>
+
+<div class="container">
+    <div class="content-box">
+
+        <div th:if="${errorMessage}" class="error-text" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/admin/callcenter/reportdetail}" method="post" onsubmit="return validateReportForm(this);">
+            <input type="hidden" name="reportNo" th:value="${reportDetail.reportNo}">
+
+            <table class="form-table">
+                <tr>
+                    <th>신고 제목</th>
+                    <td>
+                        <div class="readonly-box" th:text="${reportDetail.reportTitle}">신고 제목</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>작성자</th>
+                    <td>
+                        <div class="readonly-box"
+                             th:text="${reportDetail.userName + ' / ' + reportDetail.userNickname}">
+                            홍길동 / 길동이
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>처리 상태</th>
+                    <td>
+                        <div class="readonly-box" th:text="${reportDetail.reportStatusLabel}">대기</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>신고 내용</th>
+                    <td>
+                        <div class="readonly-box" th:text="${reportDetail.reportDesc}">신고 상세 내용</div>
+                    </td>
+                </tr>
+
+                <tr th:if="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)}">
+                    <th>답변 내용</th>
+                    <td>
+                        <div class="readonly-box" th:text="${reportDetail.reportAnswer}">
+                            등록된 답변
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${reportDetail.reportAnswer != null and !#strings.isEmpty(reportDetail.reportAnswer)}">
+                    <th>처리 일시</th>
+                    <td>
+                        <div class="readonly-box"
+                             th:text="${reportDetail.reportProcessedAt != null ? #temporals.format(reportDetail.reportProcessedAt, 'yyyy-MM-dd HH:mm') : '-'}">
+                            -
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${reportDetail.reportAnswer == null or #strings.isEmpty(reportDetail.reportAnswer)}">
+                    <th>답변 작성</th>
+                    <td>
+                        <textarea name="reportAnswer" class="form-textarea" placeholder="답변 내용을 입력하세요"></textarea>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="bottom-button-area"
+                 th:if="${reportDetail.reportAnswer == null or #strings.isEmpty(reportDetail.reportAnswer)}">
+                <button type="submit" class="submit-button">답변 등록</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 문자 인코딩 -->
+    <meta charset="UTF-8"/>
+
+    <!-- 반응형 설정 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- 브라우저 탭 제목 -->
+    <title>강의 마을 - 회원가입 2단계</title>
+
+    <!-- auth 화면 공통 CSS -->
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+
+    <style>
+        /* signup2 전용 최소 스타일만 추가 */
+        .gender-section {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+
+        .gender-box {
+            width: 140px;
+            text-align: center;
+        }
+
+        .gender-text {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #3b2a1a;
+        }
+
+        .gender-radio {
+            display: none;
+        }
+
+        .gender-image {
+            width: 100px;
+            height: 140px;
+            object-fit: contain;
+            border: 3px solid transparent;
+            background-color: #fff8e8;
+            padding: 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .gender-radio:checked + label .gender-image {
+            border: 3px solid #c67c2f;
+            background-color: #f8dfac;
+        }
+
+        .guide-text {
+            font-size: 13px;
+            color: #5a4030;
+            margin-top: 6px;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+<div class="game-screen">
+    <!-- 배경 요소 -->
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+
+    <div class="panel-wrap">
+        <div class="panel">
+
+            <!-- 회원가입 2단계 화면 -->
+            <section id="signupStep2Screen" class="form-screen active">
+                <h1 class="title">회원가입</h1>
+
+                <!--
+                    signup1에서 받은 값 + signup2 입력값을
+                    최종적으로 /auth/signup 으로 전송하는 form
+                -->
+                <form class="form-box" th:action="@{/auth/signup}" method="post">
+
+                    <!--
+                        signup1에서 넘어온 값을 hidden으로 유지
+                chapter    -->
+                    <input type="hidden" name="userRole" th:value="${signupDTO.userRole}">
+                    <input type="hidden" name="userName" th:value="${signupDTO.userName}">
+                    <input type="hidden" name="userId" th:value="${signupDTO.userId}">
+                    <input type="hidden" name="userPassword" th:value="${signupDTO.userPassword}">
+                    <input type="hidden" name="userPhoneNumber" th:value="${signupDTO.userPhoneNumber}">
+                    <input type="hidden" name="userEmail" th:value="${signupDTO.userEmail}">
+
+                    <!-- 성별 선택 영역 -->
+                    <div class="gender-section">
+
+                        <!-- 남자 선택 -->
+                        <div class="gender-box">
+                            <div class="gender-text">남자</div>
+
+                            <input type="radio"
+                                   id="male"
+                                   name="userGender"
+                                   value="M"
+                                   class="gender-radio"
+                                   th:checked="${signupDTO.userGender == 'MALE'}"
+                                   required>
+
+                            <label for="male">
+                                <img th:src="@{/image/male.png}"
+                                     alt="남자 캐릭터"
+                                     class="gender-image">
+                            </label>
+                        </div>
+
+                        <!-- 여자 선택 -->
+                        <div class="gender-box">
+                            <div class="gender-text">여자</div>
+
+                            <input type="radio"
+                                   id="female"
+                                   name="userGender"
+                                   value="F"
+                                   class="gender-radio"
+                                   th:checked="${signupDTO.userGender == 'FEMALE'}"
+                                   required>
+
+                            <label for="female">
+                                <img th:src="@{/image/female.png}"
+                                     alt="여자 캐릭터"
+                                     class="gender-image">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 닉네임 입력 -->
+                    <div class="field">
+                        <label for="userNickname">닉네임</label>
+                        <input type="text"
+                               id="userNickname"
+                               name="userNickname"
+                               placeholder="닉네임 입력"
+                               th:value="${signupDTO.userNickname}"
+                               required/>
+                    </div>
+
+                    <!-- 안내 문구 -->
+                    <div class="guide-text">
+                        성별은 나중에 설정에서 변경 할 수 있습니다.
+                    </div>
+
+                    <div class="bottom-row">
+                        <!-- 뒤로가기 -->
+                        <button type="button"
+                                onclick="history.back()"
+                                class="pixel-btn secondary">
+                            이전으로
+                        </button>
+
+                        <!-- 최종 회원가입 -->
+                        <button type="submit"
+                                class="pixel-btn">
+                            회원가입
+                        </button>
+                    </div>
+
+                    <!-- signup2 단계 에러 메시지 -->
+                    <div th:if="${signup2Error != null}"
+                         class="error-message"
+                         th:text="${signup2Error}">
+                        회원가입 에러 메시지
+                    </div>
+                </form>
+            </section>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

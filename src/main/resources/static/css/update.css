@@ -1,0 +1,180 @@
+@charset "UTF-8";
+
+/* 전체 요소 박스 사이징 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'DungGeunMo', sans-serif;
+    overflow: hidden;
+}
+
+/* 800x600 고정 컨테이너 */
+.room-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background-image: url('/image/home_bg.png');
+    background-position: center;
+    background-size: cover;
+    border: 6px solid #5d4037;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    padding: 35px; /* 내부 여백 조절 */
+}
+
+/* 상단 헤더 영역 */
+.header-area {
+    flex-shrink: 0;
+    margin-bottom: 15px;
+}
+
+.pixel-title {
+    color: #ffca28;
+    font-size: 26px;
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+    margin: 0;
+}
+
+/* 중앙 메인 박스 영역 */
+.main-wrapper {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.7);
+    border: 3px solid #5d4037;
+    padding: 20px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    min-height: 0;
+}
+
+.section-title {
+    color: #ffca28;
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* 카드 스타일 */
+.pixel-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid #5d4037;
+    margin-bottom: 15px;
+}
+
+.card-header {
+    background: #5d4037;
+    color: #ffca28;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.card-body {
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 리스트 스타일 */
+.chapter-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.chapter-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.chapter-list li:last-child {
+    border-bottom: none;
+}
+
+.course-name, .chap-name {
+    color: #ddd;
+    font-size: 15px;
+}
+
+/* 버튼 스타일 */
+.mini-pixel-btn {
+    background: #8d6e63;
+    border: 1px solid #000;
+    color: white;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-family: 'DungGeunMo';
+    font-size: 12px;
+    box-shadow: 2px 2px 0 #000;
+    transition: 0.1s;
+}
+
+.mini-pixel-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 0 0 0 #000;
+}
+
+.footer-area {
+    flex-shrink: 0;
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.pixel-btn {
+    width: 100%;
+    padding: 12px;
+    background: #8d6e63;
+    color: white;
+    border: 2px solid #000;
+    cursor: pointer;
+    font-family: 'DungGeunMo';
+    font-size: 15px;
+    box-shadow: 3px 3px 0 #000;
+    text-align: center;
+    text-decoration: none;
+}
+
+.pixel-btn.danger {
+    background: #e74c3c;
+}
+
+.pixel-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 #000;
+}
+
+.no-data {
+    text-align: center;
+    width: 100%;
+    color: #bdc3c7;
+    font-size: 14px;
+    padding: 10px 0;
+}
+
+/* 스크롤바 */
+.scroll-content::-webkit-scrollbar { width: 8px; }
+.scroll-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+.scroll-content::-webkit-scrollbar-thumb { background: #5d4037; border: 1px solid #000; }

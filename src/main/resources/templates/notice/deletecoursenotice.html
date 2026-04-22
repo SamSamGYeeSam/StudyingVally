@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Valley - 소식 삭제</title>
+    <!-- 폰트 및 외부 스타일 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <link rel="stylesheet" th:href="@{/css/deletecoursenotice.css}">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="room-container">
+    <div class="school-header">
+        <h2 class="pixel-title">⚠ DELETE NOTICE</h2>
+    </div>
+
+    <!-- 목록 페이지와 동일한 갈색 반투명 래퍼 -->
+    <div class="form-wrapper">
+        <div class="notice-info">
+            <!-- 강의명 -->
+            <div class="input-group">
+                <label>COURSE</label>
+                <div class="pixel-readonly" th:text="${courseNotice.courseName}">강의 제목</div>
+            </div>
+
+            <!-- 소식 제목 -->
+            <div class="input-group">
+                <label>TITLE</label>
+                <div class="pixel-readonly" th:text="${courseNotice.courseNoticeTitle}">소식 제목</div>
+            </div>
+
+            <!-- 소식 내용 -->
+            <div class="input-group">
+                <label>CONTENT</label>
+                <div class="pixel-readonly pixel-textarea-view">
+                    <span style="white-space: pre-line;" th:text="${courseNotice.courseNoticeDesc}">소식 내용</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 경고 메시지 (삭제 페이지 전용 강조) -->
+        <div class="warning-box">
+            <p class="warning-title">⚠ WARNING</p>
+            <p>이 작업은 되돌릴 수 없습니다.<br>해당 소식이 영구적으로 삭제됩니다.</p>
+        </div>
+
+        <div class="btn-group">
+            <form th:action="@{/teacher/coursenotice/delete}" method="post">
+                <input type="hidden" name="courseNoticeNo" th:value="${courseNotice.courseNoticeNo}">
+                <button type="submit" class="pixel-btn btn-delete">삭제하기</button>
+            </form>
+            <a th:href="@{/teacher/coursenotice}" class="pixel-btn btn-cancel">취소</a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
+</body>
+</html>

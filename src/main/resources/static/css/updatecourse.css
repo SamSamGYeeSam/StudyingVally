@@ -1,0 +1,122 @@
+@charset "UTF-8";
+
+/* 전체 요소 박스 사이징 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'DungGeunMo', sans-serif;
+    overflow: hidden;
+}
+
+/* 800x600 고정 컨테이너 */
+.room-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background-image: url('/image/home_bg.png');
+    background-position: center;
+    background-size: cover;
+    border: 6px solid #5d4037;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    padding: 30px; /* 패딩을 살짝 줄여 여유 공간 확보 */
+}
+
+/* 타이틀 스타일 */
+.pixel-title {
+    color: #ffca28;
+    font-size: 26px;
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+    margin: 0 0 15px 0; /* 마진 축소 */
+    text-align: left;
+}
+
+/* 폼 영역 (스크롤 제거 버전) */
+.form-wrapper {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.7);
+    border: 3px solid #5d4037;
+    padding: 20px; /* 내부 패딩 축소 */
+    border-radius: 4px;
+    overflow: hidden; /* 스크롤 절대 금지 */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 요소들을 중앙으로 모음 */
+}
+
+label {
+    display: block;
+    color: #ffca28;
+    margin-bottom: 6px; /* 간격 축소 */
+    font-size: 15px;
+    font-weight: bold;
+}
+
+input[type="text"] {
+    width: 100%;
+    background: #fff8e1;
+    border: 3px solid #5d4037;
+    padding: 10px;
+    font-family: 'DungGeunMo', sans-serif;
+    font-size: 14px;
+    margin-bottom: 15px; /* 간격 축소 */
+    outline: none;
+    color: #333;
+}
+
+textarea {
+    width: 100%;
+    flex: 1; /* 남은 공간을 textarea가 꽉 채우도록 설정 */
+    min-height: 150px; /* 최소 높이 지정 (스크롤 안 생기는 선에서) */
+    max-height: 220px; /* 800x600에서 넘치지 않는 최대 높이 */
+    background: #fff8e1;
+    border: 3px solid #5d4037;
+    padding: 10px;
+    font-family: 'DungGeunMo', sans-serif;
+    font-size: 14px;
+    outline: none;
+    color: #333;
+    resize: none;
+}
+
+/* 하단 버튼 영역 */
+.footer-area {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px; /* 간격 축소 */
+}
+
+.pixel-btn {
+    padding: 10px 20px;
+    background: #8d6e63;
+    color: white;
+    border: 2px solid #000;
+    cursor: pointer;
+    font-family: 'DungGeunMo';
+    font-size: 15px;
+    box-shadow: 3px 3px 0 #000;
+    transition: 0.1s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pixel-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 #000;
+}
+
+.pixel-btn.success {
+    background: #27ae60;
+}

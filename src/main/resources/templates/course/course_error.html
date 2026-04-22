@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+    <style>
+        body {
+            margin: 0;
+            background-color: rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
+<script th:inline="javascript">
+    const errorMessage = /*[[${errorMessage}]]*/ '';
+
+    // 페이지 로드되자마자 모달 표시
+    window.addEventListener('DOMContentLoaded', function() {
+        showModal(errorMessage, 'error');
+
+        const modal = document.getElementById('commonModal');
+        const overlay = document.getElementById('modalOverlay');
+        const closeButton = modal.querySelector('button');
+
+        // 확인 버튼 클릭 시
+        closeButton.addEventListener('click', function() {
+            history.back();
+        });
+
+        // 배경 클릭 시
+        overlay.addEventListener('click', function() {
+            history.back();
+        });
+    });
+</script>
+
+</body>
+</html>

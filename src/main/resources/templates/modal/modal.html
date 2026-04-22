@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+</head>
+<body>
+
+<th:block th:fragment="modalCss">
+  <style>
+    /* ── 오버레이 ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 1001;
+    }
+
+    .modal-overlay.active {
+      display: block;
+    }
+
+    /* ── 모달 본체 ── */
+    .common-modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 248, 225, 0.97);   /* board의 베이지 계열 */
+      padding: 30px 30px 24px;
+      border: 6px solid #5d4037;               /* board의 두꺼운 갈색 테두리 */
+      border-radius: 0;                        /* 픽셀 감성 — 둥글지 않게 */
+      box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.25); /* 픽셀 그림자 */
+      z-index: 1002;
+      width: 420px;
+      text-align: center;
+      font-family: 'DungGeunMo', sans-serif;
+      backdrop-filter: blur(8px);
+    }
+
+    .common-modal.active {
+      display: block;
+    }
+
+    /* ── 제목 ── */
+    .common-modal h3 {
+      margin: 0 10px 0;
+      padding-bottom: 14px;
+      font-size: 20px;
+      border-bottom: 3px dashed #8d6e63;
+    }
+
+    .common-modal.success h3 { color: #4CAF50; }
+    .common-modal.error   h3 { color: #f44336; }
+    .common-modal.info    h3 { color: #5d4037; }
+    .common-modal.warning h3 { color: #ff9800; }
+
+    /* ── 내용 ── */
+    .common-modal p {
+      margin: 18px 10px;
+      padding: 14px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #333;
+      background: rgba(255, 255, 255, 0.55);
+      border: 2px solid #8d6e63;
+      text-align: left;
+    }
+
+    /* ── 버튼 ── */
+    .common-modal button {
+      padding: 10px 32px;
+      border: 2px solid #000;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: 'DungGeunMo', sans-serif;
+      font-weight: bold;
+      color: white;
+      box-shadow: 3px 3px 0 #000;
+      transition: transform 0.1s;
+    }
+
+    .common-modal button:hover {
+      transform: translateY(-2px);
+    }
+
+    .common-modal.success button { background-color: #4CAF50; }
+    .common-modal.success button:hover { background-color: #45a049; }
+
+    .common-modal.error   button { background-color: #c0392b; }
+    .common-modal.error   button:hover { background-color: #a93226; }
+
+    .common-modal.info    button { background-color: #8d6e63; }
+    .common-modal.info    button:hover { background-color: #6d4c41; }
+
+    .common-modal.warning button { background-color: #ff9800; }
+    .common-modal.warning button:hover { background-color: #e65100; }
+  </style>
+</th:block>
+
+<!-- ── HTML / Script 은 원본 그대로 ── -->
+
+<div th:fragment="modalHtml">
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+  <div class="common-modal" id="commonModal">
+    <h3 id="modalTitle">알림</h3>
+    <p id="modalMessage" style="white-space: pre-line;"></p>
+    <button onclick="closeModal()">확인</button>
+  </div>
+</div>
+
+<script th:fragment="modalScript" th:inline="javascript">
+  function showModal(message, type) {
+    const modal = document.getElementById('commonModal');
+    const overlay = document.getElementById('modalOverlay');
+    const title = document.getElementById('modalTitle');
+    const messageEl = document.getElementById('modalMessage');
+
+    modal.classList.remove('success', 'error', 'info', 'warning');
+    modal.classList.add(type || 'info');
+
+    if (type === 'success') {
+      title.textContent = '✓ 완료';
+    } else if (type === 'error') {
+      title.textContent = '⚠ 안내';
+    } else {
+      title.textContent = 'ℹ 알림';
+    }
+
+    messageEl.innerHTML = message.replace(/\n/g, '<br>');
+    modal.classList.add('active');
+    overlay.classList.add('active');
+  }
+
+  function closeModal() {
+    document.getElementById('commonModal').classList.remove('active');
+    document.getElementById('modalOverlay').classList.remove('active');
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    const successMessage = /*[[${successMessage}]]*/ null;
+    const errorMessage = /*[[${errorMessage}]]*/ null;
+    const infoMessage = /*[[${infoMessage}]]*/ null;
+
+    if (successMessage) {
+      showModal(successMessage, 'success');
+    } else if (errorMessage) {
+      showModal(errorMessage, 'error');
+    } else if (infoMessage) {
+      showModal(infoMessage, 'info');
+    }
+
+    const forms = document.querySelectorAll("form");
+
+    forms.forEach(form => {
+      form.addEventListener("submit", function (e) {
+
+        const inputs = form.querySelectorAll("input, textarea, select");
+
+        for (let input of inputs) {
+
+          if (input.type === "hidden") continue;
+
+          if (input.type === "file") {
+            if (input.required && input.files.length === 0) {
+              e.preventDefault();
+              showModal("파일을 선택해주세요.", "error");
+              input.focus();
+              return;
+            }
+            continue;
+          }
+
+          if (input.hasAttribute("required") && input.value.trim() === "") {
+            e.preventDefault();
+            showModal("모든 항목을 입력해주십시오.", "error");
+            input.focus();
+            return;
+          }
+
+          if (input.tagName === "SELECT" && input.hasAttribute("required") && input.value === "") {
+            e.preventDefault();
+            showModal("선택되지 않은 항목이 있습니다.", "error");
+            input.focus();
+            return;
+          }
+        }
+      });
+    });
+
+  });
+</script>
+
+</body>
+</html>

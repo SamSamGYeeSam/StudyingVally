@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Valley - 소식 등록</title>
+    <!-- 폰트 및 외부 스타일 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <link rel="stylesheet" th:href="@{/css/registcoursenotice.css}">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="room-container">
+    <div class="school-header">
+        <h2 class="pixel-title">🔔 NEW NOTICE</h2>
+    </div>
+
+    <!-- 목록 페이지의 갈색 반투명 박스 레이아웃 적용 -->
+    <div class="form-wrapper">
+        <form action="/teacher/coursenotice/registcoursenotice" method="post" novalidate>
+
+            <!-- 강의 선택 -->
+            <div class="input-group">
+                <label for="courseId">COURSE SELECT</label>
+                <select id="courseId" name="courseId" class="pixel-select" required>
+                    <option value="">강의를 선택하세요</option>
+                    <option th:each="course : ${courseList}"
+                            th:value="${course.courseId}"
+                            th:text="${course.courseTitle}"></option>
+                </select>
+            </div>
+
+            <!-- 소식 제목 -->
+            <div class="input-group">
+                <label for="noticeTitle">TITLE</label>
+                <input type="text" id="noticeTitle" name="courseNoticeTitle"
+                       class="pixel-input" placeholder="제목을 입력하세요" required>
+            </div>
+
+            <!-- 소식 내용 -->
+            <div class="input-group" style="flex: 1; display: flex; flex-direction: column;">
+                <label for="noticeDesc">CONTENT</label>
+                <textarea id="noticeDesc" name="courseNoticeDesc"
+                          class="pixel-textarea" placeholder="내용을 입력하세요" required></textarea>
+            </div>
+
+            <!-- 버튼 그룹 (그림자 2px 스타일) -->
+            <div class="btn-group">
+                <button type="submit" class="pixel-btn btn-regist">소식 등록하기</button>
+                <a href="/teacher/coursenotice" class="pixel-btn btn-back">이전으로</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
+</body>
+</html>

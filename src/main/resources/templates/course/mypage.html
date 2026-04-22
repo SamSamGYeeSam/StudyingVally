@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Valley - 설정</title>
+    <link rel="stylesheet" th:href="@{/css/mypage.css}">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="room-container">
+    <h1 class="pixel-title">⚙️ USER SETTINGS</h1>
+
+    <div class="main-wrapper">
+        <div class="scroll-content">
+            <h3 class="section-title">회원 관리</h3>
+
+            <div class="info-card">
+                <p class="pixel-text-small">본인 확인 및 계정 관리 메뉴입니다.</p>
+
+                <!-- 내 정보 보기 -->
+                <div class="settings-item">
+                    <div class="item-desc">
+                        <strong>내 정보 조회</strong>
+                        <span>가입된 상세 정보를 확인하고 수정합니다.</span>
+                    </div>
+                    <form onsubmit="openInfoPasswordPopup(); return false;">
+                        <button type="submit" class="pixel-btn">조회하기</button>
+                    </form>
+                </div>
+
+                <hr class="pixel-hr">
+
+                <!-- 회원 탈퇴 -->
+                <div class="settings-item">
+                    <div class="item-desc">
+                        <strong>계정 탈퇴</strong>
+                        <span class="danger-text">탈퇴 시 모든 학습 데이터가 삭제됩니다.</span>
+                    </div>
+                    <button type="button" class="pixel-btn danger" onclick="openWithdrawModal()">회원 탈퇴</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 버튼 영역 -->
+        <div class="footer-area">
+            <a href="/teacher/teachermain" class="pixel-btn grey">🔙 이전으로</a>
+        </div>
+    </div>
+
+    <!-- 비밀번호 확인용 숨은 form -->
+    <form id="infoPasswordForm" action="/showinformation/check-password" method="post" style="display:none;">
+        <input type="hidden" name="userPassword" id="infoPasswordInput">
+    </form>
+</div>
+
+<!-- 회원탈퇴 확인 모달 -->
+<div class="modal-overlay" id="withdrawModalOverlay" onclick="closeWithdrawModal()"></div>
+<div class="common-modal info" id="withdrawModal">
+    <h3>🚪 회원 탈퇴</h3>
+    <p>정말 탈퇴하시겠습니까?<br>모든 학습 데이터가 삭제됩니다.</p>
+    <div style="display:flex; gap:10px; justify-content:center;">
+        <form action="/deleteaccount" method="post" style="display:inline;">
+            <button type="submit" style="background:#e74c3c;">탈퇴</button>
+        </form>
+        <button onclick="closeWithdrawModal()" style="background:#607d8b;">취소</button>
+    </div>
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+
+<!-- 비밀번호 입력 모달 -->
+<div class="modal-overlay" id="pwModalOverlay" onclick="closePwModal()"></div>
+<div class="common-modal info" id="pwModal">
+    <h3>🔒 비밀번호 확인</h3>
+    <p>내 정보 조회를 위해<br>비밀번호를 입력해주세요.</p>
+    <input type="password" id="pwModalInput"
+           style="width:100%; padding:10px; margin-bottom:6px;
+                  border:2px solid #8d6e63; background:rgba(255,255,255,0.7);
+                  font-family:'DungGeunMo',sans-serif; font-size:14px;
+                  box-sizing:border-box; outline:none;"
+           placeholder="비밀번호 입력"
+           onkeydown="if(event.key==='Enter') confirmPwModal()">
+    <p id="pwErrorMsg"
+       style="display:none; margin:0 0 12px; padding:0;
+              color:#f44336; font-size:13px; text-align:left;
+              background:none; border:none;">
+        ⚠ 비밀번호가 일치하지 않습니다.
+    </p>
+    <div style="display:flex; gap:10px; justify-content:center;">
+        <button onclick="confirmPwModal()">확인</button>
+        <button onclick="closePwModal()" style="background:#8d6e63;">취소</button>
+    </div>
+</div>
+
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
+<script>
+    function openWithdrawModal() {
+        document.getElementById("withdrawModal").classList.add("active");
+        document.getElementById("withdrawModalOverlay").classList.add("active");
+    }
+
+    function closeWithdrawModal() {
+        document.getElementById("withdrawModal").classList.remove("active");
+        document.getElementById("withdrawModalOverlay").classList.remove("active");
+    }
+
+    function openInfoPasswordPopup() {
+        document.getElementById("pwModalInput").value = "";
+        document.getElementById("pwErrorMsg").style.display = "none";
+        document.getElementById("pwModal").classList.add("active");
+        document.getElementById("pwModalOverlay").classList.add("active");
+        setTimeout(() => document.getElementById("pwModalInput").focus(), 100);
+    }
+
+    function closePwModal() {
+        document.getElementById("pwModal").classList.remove("active");
+        document.getElementById("pwModalOverlay").classList.remove("active");
+        const url = new URL(window.location);
+        url.searchParams.delete("passwordError");
+        window.history.replaceState({}, '', url);
+    }
+
+    function confirmPwModal() {
+        const password = document.getElementById("pwModalInput").value;
+        if (password.trim() === "") {
+            showModal("비밀번호를 입력해주세요.", "error");
+            return;
+        }
+        closePwModal();
+        document.getElementById("infoPasswordInput").value = password;
+        document.getElementById("infoPasswordForm").submit();
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("passwordError") === "true") {
+            openInfoPasswordPopup();
+            document.getElementById("pwErrorMsg").style.display = "block";
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 80">
+  <!-- Game-based Learning System (픽셀 폰트 스타일, 양피지 배경용, 가운데 정렬) -->
+  
+  <!-- 베이지색 양피지 배경 -->
+  <rect x="0" y="0" width="720" height="80" fill="#e8c170" rx="8"/>
+  <rect x="5" y="5" width="710" height="70" fill="#f4d7a0" rx="6"/>
+  
+  <!-- 테두리 장식 -->
+  <rect x="8" y="8" width="704" height="4" fill="#d4a574"/>
+  <rect x="8" y="68" width="704" height="4" fill="#d4a574"/>
+  <rect x="8" y="8" width="4" height="64" fill="#d4a574"/>
+  <rect x="708" y="8" width="4" height="64" fill="#d4a574"/>
+  
+  <!-- Game-based Learning System 텍스트 (갈색, 가운데 정렬) -->
+  <!-- 전체 텍스트 폭: 533px, 중앙 시작점: (720-533)/2 = 93.5 -->
+  
+  <!-- G -->
+  <rect x="93" y="25" width="18" height="4" fill="#5a4a3a"/>
+  <rect x="93" y="29" width="4" height="22" fill="#5a4a3a"/>
+  <rect x="93" y="47" width="18" height="4" fill="#5a4a3a"/>
+  <rect x="107" y="39" width="4" height="12" fill="#5a4a3a"/>
+  <rect x="103" y="39" width="8" height="4" fill="#5a4a3a"/>
+  
+  <!-- a -->
+  <rect x="118" y="33" width="14" height="4" fill="#5a4a3a"/>
+  <rect x="118" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="128" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="122" y="43" width="6" height="4" fill="#5a4a3a"/>
+  
+  <!-- m -->
+  <rect x="139" y="33" width="4" height="18" fill="#5a4a3a"/>
+  <rect x="143" y="33" width="8" height="4" fill="#5a4a3a"/>
+  <rect x="151" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="155" y="33" width="8" height="4" fill="#5a4a3a"/>
+  <rect x="163" y="37" width="4" height="14" fill="#5a4a3a"/>
+  
+  <!-- e -->
+  <rect x="174" y="33" width="14" height="4" fill="#5a4a3a"/>
+  <rect x="174" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="178" y="41" width="10" height="4" fill="#5a4a3a"/>
+  <rect x="174" y="47" width="14" height="4" fill="#5a4a3a"/>
+  
+  <!-- - -->
+  <rect x="195" y="41" width="8" height="4" fill="#5a4a3a"/>
+  
+  <!-- b -->
+  <rect x="210" y="25" width="4" height="26" fill="#5a4a3a"/>
+  <rect x="214" y="33" width="10" height="4" fill="#5a4a3a"/>
+  <rect x="224" y="37" width="4" height="10" fill="#5a4a3a"/>
+  <rect x="214" y="47" width="10" height="4" fill="#5a4a3a"/>
+  
+  <!-- a -->
+  <rect x="235" y="33" width="14" height="4" fill="#5a4a3a"/>
+  <rect x="235" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="245" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="239" y="43" width="6" height="4" fill="#5a4a3a"/>
+  
+  <!-- s -->
+  <rect x="256" y="33" width="14" height="4" fill="#5a4a3a"/>
+  <rect x="256" y="37" width="4" height="6" fill="#5a4a3a"/>
+  <rect x="260" y="41" width="10" height="4" fill="#5a4a3a"/>
+  <rect x="266" y="45" width="4" height="2" fill="#5a4a3a"/>
+  <rect x="256" y="47" width="14" height="4" fill="#5a4a3a"/>
+  
+  <!-- e -->
+  <rect x="277" y="33" width="14" height="4" fill="#5a4a3a"/>
+  <rect x="277" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="281" y="41" width="10" height="4" fill="#5a4a3a"/>
+  <rect x="277" y="47" width="14" height="4" fill="#5a4a3a"/>
+  
+  <!-- d -->
+  <rect x="309" y="25" width="4" height="26" fill="#5a4a3a"/>
+  <rect x="299" y="33" width="10" height="4" fill="#5a4a3a"/>
+  <rect x="295" y="37" width="4" height="10" fill="#5a4a3a"/>
+  <rect x="299" y="47" width="10" height="4" fill="#5a4a3a"/>
+  
+  <!-- 공백 -->
+  
+  <!-- L -->
+  <rect x="329" y="25" width="4" height="26" fill="#5a4a3a"/>
+  <rect x="329" y="47" width="14" height="4" fill="#5a4a3a"/>
+  
+  <!-- e -->
+  <rect x="350" y="33" width="14" height="4" fill="#5a4a3a"/>
+  <rect x="350" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="354" y="41" width="10" height="4" fill="#5a4a3a"/>
+  <rect x="350" y="47" width="14" height="4" fill="#5a4a3a"/>
+  
+  <!-- a -->
+  <rect x="371" y="33" width="14" height="4" fill="#5a4a3a"/>
+  <rect x="371" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="381" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="375" y="43" width="6" height="4" fill="#5a4a3a"/>
+  
+  <!-- r -->
+  <rect x="392" y="33" width="4" height="18" fill="#5a4a3a"/>
+  <rect x="396" y="33" width="8" height="4" fill="#5a4a3a"/>
+  <rect x="404" y="37" width="4" height="6" fill="#5a4a3a"/>
+  
+  <!-- n -->
+  <rect x="415" y="33" width="4" height="18" fill="#5a4a3a"/>
+  <rect x="419" y="33" width="8" height="4" fill="#5a4a3a"/>
+  <rect x="427" y="37" width="4" height="14" fill="#5a4a3a"/>
+  
+  <!-- i -->
+  <rect x="438" y="25" width="4" height="4" fill="#5a4a3a"/>
+  <rect x="438" y="33" width="4" height="18" fill="#5a4a3a"/>
+  
+  <!-- n -->
+  <rect x="449" y="33" width="4" height="18" fill="#5a4a3a"/>
+  <rect x="453" y="33" width="8" height="4" fill="#5a4a3a"/>
+  <rect x="461" y="37" width="4" height="14" fill="#5a4a3a"/>
+  
+  <!-- g -->
+  <rect x="472" y="33" width="14" height="4" fill="#5a4a3a"/>
+  <rect x="472" y="37" width="4" height="22" fill="#5a4a3a"/>
+  <rect x="472" y="55" width="14" height="4" fill="#5a4a3a"/>
+  <rect x="482" y="41" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="478" y="43" width="8" height="4" fill="#5a4a3a"/>
+  
+  <!-- 공백 -->
+  
+  <!-- S -->
+  <rect x="503" y="25" width="18" height="4" fill="#5a4a3a"/>
+  <rect x="503" y="29" width="4" height="8" fill="#5a4a3a"/>
+  <rect x="507" y="37" width="10" height="4" fill="#5a4a3a"/>
+  <rect x="517" y="41" width="4" height="6" fill="#5a4a3a"/>
+  <rect x="503" y="47" width="18" height="4" fill="#5a4a3a"/>
+  
+  <!-- y -->
+  <rect x="528" y="33" width="4" height="26" fill="#5a4a3a"/>
+  <rect x="540" y="33" width="4" height="18" fill="#5a4a3a"/>
+  <rect x="532" y="47" width="8" height="4" fill="#5a4a3a"/>
+  <rect x="528" y="55" width="12" height="4" fill="#5a4a3a"/>
+  
+  <!-- s -->
+  <rect x="551" y="33" width="14" height="4" fill="#5a4a3a"/>
+  <rect x="551" y="37" width="4" height="6" fill="#5a4a3a"/>
+  <rect x="555" y="41" width="10" height="4" fill="#5a4a3a"/>
+  <rect x="561" y="45" width="4" height="2" fill="#5a4a3a"/>
+  <rect x="551" y="47" width="14" height="4" fill="#5a4a3a"/>
+  
+  <!-- t -->
+  <rect x="572" y="27" width="4" height="24" fill="#5a4a3a"/>
+  <rect x="568" y="33" width="12" height="4" fill="#5a4a3a"/>
+  
+  <!-- e -->
+  <rect x="587" y="33" width="14" height="4" fill="#5a4a3a"/>
+  <rect x="587" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="591" y="41" width="10" height="4" fill="#5a4a3a"/>
+  <rect x="587" y="47" width="14" height="4" fill="#5a4a3a"/>
+  
+  <!-- m -->
+  <rect x="608" y="33" width="4" height="18" fill="#5a4a3a"/>
+  <rect x="612" y="33" width="8" height="4" fill="#5a4a3a"/>
+  <rect x="620" y="37" width="4" height="14" fill="#5a4a3a"/>
+  <rect x="624" y="33" width="8" height="4" fill="#5a4a3a"/>
+  <rect x="632" y="37" width="4" height="14" fill="#5a4a3a"/>
+</svg>

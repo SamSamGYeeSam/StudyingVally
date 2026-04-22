@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>강의 마을 - 회원가입 유형 선택</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+
+    <style>
+        .role-select-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .role-guide {
+            font-size: 14px;
+            color: #5a4030;
+            /* line-height: 1.5; */
+            /* margin-bottom: 8px; */
+            text-align: center;
+        }
+
+        .role-btn {
+            width: 100%;
+            height: 55px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+             display: flex;
+                align-items: center;
+                justify-content: center;
+                padding-top:20px;
+                padding-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="game-screen">
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+
+    <div class="panel-wrap">
+        <div class="panel">
+            <section class="form-screen active">
+                <h1 class="title">회원가입</h1>
+
+                <div class="role-guide">
+                    가입할 회원 유형을 선택해주세요.
+                </div>
+
+                <div class="role-select-box">
+                    <!-- 학생 회원가입 -->
+                    <button type="button"
+                            class="pixel-btn role-btn"
+                            onclick="location.href='/auth/signup1?userRole=STUDENT'">
+                        학생으로 가입하기
+                    </button>
+
+                    <!-- 강사 회원가입 -->
+                    <button type="button"
+                            class="pixel-btn role-btn"
+                            onclick="location.href='/auth/signup1?userRole=TEACHER'">
+                        강사로 가입하기
+                    </button>
+
+                    <!-- 뒤로가기 -->
+                    <button type="button"
+                            class="pixel-btn secondary role-btn"
+                            onclick="location.href='/main'">
+                        이전으로
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 탈퇴</title>
+</head>
+<body>
+
+<h1>회원 탈퇴</h1>
+
+<p>탈퇴를 진행하려면 현재 비밀번호를 입력해주세요.</p>
+
+<div th:if="${deleteError != null}" th:text="${deleteError}">
+    탈퇴 에러 메시지
+</div>
+
+<form th:if="${formActionUrl != null}" th:action="${formActionUrl}" method="post">
+
+    <div>
+        <label for="userPassword">비밀번호</label>
+        <input type="password"
+               id="userPassword"
+               name="userPassword"
+               th:value="${deleteUserDTO != null ? deleteUserDTO.userPassword : ''}"
+               required>
+    </div>
+
+    <div>
+        <button type="submit">탈퇴하기</button>
+    </div>
+</form>
+
+</body>
+</html>

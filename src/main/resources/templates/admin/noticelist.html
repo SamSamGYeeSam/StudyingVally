@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항 목록</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+    />
+    <style>
+        :root {
+          --wood-dark: #3e2723;
+          --wood-medium: #5d4037;
+          --wood-light: #8d6e63;
+          --gold: #ffca28;
+          --paper: #fff8e1;
+        }
+
+        * { 
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DungGeunMo', sans-serif;
+            background-color: #f5efe6;
+            margin: 0;
+        }
+
+        .header {
+            background: var(--paper);
+            border-bottom: 3px solid var(--wood-medium);
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 53px;
+            color: var(--wood-dark);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            color: var(--wood-dark);
+            text-decoration: none !important;
+            font-weight: bold;
+            font-size: 20px;
+            font-family: 'DungGeunMo';
+            transition: 0.1s;
+        }
+
+        .back-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--wood-dark);
+        }
+
+        .back-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
+        }
+
+        .container {
+            padding: 30px 40px 60px;
+        }
+
+        .message-box {
+            margin-bottom: 20px;
+            padding: 14px 16px;
+            font-weight: bold;
+        }
+
+        .success {
+            background-color: #e8f5c8;
+            border: 2px solid #86a83f;
+            color: #2f3c10;
+        }
+
+        .error {
+            background-color: #ffe0e0;
+            border: 2px solid #d14d4d;
+            color: #7a1111;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--paper);
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
+        }
+
+        th, td {
+            border: 2px solid var(--wood-dark);
+            text-align: center;
+            padding: 18px 12px;
+            font-size: 20px;
+            color: var(--wood-dark);
+        }
+
+        th {
+            background: var(--wood-light);
+            color: var(--paper);
+            font-weight: bold;
+        }
+
+        .left {
+            text-align: left !important;
+        }
+
+        .select-form {
+            margin: 0;
+        }
+
+        .select-btn {
+            padding: 10px 18px;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'DungGeunMo';
+            color: var(--wood-dark);
+            transition: 0.1s;
+            text-decoration: none !important;
+            display: inline-block;
+        }
+
+        .select-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--wood-dark);
+        }
+
+        .select-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
+        }
+
+        .description {
+            margin-top: 40px;
+            font-size: 20px;
+            color: var(--wood-dark);
+        }
+    </style>
+
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="header">
+    <h1>공지사항 목록</h1>
+    <div class="header-buttons">
+        <a th:href="@{/admin/callcenter/noticeregist}" class="back-btn">추가하기</a>
+        <a th:href="@{/admin/callcenter}" class="back-btn">이전으로</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const result = params.get("result");
+
+        if (result === "success") {
+            // 여기 나중에 모달 UI 넣으면 됨
+            alert("수정 완료");
+        }
+    </script>
+
+    <!-- 실패 메시지 출력 영역 -->
+    <div th:if="${errorMessage}" class="message-box error" th:text="${errorMessage}"></div>
+
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 10%;">번호</th>
+            <th>공지 제목</th>
+            <th style="width: 20%;">작성 일자</th>
+            <th style="width: 10%;">상세 보기</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(noticeList)}">
+            <td colspan="4">조회된 공지사항이 없습니다.</td>
+        </tr>
+
+        <tr th:each="notice, status : ${noticeList}">
+            <td th:text="${status.count}">1</td>
+            <td class="left" th:text="${notice.noticeTitle}">환불 규정</td>
+            <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-17</td>
+            <td>
+                <a th:href="@{/admin/callcenter/noticedetail(noticeNo=${notice.noticeNo})}"
+                   class="select-btn">
+                    선택
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+</body>
+</html>

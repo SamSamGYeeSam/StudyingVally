@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Studying Vally - 삭제 확인</title>
+  <link rel="stylesheet" th:href="@{/css/deletechapter.css}">
+  <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="room-container">
+  <h1 class="pixel-title">⚠️ 챕터 삭제 확인</h1>
+
+  <div class="info-box">
+    <div class="info-row">
+      <span class="label">강의명:</span>
+      <span th:text="${course.courseTitle}"></span>
+    </div>
+    <div class="info-row">
+      <span class="label">챕터명:</span>
+      <span th:text="${chapter.chapTitle}"></span>
+    </div>
+    <div class="info-row" style="border-bottom: none;">
+      <span class="label">설명:</span>
+      <span th:text="${chapter.chapDesc}" style="font-size: 14px; opacity: 0.8;"></span>
+    </div>
+  </div>
+
+  <div class="warning-banner">
+    이 작업은 되돌릴 수 없습니다.<br>
+    해당 챕터가 영구적으로 삭제됩니다.
+  </div>
+
+  <div class="button-group">
+    <form th:action="@{/teacher/course/deletechapter}" method="post">
+      <input type="hidden" name="chapNo" th:value="${chapter.chapNo}">
+      <input type="hidden" name="courseId" th:value="${course.courseId}">
+      <button type="submit" class="pixel-btn btn-delete">삭제하기</button>
+    </form>
+
+    <form action="/teacher/course/chapter" method="post">
+      <input type="hidden" name="courseId" th:value="${course.courseId}">
+      <button type="submit" class="pixel-btn btn-cancel">취소</button>
+    </form>
+  </div>
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
+</body>
+</html>

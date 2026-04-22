@@ -1,0 +1,147 @@
+@charset "UTF-8";
+
+/* 1. 기본 배경 및 레이아웃 (게시판 코드와 100% 일치) */
+body {
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'DungGeunMo', sans-serif;
+    overflow: hidden;
+}
+
+.room-container {
+    position: relative;
+    width: 850px;
+    height: 600px;
+    background-image: url('/image/school-bg.png');
+    background-position: center;
+    background-size: cover;
+    border: 6px solid #5d4037;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    padding: 20px; /* 패딩 살짝 축소해서 공간 확보 */
+    box-sizing: border-box;
+}
+
+/* 2. 헤더 영역 */
+.school-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px; /* 간격 축소 */
+    z-index: 10;
+}
+
+.pixel-title {
+    color: #e74c3c;
+    font-size: 26px; /* 크기 살짝 조정 */
+    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000;
+    margin: 0;
+}
+
+/* 3. 폼 영역 (갈색 반투명 박스 적용) */
+.form-wrapper {
+    flex: 1;
+    background: rgba(46, 34, 34, 0.85);
+    border: 4px solid #5d4037;
+    border-radius: 2px;
+    padding: 15px 20px; /* 상하 패딩 축소 */
+    overflow: hidden; /* 바깥 스크롤 방지 */
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    margin-bottom: 8px; /* 간격 대폭 축소 */
+}
+
+.input-group label {
+    display: block;
+    color: #ffca28;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+/* 읽기 전용 텍스트 스타일 */
+.pixel-readonly {
+    display: block;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 14px;
+}
+
+/* 내용 영역 높이를 제한하여 버튼 공간 확보 */
+.pixel-textarea-view {
+    min-height: 50px;
+    max-height: 80px; /* 내용 박스 높이 축소 */
+    overflow-y: auto;
+}
+
+/* 4. 경고 박스 (간격 및 크기 최적화) */
+.warning-box {
+    background: rgba(231, 76, 60, 0.15);
+    border: 2px dashed #e74c3c;
+    padding: 10px;
+    text-align: center;
+    color: #fff;
+    margin: 10px 0; /* 마진 축소 */
+}
+
+.warning-title {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 0 5px 0 !important;
+}
+
+.warning-box p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* 5. 버튼 그룹 (하단 고정 및 짤림 방지) */
+.btn-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: auto; /* 공간 밀어내기 */
+    padding-bottom: 5px;
+}
+
+.pixel-btn {
+    padding: 10px 25px;
+    background: #8d6e63;
+    color: white;
+    border: 2px solid #000;
+    cursor: pointer;
+    font-family: 'DungGeunMo';
+    font-size: 14px;
+    box-shadow: 2px 2px 0 #000;
+    transition: all 0.1s;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+}
+
+.pixel-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 #000;
+}
+
+.btn-delete { background: #e74c3c; }
+.btn-cancel { background: #7f8c8d; }
+
+/* 스크롤바 디자인 */
+.pixel-textarea-view::-webkit-scrollbar { width: 8px; }
+.pixel-textarea-view::-webkit-scrollbar-track { background: #3e2723; }
+.pixel-textarea-view::-webkit-scrollbar-thumb {
+    background: #8d6e63;
+    border: 2px solid #3e2723;
+}

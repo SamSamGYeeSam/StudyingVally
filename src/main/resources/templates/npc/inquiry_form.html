@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>1:1 문의 - Valley Guild</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'DungGeunMo', sans-serif;
+            overflow: hidden;
+        }
+
+        /* 배경 컨테이너 */
+        .room-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 6px solid #5d4037;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            background-image: url('/image/npc-bg.png');
+            background-position: center;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 문의 폼 패널 */
+        .form-panel {
+            width: 550px;
+            background: rgba(253, 241, 213, 0.95); /* 양피지색 반투명 */
+            border: 5px solid #5d4037;
+            outline: 2px solid #000;
+            padding: 35px;
+            box-sizing: border-box;
+            z-index: 100;
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #3e2723;
+            font-size: 24px;
+            text-align: center;
+            border-bottom: 3px double #5d4037;
+            padding-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .notice {
+            color: #5d4037;
+            font-size: 13px;
+            margin-bottom: 25px;
+            text-align: center;
+            line-height: 1.5;
+            background: rgba(93, 64, 55, 0.05);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #3e2723;
+        }
+
+        /* 픽셀 스타일 입력창 */
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #5d4037;
+            background: rgba(255, 255, 255, 0.8);
+            box-sizing: border-box;
+            font-size: 14px;
+            font-family: 'DungGeunMo';
+            outline: none;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            background: #fff;
+            border-color: #2196f3; /* 문의 페이지는 신뢰의 파란색 포인트 */
+            box-shadow: 0 0 5px rgba(33, 150, 243, 0.2);
+        }
+
+        /* 버튼 그룹 */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .pixel-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #000;
+            cursor: pointer;
+            font-family: 'DungGeunMo';
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 4px 4px 0 #000;
+            transition: 0.1s;
+        }
+
+        .save-btn {
+            flex: 1.5;
+            background: #2196f3;
+            color: #fff;
+        }
+
+        .cancel-btn {
+            background: #78909c;
+            color: #fff;
+        }
+
+        .pixel-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .pixel-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+        }
+
+        /* 장식 아이콘 */
+        .scroll-icon {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 40px;
+            background: #fdf1d5;
+            padding: 10px;
+            border-radius: 50%;
+            border: 4px solid #5d4037;
+        }
+    </style>
+</head>
+<body>
+
+<div class="room-container">
+    <div class="form-panel">
+        <div class="scroll-icon">✉️</div>
+        <h2>1:1 기술 문의함</h2>
+
+        <p class="notice">
+            시스템 오류나 건의사항을 자유롭게 남겨주세요.<br>
+            <strong>마법사가 확인 후 답변을 양피지에 기록해 두겠습니다.</strong>
+        </p>
+
+        <form action="/npc/inquiry" method="post">
+            <label>📜 문의 제목</label>
+            <input type="text" name="questionTitle" required
+                   placeholder="어떤 문제가 발생했나요?">
+
+            <label>📝 문의 내용</label>
+            <textarea name="questionDesc" rows="7" required
+                      placeholder="문제 상황을 상세히 적어주시면 마법사가 이해하기 쉽습니다."></textarea>
+
+            <div class="btn-group">
+                <a href="/npc" class="pixel-btn cancel-btn">마을로 가기</a>
+                <button type="submit" class="pixel-btn save-btn">문의 전달하기</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

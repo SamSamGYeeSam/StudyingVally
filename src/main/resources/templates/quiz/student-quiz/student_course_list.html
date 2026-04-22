@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>수강 중인 강의 - Valley Quiz</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+  <style>
+    body {
+      background-color: #050505;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'DungGeunMo', sans-serif;
+      overflow: hidden;
+    }
+
+    /* 던전 배경 유지 */
+    .dungeon-container {
+      position: relative;
+      width: 900px;
+      height: 550px;
+      border: 8px solid #2c3e50;
+      box-shadow: 0 0 40px rgba(0,0,0,1);
+      background-image: url('/image/quiz-bg.png');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 중앙 석판(리스트 영역) */
+    .course-panel {
+      width: 600px;
+      max-height: 400px;
+      background: rgba(20, 20, 25, 0.85); /* 어두운 반투명 */
+      border: 4px solid #455a64;
+      outline: 2px solid #000;
+      padding: 30px;
+      box-sizing: border-box;
+      color: #eceff1;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #ff4500;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .header h2 { margin: 0; font-size: 22px; color: #ff4500; text-shadow: 2px 2px 0 #000; }
+    .header p { margin: 10px 0 0; font-size: 14px; color: #b0bec5; }
+
+    /* 강의 리스트 스크롤 영역 */
+    .course-list {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    .course-list::-webkit-scrollbar { width: 8px; }
+    .course-list::-webkit-scrollbar-thumb { background: #ff4500; border-radius: 4px; }
+
+    /* 개별 강의 아이템 */
+    .course-item {
+      margin-bottom: 12px;
+      list-style: none;
+      padding: 0;
+    }
+
+    .course-btn {
+      width: 100%;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid #37474f;
+      color: #fff;
+      font-family: 'DungGeunMo';
+      font-size: 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .course-btn:hover {
+      background: rgba(255, 69, 0, 0.2);
+      border-color: #ff4500;
+      transform: translateX(5px);
+    }
+
+    .course-btn::before {
+      content: '⚔️';
+      margin-right: 10px;
+    }
+
+    /* 뒤로가기 버튼 */
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 8px 15px;
+      background: #263238;
+      color: #fff;
+      border: 2px solid #000;
+      text-decoration: none;
+      font-size: 14px;
+      box-shadow: 3px 3px 0 #000;
+      cursor: pointer;
+      z-index: 20;
+    }
+    .back-btn:hover { background: #37474f; transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #000; }
+
+    .empty-msg {
+      text-align: center;
+      padding: 50px 0;
+      color: #78909c;
+      font-size: 16px;
+    }
+
+    /* 장식용 드래곤 실루엣 (선택 사항) */
+    .bg-deco {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 100px;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dungeon-container">
+  <!-- 뒤로가기 -->
+  <a href="/student/quiz/room" class="back-btn">⬅ 뒤로 가기</a>
+
+  <!-- 강의 목록 판넬 -->
+  <div class="course-panel">
+    <div class="header">
+      <h2>📜 <span th:text="${displayName}">도전자</span>의 도전 목록</h2>
+      <p>시험을 치를 관문을 선택하십시오.</p>
+    </div>
+
+    <div class="course-list">
+      <ul style="padding: 0; margin: 0;">
+        <li th:each="course : ${enrolledCourses}" class="course-item">
+          <form action="/student/quiz/course-post" method="post">
+            <input type="hidden" name="courseId" th:value="${course.courseId}">
+            <button type="submit" class="course-btn">
+              <span th:text="${course.courseTitle}">강의 제목</span>
+              <span style="font-size: 12px; color: #ff4500;">ENTER ▶</span>
+            </button>
+          </form>
+        </li>
+      </ul>
+
+      <!-- 강의가 없을 때 -->
+      <div th:if="${#lists.isEmpty(enrolledCourses)}" class="empty-msg">
+        <div style="font-size: 30px; margin-bottom: 10px;">🌑</div>
+        현재 활성화된 관문이 없습니다.
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-deco">🐉</div>
+</div>
+
+</body>
+</html>

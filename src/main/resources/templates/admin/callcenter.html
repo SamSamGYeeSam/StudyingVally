@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>고객센터 관리 페이지</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+    />
+    <style>
+        :root {
+          --wood-dark: #3e2723;
+          --wood-medium: #5d4037;
+          --wood-light: #8d6e63;
+          --gold: #ffca28;
+          --paper: #fff8e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DungGeunMo', sans-serif;
+            background-color: #f5efe6;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--paper);
+            border-bottom: 3px solid var(--wood-medium);
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 53px;
+            color: var(--wood-dark);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border: 3px solid var(--wood-dark);
+            background: var(--paper);
+            color: var(--wood-dark);
+            text-decoration: none !important;
+            font-weight: bold;
+            font-size: 20px;
+            font-family: 'DungGeunMo';
+            transition: 0.1s;
+        }
+
+        .back-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--wood-dark);
+        }
+
+        .back-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-dark);
+        }
+
+        .container {
+           width: 80%;
+          max-width: 1600px;
+            margin: 30px auto;
+            display: flex;
+            flex-direction: row;
+            gap: 25px;
+            flex: 1;
+            margin-bottom: 30px;
+        }
+
+        .menu-link {
+            display: flex;
+            height: 100%;
+            text-decoration: none !important;
+            color: var(--wood-dark);
+            transition: 0.1s;
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
+            background: var(--paper);
+            flex:1;
+        }
+
+        .menu-link:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0 var(--wood-dark);
+        }
+
+        .menu-link:active {
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0 var(--wood-dark);
+        }
+
+        .menu-left {
+            width: 100%;
+            min-height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+            padding: 0;
+        }
+
+        .menu-icon {
+        width: 70px;
+        height: 70px;
+        /* margin-left: 15px; */
+         flex-shrink: 0;
+        }
+
+
+        .menu-title {
+            font-size: 40px;
+            font-weight: 600;
+            color: var(--wood-dark);
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>고객센터 관리 페이지</h1>
+    <a th:href="@{/admin/main}" class="back-btn">메인으로</a>
+</div>
+
+<div class="container">
+
+    <a th:href="@{/admin/callcenter/notice}" class="menu-link">
+        <div class="menu-left">
+            <div class="menu-title">공지사항</div>
+            <svg class="menu-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L13 6M19 12L13 18"
+                      stroke="#3e2723"
+                      stroke-width="1.5"
+                      stroke-linecap="square"
+                      stroke-linejoin="bevel"/>
+            </svg>
+        </div>
+    </a>
+
+    <a th:href="@{/admin/callcenter/contact}" class="menu-link">
+        <div class="menu-left">
+            <div class="menu-title">문의함</div>
+            <svg class="menu-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L13 6M19 12L13 18"
+                      stroke="#3e2723"
+                      stroke-width="1.5"
+                      stroke-linecap="square"
+                      stroke-linejoin="bevel"/>
+            </svg>
+
+        </div>
+
+    </a>
+
+    <a th:href="@{/admin/callcenter/report}" class="menu-link">
+        <div class="menu-left">
+            <div class="menu-title">신고함</div>
+            <svg class="menu-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L13 6M19 12L13 18"
+                      stroke="#3e2723"
+                      stroke-width="1.5"
+                      stroke-linecap="square"
+                      stroke-linejoin="bevel"/>
+            </svg>
+
+        </div>
+
+    </a>
+
+</div>
+
+
+</body>
+</html>

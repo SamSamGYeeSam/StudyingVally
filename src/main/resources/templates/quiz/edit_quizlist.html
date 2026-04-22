@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Vally - 문제 일괄 수정</title>
+    <!-- CSS 연결 -->
+    <link rel="stylesheet" th:href="@{/css/editquizlist.css}">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="room-container">
+    <h2 class="pixel-title">🛠️ 퀴즈 문제 일괄 수정</h2>
+
+    <!-- 배점 합계 박스 (문제 박스와 배경색 통일) -->
+    <div class="score-display">
+        <strong>현재 배점 합계 :</strong>
+        <span id="totalScoreText">100</span> / 100점
+        <div style="font-size: 11px; margin-top: 5px; color: #666;">* 총합을 100점으로 맞춰주세요. (최소 5문제 이상 권장)</div>
+    </div>
+
+    <!-- 스크롤 가능한 폼 영역 -->
+    <form action="/teacher/quiz/update-quizlist-batch" method="post" id="quizForm" novalidate>
+        <input type="hidden" name="quizNo" th:value="${quizNo}">
+
+        <div id="quizContainer">
+            <!-- 기존 문제 목록 반복 -->
+            <div th:each="item, stat : ${quizItems}" class="question-block" th:data-index="${stat.index}">
+                <button type="button" class="remove-btn" onclick="removeQuestionBlock(this)">삭제</button>
+                <h4 class="q-number" style="margin-top: 0; color: #1976d2;" th:text="'문제 ' + ${stat.count}"></h4>
+
+                <input type="hidden" class="hidden-id" th:name="|quizList[${stat.index}].quizListNo|" th:value="${item.quizListNo}">
+
+                <label>문제 제목</label>
+                <input type="text" th:name="|quizList[${stat.index}].quizTitle|" th:value="${item.quizTitle}" required>
+
+                <label>문제 지문</label>
+                <textarea th:name="|quizList[${stat.index}].quizDesc|" rows="3" th:text="${item.quizDesc}"></textarea>
+
+                <label>정답</label>
+                <input type="text" th:name="|quizList[${stat.index}].quizAnswer|" th:value="${item.quizAnswer}" required>
+
+                <label>정답 해설</label>
+                <textarea th:name="|quizList[${stat.index}].quizAnswerDesc|" rows="2" th:text="${item.quizAnswerDesc}"></textarea>
+
+                <label style="color: #d32f2f;">배점</label>
+                <input type="number" th:name="|quizList[${stat.index}].quizScore|" th:value="${item.quizScore}"
+                       class="quiz-score-input" min="1" max="100" required oninput="calculateTotalScore()">
+            </div>
+        </div>
+
+        <!-- 문제 추가 버튼 (리스트 최하단) -->
+        <button type="button" class="pixel-btn add-btn" onclick="addQuestionBlock()">+ 새로운 문제 추가하기</button>
+    </form>
+
+    <!-- 하단 고정 버튼 영역 (위치 및 크기 통일) -->
+    <div class="footer-area">
+        <button type="button" class="pixel-btn prev-btn" onclick="location.href='/teacher/quiz/find-quizlist-by-quiz'">
+            🔙 이전으로
+        </button>
+
+        <button type="submit" form="quizForm" class="pixel-btn submit-btn">
+            ✅ 수정 완료 저장
+        </button>
+    </div>
+</div>
+
+<!-- 모달 및 스크립트 -->
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
+<script>
+    // 페이지 로드 시 초기 합계 계산
+    document.addEventListener("DOMContentLoaded", function() {
+        calculateTotalScore();
+    });
+
+    function calculateTotalScore() {
+        let inputs = document.querySelectorAll('.quiz-score-input');
+        let total = 0;
+        inputs.forEach(function(input) {
+            total += parseInt(input.value) || 0;
+        });
+
+        let textElement = document.getElementById('totalScoreText');
+        textElement.innerText = total;
+        textElement.style.color = (total === 100) ? '#27ae60' : '#e74c3c';
+    }
+
+    function addQuestionBlock() {
+        const container = document.getElementById('quizContainer');
+        const currentIndex = document.querySelectorAll('.question-block').length;
+
+        const newBlock = document.createElement('div');
+        newBlock.className = 'question-block';
+        newBlock.setAttribute('data-index', currentIndex);
+
+        newBlock.innerHTML = `
+            <button type="button" class="remove-btn" onclick="removeQuestionBlock(this)">삭제</button>
+            <h4 class="q-number" style="margin-top: 0; color: #1976d2;">문제 ${currentIndex + 1}</h4>
+            <label>문제 제목</label>
+            <input type="text" name="quizList[${currentIndex}].quizTitle" required placeholder="제목 입력">
+            <label>문제 지문</label>
+            <textarea name="quizList[${currentIndex}].quizDesc" rows="3" placeholder="지문 입력"></textarea>
+            <label>정답</label>
+            <input type="text" name="quizList[${currentIndex}].quizAnswer" required placeholder="정답">
+            <label>정답 해설</label>
+            <textarea name="quizList[${currentIndex}].quizAnswerDesc" rows="2" placeholder="해설"></textarea>
+            <label style="color: #d32f2f;">배점</label>
+            <input type="number" name="quizList[${currentIndex}].quizScore" class="quiz-score-input" value="0" min="1" max="100" required oninput="calculateTotalScore()">
+        `;
+
+        container.appendChild(newBlock);
+        reindexQuestions();
+        calculateTotalScore();
+
+        const form = document.getElementById('quizForm');
+        form.scrollTop = form.scrollHeight;
+    }
+
+    function removeQuestionBlock(buttonElement) {
+        const block = buttonElement.closest('.question-block');
+        block.remove();
+        reindexQuestions();
+        calculateTotalScore();
+    }
+
+    function reindexQuestions() {
+        const blocks = document.querySelectorAll('.question-block');
+        blocks.forEach((block, index) => {
+            block.setAttribute('data-index', index);
+            block.querySelector('.q-number').innerText = '문제 ' + (index + 1);
+
+            let hiddenId = block.querySelector('.hidden-id');
+            if (hiddenId) hiddenId.name = `quizList[${index}].quizListNo`;
+
+            block.querySelector('input[name*=".quizTitle"]').name = `quizList[${index}].quizTitle`;
+            block.querySelector('textarea[name*=".quizDesc"]').name = `quizList[${index}].quizDesc`;
+            block.querySelector('input[name*=".quizAnswer"]').name = `quizList[${index}].quizAnswer`;
+            block.querySelector('textarea[name*=".quizAnswerDesc"]').name = `quizList[${index}].quizAnswerDesc`;
+            block.querySelector('input[name*=".quizScore"]').name = `quizList[${index}].quizScore`;
+        });
+    }
+</script>
+
+</body>
+</html>

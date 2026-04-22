@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Vally - 퀴즈 생성</title>
+    <link rel="stylesheet" th:href="@{/css/registquiz.css}">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="room-container">
+    <h2 class="pixel-title">📜 퀴즈 생성하기</h2>
+
+    <div class="form-wrapper">
+        <form id="createQuizForm" action="/teacher/chapter/create-quiz" method="post" novalidate>
+            <input type="hidden" name="chapNo" th:value="${chapNo}">
+
+            <label>✍️ 퀴즈 제목 입력</label>
+            <input type="text" name="quizTitle" placeholder="예: 자바 기초 평가" required autofocus>
+        </form>
+    </div>
+
+    <!-- 하단 고정 버튼 영역 -->
+    <div class="footer-area">
+        <button type="button" class="pixel-btn prev-btn" onclick="location.href='/teacher/quiz/find-quiz-by-chap'">
+            🔙 이전으로
+        </button>
+
+        <button type="submit" form="createQuizForm" class="pixel-btn submit-btn">
+            ✅ 퀴즈 생성 완료
+        </button>
+    </div>
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
+</body>
+</html>

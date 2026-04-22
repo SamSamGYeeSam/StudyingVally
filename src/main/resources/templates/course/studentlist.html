@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Vally - 수강생 조회</title>
+    <link rel="stylesheet" th:href="@{/css/studentlist.css}">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="room-container">
+    <h2 class="pixel-title" th:text="|📜 ${course.courseTitle} 강의 수강생 목록|"></h2>
+
+    <div class="list-wrapper">
+        <table th:if="${studentList != null and !studentList.isEmpty()}">
+            <thead>
+            <tr>
+                <th>이름</th>
+                <th>닉네임</th>
+                <th>강의 진척도</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="student : ${studentList}">
+                <td th:text="${student.userName}"></td>
+                <td th:text="${student.userNickname}"></td>
+                <td class="process-text" th:text="${student.enrollmentProcess} + '%'"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${#lists.isEmpty(studentList)}" class="no-data">
+            아직 수강 중인 학생이 없습니다. 🌵
+        </div>
+    </div>
+
+    <div class="footer-area">
+        <a href="/teacher/course" class="pixel-btn">
+            🔙 이전으로
+        </a>
+    </div>
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
+</body>
+</html>

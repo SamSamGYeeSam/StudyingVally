@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>내 문의 내역 - Valley Records</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+  <style>
+    body {
+      background-color: #1a1a1a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'DungGeunMo', sans-serif;
+      overflow: hidden;
+    }
+
+    /* npc-bg 배경 유지 */
+    .room-container {
+      position: relative;
+      width: 800px;
+      height: 600px;
+      border: 6px solid #5d4037;
+      box-shadow: 0 0 50px rgba(0,0,0,0.8);
+      background-image: url('/image/npc-bg.png');
+      background-position: center;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 기록부 패널 */
+    .records-panel {
+      width: 700px;
+      height: 520px;
+      background: rgba(253, 241, 213, 0.92); /* 양피지색 반투명 */
+      border: 5px solid #5d4037;
+      outline: 2px solid #000;
+      display: flex;
+      flex-direction: column;
+      padding: 25px;
+      box-sizing: border-box;
+      z-index: 100;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px double #5d4037;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .header h2 { margin: 0; color: #3e2723; font-size: 24px; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
+
+    /* 스크롤 가능한 리스트 영역 */
+    .inquiry-list {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    /* 커스텀 스크롤바 */
+    .inquiry-list::-webkit-scrollbar { width: 8px; }
+    .inquiry-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+    .inquiry-list::-webkit-scrollbar-thumb { background: #5d4037; border-radius: 4px; }
+
+    /* 개별 문의 카드 */
+    .card {
+      border: 2px solid #5d4037;
+      border-radius: 4px;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.6);
+      box-shadow: 2px 2px 0 #5d4037;
+    }
+
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .title { font-size: 16px; font-weight: bold; color: #2c3e50; line-height: 1.4; }
+
+    /* 상태 배지 */
+    .status-badge { padding: 4px 8px; border: 1px solid #000; font-size: 11px; font-weight: bold; box-shadow: 2px 2px 0 #000; }
+    .status-waiting { background: #95a5a6; color: #fff; }
+    .status-answered { background: #27ae60; color: #fff; }
+
+    .desc { color: #5d4037; font-size: 14px; line-height: 1.5; margin-bottom: 10px; white-space: pre-wrap; background: rgba(0,0,0,0.03); padding: 10px; border-radius: 4px; }
+
+    /* 답변 박스 */
+    .answer-box {
+      background: #d7ccc8;
+      border-left: 5px solid #5d4037;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 2px;
+    }
+    .answer-title { font-weight: bold; font-size: 13px; margin-bottom: 5px; color: #3e2723; display: flex; align-items: center; gap: 5px; }
+
+    /* 버튼 스타일 */
+    .pixel-btn {
+      padding: 6px 12px;
+      background: #8d6e63;
+      color: white;
+      border: 2px solid #000;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 13px;
+      box-shadow: 2px 2px 0 #000;
+    }
+    .pixel-btn:hover { background: #6d4c41; transform: translateY(-1px); }
+    .pixel-btn:active { transform: translate(1px, 1px); box-shadow: 0 0 0 #000; }
+
+    .empty-msg { padding: 80px 0; text-align: center; color: #8d6e63; font-size: 16px; }
+  </style>
+</head>
+<body>
+
+<div class="room-container">
+  <div class="records-panel">
+    <div class="header">
+      <h2>📜 나의 문의 기록</h2>
+      <a href="/npc" class="pixel-btn">🔙 돌아가기</a>
+    </div>
+
+    <div class="inquiry-list">
+      <!-- 리스트가 비어있지 않을 때 -->
+      <div th:if="${not #lists.isEmpty(inquiries)}">
+        <div class="card" th:each="inquiry : ${inquiries}">
+          <div class="card-header">
+            <span class="title">제목: <span th:text="${inquiry.questionTitle}">문의 제목</span></span>
+
+            <span th:if="${inquiry.questionStatus == '답변 대기'}" class="status-badge status-waiting">⏳ 답변 대기</span>
+            <span th:if="${inquiry.questionStatus == '답변 완료'}" class="status-badge status-answered">✅ 답변 완료</span>
+          </div>
+
+          <div class="desc" th:text="${inquiry.questionDesc}">문의 내용이 들어갑니다.</div>
+
+          <!-- 답변이 있을 때만 노출 -->
+          <div class="answer-box" th:if="${inquiry.questionAnswer != null and inquiry.questionAnswer != ''}">
+            <div class="answer-title">🧙‍♂️ 마법사의 답변</div>
+            <div th:text="${inquiry.questionAnswer}" style="font-size: 13px; line-height: 1.5; color: #2c3e50;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 리스트가 비어있을 때 -->
+      <div th:if="${#lists.isEmpty(inquiries)}" class="empty-msg">
+        <div style="font-size: 40px; margin-bottom: 15px;">🏜️</div>
+        아직 작성하신 기록이 없군요.<br>도움이 필요하면 언제든 말씀해 주세요!
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항 상세</title>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css"
+    />
+    <style>
+        :root {
+          --wood-dark: #3e2723;
+          --wood-medium: #5d4037;
+          --wood-light: #8d6e63;
+          --gold: #ffca28;
+          --paper: #fff8e1;
+        }
+
+        * { 
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DungGeunMo', sans-serif;
+            background-color: #f5efe6;
+            margin: 0;
+        }
+
+        .header {
+            background: var(--paper);
+            border-bottom: 3px solid var(--wood-medium);
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 53px;
+            font-weight: bold;
+            color: var(--wood-dark);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .content-box {
+            border: 3px solid var(--wood-medium);
+            outline: 1px solid var(--wood-dark);
+            background: var(--paper);
+            padding: 32px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .content-title {
+            margin: 0;
+            font-size: 34px;
+            font-weight: bold;
+            color: var(--wood-dark);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .top-button,
+        .submit-button {
+            display: inline-block;
+            background: var(--wood-dark);
+            color: var(--paper);
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none !important;
+            cursor: pointer;
+            font-family: 'DungGeunMo';
+            transition: 0.1s;
+        }
+
+        .top-button:hover,
+        .submit-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--wood-medium);
+        }
+
+        .top-button:active,
+        .submit-button:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--wood-medium);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .form-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .form-table th,
+        .form-table td {
+            border: 2px solid var(--wood-dark);
+            padding: 16px;
+            vertical-align: middle;
+        }
+
+        .form-table th {
+            width: 180px;
+            background: var(--wood-light);
+            color: var(--paper);
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .form-table td {
+            color: var(--wood-dark);
+        }
+
+        .form-input,
+        .form-textarea,
+        .readonly-input {
+            width: 100%;
+            border: 2px solid var(--wood-dark);
+            padding: 12px;
+            font-size: 18px;
+            font-family: 'DungGeunMo';
+            color: var(--wood-dark);
+        }
+
+        .readonly-input {
+            background-color: #f7f7f7;
+        }
+
+        .form-input {
+            background: #fff;
+        }
+
+        .form-textarea {
+            min-height: 320px;
+            resize: vertical;
+            background: #fff;
+        }
+
+        .bottom-button-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .message-box {
+            margin-bottom: 16px;
+            padding: 14px 16px;
+            font-weight: bold;
+            background-color: #ffe0e0;
+            border: 2px solid #d14d4d;
+            color: #7a1111;
+        }
+    </style>
+
+    <script>
+        function validateNoticeUpdateForm(form) {
+            const titleInput = form.querySelector('input[name="noticeTitle"]');
+            const descTextarea = form.querySelector('textarea[name="noticeDesc"]');
+            const button = form.querySelector('button[type="submit"]');
+
+            if (!titleInput.value.trim()) {
+                showModal("공지 제목을 입력하세요.", "error");
+                titleInput.focus();
+                return false;
+            }
+
+            if (!descTextarea.value.trim()) {
+                showModal("공지 내용을 입력하세요.", "error");
+                descTextarea.focus();
+                return false;
+            }
+
+            if (button.dataset.submitted === "true") {
+                return false;
+            }
+
+            button.dataset.submitted = "true";
+            button.disabled = true;
+            button.textContent = "수정 중...";
+            return true;
+        }
+    </script>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="header">
+    <h1>공지사항 상세</h1>
+    <div class="button-group">
+        <a th:href="@{/admin/callcenter/notice}" class="top-button">이전으로</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content-box">
+
+        <div th:if="${errorMessage}" class="message-box" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/admin/callcenter/noticedetail}" method="post" onsubmit="return validateNoticeUpdateForm(this);">
+            <input type="hidden" name="noticeNo" th:value="${noticeDetail.noticeNo}">
+
+            <table class="form-table">
+                <tr>
+                    <th>작성 일시</th>
+                    <td>
+                        <input type="text" class="readonly-input"
+                               th:value="${#temporals.format(noticeDetail.createdDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <th>수정 일시</th>
+                    <td>
+                        <input type="text" class="readonly-input"
+                               th:value="${noticeDetail.modifiedDate != null ? #temporals.format(noticeDetail.modifiedDate, 'yyyy-MM-dd HH:mm:ss') : ''}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <th>공지 제목</th>
+                    <td>
+                        <input type="text" name="noticeTitle" class="form-input" th:value="${noticeDetail.noticeTitle}">
+                    </td>
+                </tr>
+                <tr>
+                    <th>공지 내용</th>
+                    <td>
+                        <textarea name="noticeDesc" class="form-textarea" th:text="${noticeDetail.noticeDesc}"></textarea>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="bottom-button-area">
+                <button type="submit" class="submit-button">수정하기</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+</body>
+</html>

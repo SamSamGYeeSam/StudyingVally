@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>NPC 센터 - 오류 발생</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; padding: 50px; text-align: center; color: #333; }
+        .container { max-width: 500px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; border-top: 5px solid #000; }
+        .msg-box { background: #f9f9f9; padding: 20px; border: 1px dashed #ccc; margin: 20px 0; font-weight: bold; color: #555; }
+        .btn-back { display: inline-block; padding: 12px 25px; background: #000; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold; }
+    </style>
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+<div class="container">
+    <div style="font-size: 50px; margin-bottom: 20px;">🛠️</div>
+    <h2 style="color: #d32f2f; margin-top: 0;">문제가 발생했습니다.</h2>
+    <div class="msg-box" th:text="${errorMessage}">오류가 발생했습니다.</div>
+    <p style="color:#777; margin-bottom: 30px;">이전 페이지로 돌아가 다시 시도해 주세요.</p>
+    <a href="/npc" class="btn-back">메인으로 돌아가기</a>
+</div>
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+</body>
+</html>

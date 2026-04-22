@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>퀴즈 선택 - Valley Quiz</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/DungGeunMo.css">
+    <style>
+        body {
+            background-color: #050505;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'DungGeunMo', sans-serif;
+            overflow: hidden;
+        }
+
+        /* 던전 배경 유지 */
+        .dungeon-container {
+            position: relative;
+            width: 900px;
+            height: 550px;
+            border: 8px solid #2c3e50;
+            box-shadow: 0 0 40px rgba(0,0,0,1);
+            background-image: url('/image/quiz-bg.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 퀴즈 목록 패널 */
+        .quiz-panel {
+            width: 700px;
+            max-height: 450px;
+            background: rgba(15, 15, 20, 0.92);
+            border: 4px solid #b71c1c; /* 시련을 상징하는 진한 레드 */
+            outline: 2px solid #000;
+            padding: 30px;
+            box-sizing: border-box;
+            color: #eceff1;
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #b71c1c;
+            padding-bottom: 10px;
+        }
+
+        .header h2 { margin: 0; font-size: 24px; color: #ff5252; text-shadow: 2px 2px 0 #000; }
+        .header p { margin: 5px 0 0; font-size: 14px; color: #ffa4a2; }
+
+        /* 리스트 스크롤 */
+        .quiz-scroll {
+            overflow-y: auto;
+            max-height: 320px;
+            padding-right: 10px;
+        }
+
+        .quiz-scroll::-webkit-scrollbar { width: 6px; }
+        .quiz-scroll::-webkit-scrollbar-thumb { background: #ff5252; }
+
+        ul { list-style: none; padding: 0; margin: 0; }
+
+        /* 퀴즈 아이템 카드 */
+        .quiz-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #37474f;
+            margin-bottom: 15px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .quiz-item:hover {
+            background: rgba(255, 82, 82, 0.1);
+            border-color: #ff5252;
+            transform: scale(1.01);
+        }
+
+        .quiz-form {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0;
+        }
+
+        /* 퀴즈 제목 버튼 */
+        .quiz-title-btn {
+            cursor: pointer;
+            font-family: 'DungGeunMo';
+            font-size: 18px;
+            color: #fff;
+            background: none;
+            border: none;
+            text-align: left;
+            padding: 0;
+            flex: 1;
+        }
+        .quiz-title-btn:hover { color: #ff5252; text-decoration: underline; }
+
+        /* 점수 배지 */
+        .score-badge {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid #000;
+            box-shadow: 2px 2px 0 #000;
+            margin-left: 15px;
+            white-space: nowrap;
+        }
+
+        .completed {
+            background: #ffd700; /* 황금색 */
+            color: #3e2723;
+        }
+
+        .not-started {
+            background: #455a64; /* 회색 */
+            color: #cfd8dc;
+        }
+
+        /* 뒤로가기 버튼 */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 8px 15px;
+            background: #263238;
+            color: #fff;
+            border: 2px solid #000;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: 3px 3px 0 #000;
+            z-index: 20;
+        }
+        .back-btn:hover { background: #37474f; }
+
+        .empty-msg { text-align: center; padding: 50px; color: #78909c; }
+    </style>
+</head>
+<body>
+
+<div class="dungeon-container">
+    <a href="/student/quiz/select" class="back-btn">⬅ 챕터 목록으로</a>
+
+    <div class="quiz-panel">
+        <div class="header">
+            <h2>⚔️ 최종 시련 선택</h2>
+            <p>드래곤이 준비한 문제를 풀고 보상을 획득하십시오.</p>
+        </div>
+
+        <div class="quiz-scroll">
+            <ul>
+                <li th:each="quiz : ${quizList}" class="quiz-item">
+                    <form action="/student/quiz/solve-post" method="post" class="quiz-form">
+                        <input type="hidden" name="quizNo" th:value="${quiz.quizNo}">
+
+                        <button type="submit" class="quiz-title-btn">
+                            <span th:text="${quiz.quizTitle}">퀴즈 제목</span>
+                        </button>
+
+                        <!-- 점수 표시 로직 -->
+                        <div th:if="${scoreMap != null and scoreMap.containsKey(quiz.quizNo)}"
+                             class="score-badge completed">
+                            🏆 <span th:text="${scoreMap.get(quiz.quizNo)}">0</span>점
+                        </div>
+
+                        <div th:unless="${scoreMap != null and scoreMap.containsKey(quiz.quizNo)}"
+                             class="score-badge not-started">
+                            🔒 미응시
+                        </div>
+                    </form>
+                </li>
+            </ul>
+
+            <div th:if="${#lists.isEmpty(quizList)}" class="empty-msg">
+                등록된 시련이 없습니다.
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Vally - 챕터 수정</title>
+    <link rel="stylesheet" th:href="@{/css/updatechapter.css}">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="room-container">
+    <h1 class="pixel-title">🛠️ 챕터 수정 페이지</h1>
+
+    <div class="form-wrapper">
+        <!-- 메인 수정 폼 -->
+        <form id="updateForm" action="/teacher/course/updatechapter" method="post" enctype="multipart/form-data" novalidate>
+            <input type="hidden" name="chapNo" th:value="${chapter.chapNo}">
+            <input type="hidden" name="courseId" th:value="${courseId}">
+
+            <label>📜 챕터 제목</label>
+            <input type="text" name="chapTitle" th:value="${chapter.chapTitle}" required>
+
+            <label>📝 챕터 설명</label>
+            <textarea rows="8" name="chapDesc" th:text="${chapter.chapDesc}" required></textarea>
+
+            <label>🎬 영상 URL (변경 시 선택)</label>
+            <input type="file" name="videoFile" accept="video/*">
+            <p class="helper-text">* 영상을 변경하지 않으려면 파일을 선택하지 마세요.</p>
+        </form>
+    </div>
+
+    <div class="footer-area">
+        <!-- 이전으로 폼 -->
+        <form action="/teacher/course/update" method="post">
+            <input type="hidden" name="courseId" th:value="${courseId}">
+            <button type="submit" class="pixel-btn">🏠 이전으로</button>
+        </form>
+
+        <!-- 제출 버튼은 밖에서 updateForm을 제어하도록 설정 가능하지만,
+             가장 확실한 방법은 폼 안에 넣거나 submit() 호출입니다.
+             여기서는 원본처럼 폼 내부에 제출 버튼을 둡니다. -->
+        <button type="submit" form="updateForm" class="pixel-btn success">✅ 수정하기</button>
+    </div>
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
+</body>
+</html>

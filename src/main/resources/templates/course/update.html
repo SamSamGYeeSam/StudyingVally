@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Studying Valley - 강의 구성 수정</title>
+    <link rel="stylesheet" th:href="@{/css/update.css}">
+    <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
+</head>
+<body>
+
+<div class="room-container">
+    <!-- 좌측 상단 타이틀 영역 -->
+    <div class="header-area">
+        <h1 class="pixel-title">⚙️ COURSE MANAGEMENT</h1>
+    </div>
+
+    <!-- 중앙 콘텐츠 영역 (어두운 반투명 박스) -->
+    <div class="main-wrapper">
+        <div class="scroll-content">
+            <h3 class="section-title">🛠️ 강의 및 챕터 수정</h3>
+
+            <!-- 1. 강의 타이틀 수정 섹션 -->
+            <div class="pixel-card">
+                <div class="card-header">📍 MAIN COURSE</div>
+                <div class="card-body">
+                    <span class="course-name" th:text="${course.courseTitle}">강의 제목</span>
+                    <form action="/teacher/course/courseupdate" method="post" style="display:inline;">
+                        <input type="hidden" name="courseId" th:value="${course.courseId}">
+                        <button type="submit" class="mini-pixel-btn">✏️ 수정</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 2. 챕터 리스트 수정 섹션 -->
+            <div class="pixel-card">
+                <div class="card-header">📑 CHAPTER LIST</div>
+                <div class="card-body">
+                    <ul class="chapter-list" th:if="${chapterList != null and !chapterList.isEmpty()}">
+                        <li th:each="chapter : ${chapterList}">
+                            <span class="chap-name" th:text="${chapter.chapTitle}">챕터 제목</span>
+                            <form action="/teacher/course/chapterupdate" method="post" style="display:inline;">
+                                <input type="hidden" name="chapNo" th:value="${chapter.chapNo}">
+                                <input type="hidden" name="courseId" th:value="${course.courseId}">
+                                <button type="submit" class="mini-pixel-btn">✏️ EDIT</button>
+                            </form>
+                        </li>
+                    </ul>
+                    <!-- 챕터 없을 때 -->
+                    <div th:if="${chapterList == null or chapterList.isEmpty()}" class="no-data">
+                        <p>등록된 챕터가 없습니다. 🔨</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 버튼 영역 (푸터 영역) -->
+        <div class="footer-area">
+            <a href="/teacher/course" class="pixel-btn danger">🏠 목록으로 돌아가기</a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{modal/modal :: modalHtml}"></div>
+<script th:replace="~{modal/modal :: modalScript}"></script>
+
+</body>
+</html>

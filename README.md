@@ -1,3 +1,10 @@
 # StudyingVally
-StudyingVally Project
 ![Architecture](./docs/images/architecture.png)
+<p align="center">
+  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
+  <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=openjdk&logoColor=white" />
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
+</p>
+StudyingVally는 학생, 강사, 관리자가 함께 사용하는 학습 플랫폼 프로젝트입니다.
+사용자는 회원가입과 로그인 후 아이디/비밀번호 찾기, 내 정보 조회·수정, 회원 탈퇴 등의 기능을 이용할 수 있으며, 권한에 따라 학생 화면, 강사 화면, 관리자 화면이 구분되도록 설계되었습니다.
+Spring Boot, Spring Security, Spring Data JPA, Thymeleaf, MySQL을 기반으로 구현하여 인증·인가, 사용자 관리, 데이터 처리 흐름을 학습하고 적용하는 것을 목표로 한 프로젝트입니다.
