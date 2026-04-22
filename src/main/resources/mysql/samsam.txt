@@ -1,0 +1,12 @@
+
+
+연결
+connection name : samsam
+Username : samsam
+Password : samsam
+
+
+user
+관리자 : superadmin, admin123!
+강사 :  teacher01, pw123
+학생 : stu01, pw123
