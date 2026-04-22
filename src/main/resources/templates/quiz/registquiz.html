@@ -13,8 +13,7 @@
 
     <div class="form-wrapper">
         <form id="createQuizForm" action="/teacher/chapter/create-quiz" method="post" novalidate>
-            <label>📍 선택된 챕터 번호</label>
-            <input type="number" name="chapNo" th:value="${chapNo}" readonly required>
+            <input type="hidden" name="chapNo" th:value="${chapNo}">
 
             <label>✍️ 퀴즈 제목 입력</label>
             <input type="text" name="quizTitle" placeholder="예: 자바 기초 평가" required autofocus>
