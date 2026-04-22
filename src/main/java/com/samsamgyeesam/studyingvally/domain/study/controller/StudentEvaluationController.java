@@ -65,8 +65,7 @@ public class StudentEvaluationController {
             @RequestParam("courseId") Long courseId,
             @RequestParam("rating") int rating,
             @RequestParam("content") String content,
-            Principal principal, RedirectAttributes rttr)
-    {
+            Principal principal, RedirectAttributes rttr) {
         if (principal == null) return "redirect:/auth/login";
         String userId = principal.getName();
         Long userNo = studentService.findUserNoByUserId(userId);
@@ -77,15 +76,7 @@ public class StudentEvaluationController {
         rttr.addAttribute("courseId", courseId);
 
         return "redirect:/student/course";
-//        String referer = request.getHeader("Referer");
-//
-//        if (referer != null && !referer.isEmpty()) {
-//            return "redirect:/student/chapter/class";
-//        }
-//
-//        return "redirect:/student/home";
     }
-
 
     @PostMapping("/detail")
     public String viewMyEvaluation() {

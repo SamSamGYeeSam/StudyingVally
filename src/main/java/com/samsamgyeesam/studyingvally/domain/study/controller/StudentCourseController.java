@@ -121,7 +121,6 @@ public class StudentCourseController {
                                                   @PathVariable Long chapNo,
                                                   Principal principal,
                                                   RedirectAttributes rttr) {
-//        if (principal == null) return ResponseEntity.status(401).body("unauthorized");
 
         String userId = principal.getName();
         Long userNo = studentService.findUserNoByUserId(userId);

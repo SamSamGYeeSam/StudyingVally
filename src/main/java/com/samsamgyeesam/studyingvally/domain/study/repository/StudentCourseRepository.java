@@ -13,8 +13,6 @@ import java.util.List;
 @Repository
 public interface StudentCourseRepository extends JpaRepository<StudentCourse, Long> {
 
-        List<StudentCourse> findByCourseStatusIgnoreCase(String courseStatus);
-        List<StudentCourse> findAllByOrderByCourseCreatedAtDesc();
         List<StudentCourse> findByCourseStatusIgnoreCaseOrderByCourseCreatedAtDesc(String courseStatus);
         @Query("SELECT new com.samsamgyeesam.studyingvally.domain.study.dto.StudentCourseNoticeDTO(" +
                 "cn.courseNoticeNo, " +

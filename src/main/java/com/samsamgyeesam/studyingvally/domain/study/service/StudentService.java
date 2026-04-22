@@ -73,16 +73,6 @@ public class StudentService {
                 .enrolledCourses(courseList)
                 .build();
     }
-    public List<StudentCourseNoticeDTO> getCourseNotices(Long userNo) {
-        List<Long> courseIds = studentEnrollmentRepository.findByUserNo(userNo)
-                .stream()
-                .map(e -> e.getCourse().getCourseId())
-                .collect(Collectors.toList());
-
-        if (courseIds.isEmpty()) return new ArrayList<>();
-
-        return studentnoticeRepository.findMyCourseNotices(courseIds);
-    }
 
     public List<StudentAdminNoticeDTO> getAdminNotices() {
         return studentnoticeRepository.findAllAdminNotices();

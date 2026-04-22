@@ -20,22 +20,22 @@ public class StudentCourse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
-    private Long courseId; // 강의번호
+    private Long courseId;
 
     @Column(name = "course_title", nullable = false)
-    private String courseTitle; // 강의제목
+    private String courseTitle;
 
     @Column(name = "course_description", nullable = false, columnDefinition = "TEXT")
-    private String courseDescription; // 강의 설명
+    private String courseDescription;
 
     @Column(name = "course_created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime courseCreatedAt; // 개설시간
+    private LocalDateTime courseCreatedAt;
 
     @Column(name = "course_status", nullable = false, length = 20)
-    private String courseStatus; // 강의 오픈 여부 (OPEN, CLOSED)
+    private String courseStatus;
 
     @Column(name = "course_send_approve", nullable = false)
-    private Integer courseSendApprove; // 승인요청여부 (0: 미요청, 1: 요청)
+    private Integer courseSendApprove;
 
     @Column(name = "user_no")
     private Long userNo;
