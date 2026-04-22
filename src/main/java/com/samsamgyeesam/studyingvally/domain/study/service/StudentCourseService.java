@@ -31,9 +31,9 @@ public class StudentCourseService {
     }
 
 
-    public List<StudentChapter> getChapters(Long courseId) {
-        return studentChapterRepository.findByCourse_CourseId(courseId);
-    }
+//    public List<StudentChapter> getChapters(Long courseId) {
+//        return studentChapterRepository.findByCourse_CourseId(courseId);
+//    }
 
 //    ==================================================================================================
 
@@ -90,31 +90,31 @@ public class StudentCourseService {
     }
 
 
-    @Transactional
-    public List<Map<String, Object>> getStudentCourseStatus(Long userNo) {
-        List<StudentEnrollment> enrollments = studentEnrollmentRepository.findByUserNo(userNo);
-
-        return enrollments.stream().map(enrollment -> {
-            Map<String, Object> map = new HashMap<>();
-
-            StudentCourse course = enrollment.getCourse();
-
-            map.put("courseId", (course != null) ? course.getCourseId() : null);
-            map.put("courseName", (course != null) ? course.getCourseTitle() : "알 수 없는 강의");
-
-            String professorName = (course != null && course.getUser() != null)
-                    ? course.getUser().getUserNickname() : "미지정";
-            map.put("professorName", professorName);
-
-            map.put("startDate", "2023-01-01");
-            map.put("progress", enrollment.getEnrollmentProcess());
-
-            map.put("quizYn", enrollment.getEnrollmentProcess() > 0 ? "Y" : "N");
-            map.put("score", enrollment.getEnrollmentProcess() >= 100 ? "A+" : "진행중");
-
-            return map;
-        }).collect(Collectors.toList());
-    }
+//    @Transactional
+//    public List<Map<String, Object>> getStudentCourseStatus(Long userNo) {
+//        List<StudentEnrollment> enrollments = studentEnrollmentRepository.findByUserNo(userNo);
+//
+//        return enrollments.stream().map(enrollment -> {
+//            Map<String, Object> map = new HashMap<>();
+//
+//            StudentCourse course = enrollment.getCourse();
+//
+//            map.put("courseId", (course != null) ? course.getCourseId() : null);
+//            map.put("courseName", (course != null) ? course.getCourseTitle() : "알 수 없는 강의");
+//
+//            String professorName = (course != null && course.getUser() != null)
+//                    ? course.getUser().getUserNickname() : "미지정";
+//            map.put("professorName", professorName);
+//
+//            map.put("startDate", "2023-01-01");
+//            map.put("progress", enrollment.getEnrollmentProcess());
+//
+//            map.put("quizYn", enrollment.getEnrollmentProcess() > 0 ? "Y" : "N");
+//            map.put("score", enrollment.getEnrollmentProcess() >= 100 ? "A+" : "진행중");
+//
+//            return map;
+//        }).collect(Collectors.toList());
+//    }
 
     public List<StudentCourseNoticeDTO> getCourseNoticesForStudent(Long userNo) {
         List<StudentEnrollment> enrollments = studentEnrollmentRepository.findByUserNo(userNo);

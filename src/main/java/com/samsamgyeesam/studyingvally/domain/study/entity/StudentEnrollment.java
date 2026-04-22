@@ -27,7 +27,4 @@ public class StudentEnrollment {
     @JoinColumn(name = "course_id")
     private StudentCourse course;
 
-//    @Column(name = "enrollment_progress")
-//    private int enrollmentProgress;
-
 }

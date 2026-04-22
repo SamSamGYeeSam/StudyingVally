@@ -40,12 +40,6 @@ public class StudentSchoolController {
 
         if (principal == null) {return "redirect:/auth/login";}
 
-//        List<StudentEnrollment> enrollments = studentEnrollmentRepository.findAll();
-//        List<StudentCourse> courses = enrollments.stream()
-//                .map(StudentEnrollment::getCourse)
-//                .distinct()
-//                .collect(Collectors.toList());
-
         List<StudentCourse> courses = studentCourseService.getOpenCourses();
 
         String userId = principal.getName();

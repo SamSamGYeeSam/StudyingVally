@@ -9,7 +9,4 @@ public interface StudentChapterRepository extends JpaRepository<StudentChapter, 
 
     List<StudentChapter> findByCourse_CourseId(Long courseId);
     long countByCourse_CourseId(Long courseId);
-    //    List<StudentChapter> findByCourseId(Long courseId);
-    //    long countByCourseId(Long courseId);
-
 }
