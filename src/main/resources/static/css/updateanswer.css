@@ -28,7 +28,7 @@ body {
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
-    padding: 30px; /* 패딩을 살짝 줄여 여유 공간 확보 */
+    padding: 35px;
 }
 
 /* 타이틀 스타일 */
@@ -36,67 +36,102 @@ body {
     color: #ffca28;
     font-size: 26px;
     text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
-    margin: 0 0 15px 0; /* 마진 축소 */
-    text-align: left;
+    margin: 0 0 15px 0;
 }
 
-/* 폼 영역 (스크롤 제거 버전) */
+/* 중앙 메인 박스 영역 */
 .form-wrapper {
     flex: 1;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.75);
     border: 3px solid #5d4037;
-    padding: 20px; /* 내부 패딩 축소 */
+    padding: 20px;
     border-radius: 4px;
-    overflow: hidden; /* 스크롤 절대 금지 */
-    color: white;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* 요소들을 중앙으로 모음 */
+    overflow: hidden;
 }
 
-label {
-    display: block;
+.scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    min-height: 0;
+}
+
+.section-title {
     color: #ffca28;
-    margin-bottom: 6px; /* 간격 축소 */
-    font-size: 15px;
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* 질문 정보 카드 스타일 */
+.question-info-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #5d4037;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.info-row { margin-bottom: 12px; }
+.info-row label {
+    display: block;
+    font-size: 11px;
+    color: #ffca28;
+    margin-bottom: 4px;
     font-weight: bold;
 }
 
-input[type="text"] {
-    width: 100%;
-    background: #fff8e1;
-    border: 3px solid #5d4037;
-    padding: 10px;
-    font-family: 'DungGeunMo', sans-serif;
+.text-display {
     font-size: 14px;
-    margin-bottom: 15px; /* 간격 축소 */
-    outline: none;
-    color: #333;
+    color: #ddd;
+    line-height: 1.5;
 }
 
-textarea {
+.highlight { color: #fff; font-weight: bold; font-size: 15px; }
+
+.desc-area {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(93, 64, 55, 0.4);
+}
+
+/* 입력 필드 스타일 */
+.input-group label {
+    display: block;
+    font-size: 14px;
+    color: #ffca28;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.pixel-textarea {
     width: 100%;
-    flex: 1; /* 남은 공간을 textarea가 꽉 채우도록 설정 */
-    min-height: 150px; /* 최소 높이 지정 (스크롤 안 생기는 선에서) */
-    max-height: 220px; /* 800x600에서 넘치지 않는 최대 높이 */
+    padding: 15px;
     background: #fff8e1;
     border: 3px solid #5d4037;
-    padding: 10px;
     font-family: 'DungGeunMo', sans-serif;
     font-size: 14px;
-    outline: none;
-    color: #333;
     resize: none;
+    color: #222;
+    line-height: 1.6;
+    outline: none;
 }
 
 /* 하단 버튼 영역 */
 .footer-area {
+    flex-shrink: 0;
     display: flex;
     justify-content: space-between;
-    margin-top: 15px; /* 간격 축소 */
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed rgba(93, 64, 55, 0.5);
 }
 
 .pixel-btn {
+    min-width: 120px;
     padding: 10px 20px;
     background: #8d6e63;
     color: white;
@@ -105,11 +140,10 @@ textarea {
     font-family: 'DungGeunMo';
     font-size: 15px;
     box-shadow: 3px 3px 0 #000;
-    transition: 0.1s;
-    text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
 }
 
 .pixel-btn:active {
@@ -117,6 +151,10 @@ textarea {
     box-shadow: 0 0 0 #000;
 }
 
-.pixel-btn.success {
-    background: #27ae60;
-}
+.pixel-btn.success { background: #27ae60; }
+.pixel-btn.danger { background: #e74c3c; }
+
+/* 스크롤바 디자인 */
+.scroll-content::-webkit-scrollbar { width: 8px; }
+.scroll-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+.scroll-content::-webkit-scrollbar-thumb { background: #5d4037; border: 1px solid #000; }

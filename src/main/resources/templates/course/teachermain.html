@@ -24,6 +24,19 @@
             border-radius: 6px; font-size: 15px; font-weight: bold; opacity: 0; transition: 0.2s; white-space: nowrap; margin-bottom: 5px;
         }
         .entity:hover .entity-label { opacity: 1; transform: translateY(-2px); }
+        #register {
+            flex-direction: column-reverse !important;
+        }
+
+        #register .entity-label {
+            margin-bottom: 0;
+            margin-top: 5px; /* 아이콘과의 간격 */
+        }
+
+        /* 호버 시 애니메이션 방향도 아래로 살짝 변경 (선택사항) */
+        #register:hover .entity-label {
+            transform: translateY(2px);
+        }
         #course-news img { width: 340px; } #register img { width: 540px; } #notice img { width: 170px; } #home img { width: 280px; } #npc img { width: 400px; }
         #logout-btn { position: fixed; top: 15px; left: 15px; z-index: 2000; background: #b71c1c; color: white; padding: 8px 15px; border: 3px solid #5d4037; border-radius: 8px; text-decoration: none; }
     </style>

@@ -2,50 +2,60 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Studying Vally - 질문 답변</title>
-  <link rel="stylesheet" th:href="@{/css/questionanswer.css}">
+  <title>Studying Valley - 질문 답변</title>
+  <link rel="stylesheet" th:href="@{/css/answerquestion.css}">
   <th:block th:replace="~{modal/modal :: modalCss}"></th:block>
 </head>
 <body>
 
 <div class="room-container">
-  <h2 class="pixel-title">💬 질문 답변하기</h2>
+  <!-- 좌측 상단 타이틀 영역 -->
+  <h1 class="pixel-title">💬 Q&A ANSWER</h1>
 
-  <div class="content-wrapper">
-    <!-- 질문 내용 섹션 -->
-    <div class="question-info">
-      <div class="info-item">
-        <label>📖 강의명</label>
-        <span class="info-text" th:text="${question.courseTitle}">강의 제목</span>
+  <!-- 중앙 답변 폼 박스 (어두운 반투명 박스) -->
+  <div class="form-wrapper">
+    <div class="scroll-content">
+      <h3 class="section-title">✒️ 질문 답변하기</h3>
+
+      <!-- 질문 정보 (읽기 전용 카드) -->
+      <div class="question-info-card">
+        <div class="info-row">
+          <label>COURSE</label>
+          <div class="text-display" th:text="${question.courseTitle}">강의 제목</div>
+        </div>
+        <div class="info-row">
+          <label>TITLE</label>
+          <div class="text-display highlight" th:text="${question.questionCourseTitle}">질문 제목</div>
+        </div>
+        <div class="info-row">
+          <label>QUESTION</label>
+          <div class="text-display desc-area" th:text="${question.questionCourseDesc}">질문 상세 내용</div>
+        </div>
       </div>
-      <div class="info-item">
-        <label>❓ 질문 제목</label>
-        <span class="info-text" th:text="${question.questionCourseTitle}">질문 제목</span>
-      </div>
-      <div class="info-item">
-        <label>📝 질문 내용</label>
-        <span class="info-text" th:text="${question.questionCourseDesc}">질문 상세 내용</span>
-      </div>
+
+      <!-- 답변 입력 폼 -->
+      <form id="answerForm" action="/teacher/course/question/answer" method="post" novalidate>
+        <input type="hidden" name="questionCourseNo" th:value="${question.questionCourseNo}">
+        <input type="hidden" name="courseId" th:value="${courseId}">
+
+        <div class="input-group">
+          <label for="answerText">MY ANSWER</label>
+          <textarea id="answerText" rows="6" name="questionCourseAnswer"
+                    class="pixel-textarea" placeholder="답변을 입력하세요..."
+                    required th:text="${question.questionCourseAnswer}"></textarea>
+        </div>
+      </form>
     </div>
 
-    <!-- 답변 입력 폼 -->
-    <form id="answerForm" action="/teacher/course/question/answer" method="post" novalidate>
-      <input type="hidden" name="questionCourseNo" th:value="${question.questionCourseNo}">
-      <input type="hidden" name="courseId" th:value="${courseId}">
+    <!-- 하단 버튼 영역 (푸터) -->
+    <div class="footer-area">
+      <form action="/teacher/course/question" method="post">
+        <input type="hidden" name="courseId" th:value="${courseId}">
+        <button type="submit" class="pixel-btn danger">🔙 이전으로</button>
+      </form>
 
-      <label>✒️ 답변 작성</label>
-      <textarea rows="8" name="questionCourseAnswer" placeholder="수강생에게 전달할 답변을 입력하세요..." required th:text="${question.questionCourseAnswer}"></textarea>
-    </form>
-  </div>
-
-  <!-- 하단 버튼 영역 -->
-  <div class="footer-area">
-    <form action="/teacher/course/question" method="post">
-      <input type="hidden" name="courseId" th:value="${courseId}">
-      <button type="submit" class="pixel-btn prev-btn">🔙 이전으로</button>
-    </form>
-
-    <button type="submit" form="answerForm" class="pixel-btn submit-btn">🚀 답변 등록하기</button>
+      <button type="submit" form="answerForm" class="pixel-btn success">🚀 답변 등록하기</button>
+    </div>
   </div>
 </div>
 
